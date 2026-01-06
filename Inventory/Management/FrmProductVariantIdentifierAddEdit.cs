@@ -1,6 +1,8 @@
 ﻿using Bll.Inventory.InventoryManagement;
 using Common.Helpers;
 using Common.Utils;
+using DevExpress.Data;
+using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DTO.Inventory.InventoryManagement;
 using System;
@@ -8,11 +10,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Forms;
-using DevExpress.Data;
 
 namespace Inventory.Management
 {
-    public partial class FrmProductVariantIdentifierAddEdit : DevExpress.XtraEditors.XtraForm
+    public partial class FrmProductVariantIdentifierAddEdit : XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 

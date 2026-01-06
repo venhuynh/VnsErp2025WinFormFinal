@@ -85,6 +85,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Management\FrmCreateNewSerialNumber.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\FrmCreateNewSerialNumber.Designer.cs">
+      <DependentUpon>FrmCreateNewSerialNumber.cs</DependentUpon>
+    </Compile>
     <Compile Include="Management\FrmInventoryBalanceDto.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -393,8 +399,20 @@
     <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.Designer.cs">
       <DependentUpon>UcXuatNoiBoMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="XtraForm1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XtraForm1.Designer.cs">
+      <DependentUpon>XtraForm1.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Management\FrmCreateNewSerialNumber.resx">
+      <DependentUpon>FrmCreateNewSerialNumber.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\FrmProductVariantIdentifier.resx">
+      <DependentUpon>FrmProductVariantIdentifier.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmProductVariantIdentifierAddEdit.resx">
       <DependentUpon>FrmProductVariantIdentifierAddEdit.cs</DependentUpon>

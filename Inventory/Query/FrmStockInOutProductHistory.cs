@@ -118,7 +118,7 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
             XoaPhieuBarButtonItem.ItemClick += XoaPhieuBarButtonItem_ItemClick;
             NhapDinhDanhSPBarButtonItem.ItemClick += NhapDinhDanhSPBarButtonItem_ItemClick;
-            CreateQrCodeBarButtonItem.ItemClick += CreateQrCodeBarButtonItem_ItemClick;
+            CreateSerialNumberBarButtonItem.ItemClick += CreateSerialNumberBarButtonItem_ItemClick;
             IdentifiterBarButtonItem.ItemClick += IdentifiterBarButtonItem_ItemClick;
 
 
@@ -341,10 +341,21 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
     }
 
     /// <summary>
-    /// Event handler cho nút Tạo mã QR
-    /// Mở form tạo QR code cho sản phẩm được chọn, truyền ProductVariantId và Id (StockInOutDetailId)
+    /// Handles the click event for the "Create Serial Number" button.
     /// </summary>
-    private void CreateQrCodeBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    /// <param name="sender">The source of the event, typically the button that was clicked.</param>
+    /// <param name="e">An <see cref="DevExpress.XtraBars.ItemClickEventArgs"/> that contains the event data.</param>
+    /// <remarks>
+    /// This method performs the following actions:
+    /// - Validates the selected rows in the grid to ensure only one row is selected.
+    /// - Retrieves the data transfer object (DTO) of the selected product.
+    /// - Validates the <c>ProductVariantId</c> and <c>Id</c> of the selected product.
+    /// - Opens a form to create a new QR code for the selected product.
+    /// - Displays appropriate warning messages if validation fails.
+    /// - Logs any exceptions that occur during execution.
+    /// </remarks>
+    /// <exception cref="Exception">Logs and displays an error message if an exception occurs.</exception>
+    private void CreateSerialNumberBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
@@ -393,14 +404,14 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
             // Mở form tạo QR code với OverlayManager
             using (OverlayManager.ShowScope(this))
             {
-                using var form = new FrmProductVariantIdentifierCreateQrCode(selectedDto);
+                using var form = new FrmCreateNewSerialNumber(selectedDto);
                 
                 form.ShowDialog(this);
             }
         }
         catch (Exception ex)
         {
-            _logger.Error("CreateQrCodeBarButtonItem_ItemClick: Exception occurred", ex);
+            _logger.Error("CreateSerialNumberBarButtonItem_ItemClick: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi mở form tạo mã QR: {ex.Message}");
         }
     }
@@ -965,7 +976,7 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
             NhapBaoHanhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             ThemHinhAnhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             NhapDinhDanhSPBarButtonItem.Enabled = hasSelection && selectedCount == 1;
-            CreateQrCodeBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+            CreateSerialNumberBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             IdentifiterBarButtonItem.Enabled = hasSelection && selectedCount == 1;
 
             // Nút Xóa: cho phép xóa nhiều dòng (chỉ cần có selection)

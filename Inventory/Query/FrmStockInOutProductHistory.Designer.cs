@@ -54,7 +54,7 @@ namespace Inventory.Query
             this.repositoryItemDateEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.XemBaoCaoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ChiTietPhieuNhapXuatBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.CreateQrCodeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.CreateSerialNumberBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.IdentifiterBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
@@ -443,7 +443,7 @@ namespace Inventory.Query
             this.XoaPhieuBarButtonItem,
             this.KeyWordBarEditItem,
             this.NhapDinhDanhSPBarButtonItem,
-            this.CreateQrCodeBarButtonItem,
+            this.CreateSerialNumberBarButtonItem,
             this.IdentifiterBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
             this.barManager1.MaxItemId = 20;
@@ -466,7 +466,7 @@ namespace Inventory.Query
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.DenNgayBarEditItem, "", false, true, true, 125, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBaoCaoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ChiTietPhieuNhapXuatBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CreateQrCodeBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CreateSerialNumberBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.IdentifiterBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
@@ -533,12 +533,12 @@ namespace Inventory.Query
             this.ChiTietPhieuNhapXuatBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.hideproduct_32x32;
             this.ChiTietPhieuNhapXuatBarButtonItem.Name = "ChiTietPhieuNhapXuatBarButtonItem";
             // 
-            // CreateQrCodeBarButtonItem
+            // CreateSerialNumberBarButtonItem
             // 
-            this.CreateQrCodeBarButtonItem.Caption = "Tạo mã QR";
-            this.CreateQrCodeBarButtonItem.Id = 18;
-            this.CreateQrCodeBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
-            this.CreateQrCodeBarButtonItem.Name = "CreateQrCodeBarButtonItem";
+            this.CreateSerialNumberBarButtonItem.Caption = "Tạo SerialNumber";
+            this.CreateSerialNumberBarButtonItem.Id = 18;
+            this.CreateSerialNumberBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
+            this.CreateSerialNumberBarButtonItem.Name = "CreateSerialNumberBarButtonItem";
             // 
             // IdentifiterBarButtonItem
             // 
@@ -745,7 +745,7 @@ namespace Inventory.Query
         private DevExpress.XtraGrid.Columns.GridColumn colTotalAmountIncludedVat;
         private DevExpress.XtraBars.BarButtonItem NhapDinhDanhSPBarButtonItem;
         private System.Windows.Forms.BindingSource stockInOutProductHistoryDtoBindingSource;
-        private DevExpress.XtraBars.BarButtonItem CreateQrCodeBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem CreateSerialNumberBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem IdentifiterBarButtonItem;
     }
 }
