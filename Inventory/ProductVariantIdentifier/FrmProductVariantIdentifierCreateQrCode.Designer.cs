@@ -4,7 +4,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
 
-namespace Inventory.Management
+namespace Inventory.ProductVariantIdentifier
 {
     partial class FrmProductVariantIdentifierCreateQrCode
     {
@@ -299,7 +299,7 @@ namespace Inventory.Management
             // 
             // productVariantIdentifierItemBindingSource
             // 
-            this.productVariantIdentifierItemBindingSource.DataSource = typeof(Inventory.Management.ProductVariantIdentifierItem);
+            this.productVariantIdentifierItemBindingSource.DataSource = typeof(ProductVariantIdentifierItem);
             // 
             // ProductVariantIdentifierGridView
             // 

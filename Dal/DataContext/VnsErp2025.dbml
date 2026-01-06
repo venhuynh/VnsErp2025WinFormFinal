@@ -700,6 +700,7 @@
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="QRCodeImage" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
       <Association Name="ProductVariantIdentifier_ProductVariantIdentifierHistory" Member="ProductVariantIdentifierHistories" ThisKey="Id" OtherKey="ProductVariantIdentifierId" Type="ProductVariantIdentifierHistory" />
       <Association Name="ProductVariant_ProductVariantIdentifier" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>

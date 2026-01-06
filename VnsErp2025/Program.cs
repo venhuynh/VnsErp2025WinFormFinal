@@ -10,6 +10,7 @@ using MasterData.Customer;
 using Microsoft.Win32;
 using System;
 using System.Windows.Forms;
+using Inventory.ProductVariantIdentifier;
 using VnsErp2025.Form;
 
 
@@ -184,7 +185,7 @@ namespace VnsErp2025
 
 
 
-            Application.Run(new FrmStockInOutProductHistory());
+            Application.Run(new FrmProductVariantIdentifier());
 
             #endregion
 

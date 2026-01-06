@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace DTO.Inventory.InventoryManagement
 {
@@ -421,6 +418,14 @@ namespace DTO.Inventory.InventoryManagement
         [DisplayName("Người khóa hình ảnh QR")]
         [Display(Order = 36)]
         public Guid? QRCodeImageLockedBy { get; set; }
+
+        /// <summary>
+        /// Dữ liệu hình ảnh QR code (binary data)
+        /// </summary>
+        [DisplayName("Dữ liệu hình ảnh QR")]
+        [Display(Order = 37)]
+        [Description("Dữ liệu binary của hình ảnh QR code")]
+        public byte[] QRCodeImage { get; set; }
 
         #endregion
 

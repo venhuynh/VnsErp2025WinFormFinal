@@ -61,6 +61,7 @@ namespace Dal.DtoConverter
                 QRCodeImageLocked = entity.QRCodeImageLocked,
                 QRCodeImageLockedDate = entity.QRCodeImageLockedDate,
                 QRCodeImageLockedBy = entity.QRCodeImageLockedBy,
+                QRCodeImage = entity.QRCodeImage?.ToArray(), // Convert Binary sang byte[]
 
                 // Tình trạng hàng hóa/sản phẩm
                 Status = (ProductVariantIdentifierStatusEnum)entity.Status, // Convert int to enum
@@ -183,6 +184,15 @@ namespace Dal.DtoConverter
                 entity.QRCodeImageFullPath = dto.QRCodeImageFullPath;
                 entity.QRCodeImageFileName = dto.QRCodeImageFileName;
                 entity.QRCodeImageStorageType = dto.QRCodeImageStorageType;
+                // Chuyển đổi QRCodeImage từ byte[] sang System.Data.Linq.Binary
+                if (dto.QRCodeImage != null && dto.QRCodeImage.Length > 0)
+                {
+                    entity.QRCodeImage = new System.Data.Linq.Binary(dto.QRCodeImage);
+                }
+                else
+                {
+                    entity.QRCodeImage = null;
+                }
             }
             // Cập nhật thông tin khóa (có thể được thay đổi bởi admin)
             entity.QRCodeImageLocked = dto.QRCodeImageLocked;

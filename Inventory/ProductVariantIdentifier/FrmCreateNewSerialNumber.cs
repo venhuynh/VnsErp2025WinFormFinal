@@ -1,11 +1,11 @@
-﻿using Bll.Inventory.InventoryManagement;
-using Common.Utils;
-using DTO.Inventory.InventoryManagement;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bll.Inventory.InventoryManagement;
+using Common.Utils;
+using DTO.Inventory.InventoryManagement;
 
-namespace Inventory.Management
+namespace Inventory.ProductVariantIdentifier
 {
     public partial class FrmCreateNewSerialNumber : DevExpress.XtraEditors.XtraForm
     {

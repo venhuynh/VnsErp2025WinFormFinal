@@ -1,9 +1,9 @@
-using DTO.Inventory.InventoryManagement;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DTO.Inventory.InventoryManagement;
 
-namespace Inventory.Management
+namespace Inventory.ProductVariantIdentifier
 {
     /// <summary>
     /// Class đơn giản để bind vào ProductVariantIdentifierGridView

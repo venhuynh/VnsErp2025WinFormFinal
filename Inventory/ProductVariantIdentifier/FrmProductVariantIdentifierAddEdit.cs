@@ -1,17 +1,18 @@
-﻿using Bll.Inventory.InventoryManagement;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Windows.Forms;
+using Bll.Inventory.InventoryManagement;
 using Common.Helpers;
 using Common.Utils;
 using DevExpress.Data;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DTO.Inventory.InventoryManagement;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Windows.Forms;
+using Inventory.Management;
 
-namespace Inventory.Management
+namespace Inventory.ProductVariantIdentifier
 {
     public partial class FrmProductVariantIdentifierAddEdit : XtraForm
     {

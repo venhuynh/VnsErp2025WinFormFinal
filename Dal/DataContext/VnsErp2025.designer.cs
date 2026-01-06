@@ -16241,6 +16241,8 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _UpdatedBy;
 		
+		private System.Data.Linq.Binary _QRCodeImage;
+		
 		private EntitySet<ProductVariantIdentifierHistory> _ProductVariantIdentifierHistories;
 		
 		private EntityRef<ProductVariant> _ProductVariant;
@@ -16321,6 +16323,8 @@ namespace Dal.DataContext
     partial void OnCreatedByChanged();
     partial void OnUpdatedByChanging(System.Nullable<System.Guid> value);
     partial void OnUpdatedByChanged();
+    partial void OnQRCodeImageChanging(System.Data.Linq.Binary value);
+    partial void OnQRCodeImageChanged();
     #endregion
 		
 		public ProductVariantIdentifier()
@@ -16408,7 +16412,7 @@ namespace Dal.DataContext
 					this.OnBarcodeChanging(value);
 					this.SendPropertyChanging();
 					this._Barcode = value;
-					this.SendPropertyChanged("PartNumber");
+					this.SendPropertyChanged("Barcode");
 					this.OnBarcodeChanged();
 				}
 			}
@@ -17050,6 +17054,26 @@ namespace Dal.DataContext
 					this._UpdatedBy = value;
 					this.SendPropertyChanged("UpdatedBy");
 					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCodeImage", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary QRCodeImage
+		{
+			get
+			{
+				return this._QRCodeImage;
+			}
+			set
+			{
+				if ((this._QRCodeImage != value))
+				{
+					this.OnQRCodeImageChanging(value);
+					this.SendPropertyChanging();
+					this._QRCodeImage = value;
+					this.SendPropertyChanged("QRCodeImage");
+					this.OnQRCodeImageChanged();
 				}
 			}
 		}

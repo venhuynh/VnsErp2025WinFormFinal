@@ -1,3 +1,6 @@
+using Bll.Common.ImageService;
+using Bll.Common.ImageStorage;
+using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using DTO.Inventory.InventoryManagement;
@@ -6,7 +9,10 @@ using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
-using Dal.Connection;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Bll.Inventory.InventoryManagement
 {
@@ -21,6 +27,9 @@ namespace Bll.Inventory.InventoryManagement
         private IProductVariantIdentifierRepository _productVariantIdentifierRepository;
         private readonly ILogger _logger;
         private readonly object Lock = new object();
+        private IImageStorageService _imageStorage;
+        private readonly object _imageStorageLock = new object();
+        private readonly ImageCompressionService _imageCompression;
 
         #endregion
 
@@ -32,6 +41,7 @@ namespace Bll.Inventory.InventoryManagement
         public ProductVariantIdentifierBll()
         {
             _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
+            _imageCompression = new ImageCompressionService();
         }
 
         #endregion
@@ -71,6 +81,36 @@ namespace Bll.Inventory.InventoryManagement
             }
 
             return _productVariantIdentifierRepository;
+        }
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo ImageStorageService (lazy initialization)
+        /// Chỉ khởi tạo khi thực sự cần dùng (khi upload/delete image)
+        /// </summary>
+        private IImageStorageService GetImageStorage()
+        {
+            if (_imageStorage == null)
+            {
+                lock (_imageStorageLock)
+                {
+                    if (_imageStorage == null)
+                    {
+                        try
+                        {
+                            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error($"Lỗi khi khởi tạo ImageStorageService: {ex.Message}", ex);
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo ImageStorageService. Vui lòng kiểm tra cấu hình NAS trong bảng Setting. " +
+                                "Nếu không sử dụng NAS, hãy đặt NAS.StorageType = 'Local' trong bảng Setting.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _imageStorage;
         }
 
         #endregion
@@ -380,6 +420,144 @@ namespace Bll.Inventory.InventoryManagement
 
             // Kiểm tra tính duy nhất của các định danh (nếu cần)
             // Có thể thêm logic kiểm tra duplicate ở đây
+        }
+
+        #endregion
+
+        #region ========== QR CODE IMAGE OPERATIONS ==========
+
+        /// <summary>
+        /// Cập nhật hình ảnh QR code cho ProductVariantIdentifier từ byte array
+        /// Lưu ảnh gốc lên NAS và lưu dữ liệu ảnh vào database
+        /// </summary>
+        /// <param name="identifierId">ID của ProductVariantIdentifier</param>
+        /// <param name="imageBytes">Byte array của hình ảnh QR code (null để xóa)</param>
+        /// <returns>ProductVariantIdentifierDto đã được cập nhật</returns>
+        public async Task<ProductVariantIdentifierDto> UpdateQRCodeImageAsync(Guid identifierId, byte[] imageBytes)
+        {
+            try
+            {
+                var identifier = GetById(identifierId);
+                if (identifier == null)
+                {
+                    throw new Exception($"Không tìm thấy ProductVariantIdentifier với ID {identifierId}");
+                }
+
+                // Kiểm tra xem hình ảnh có bị khóa không
+                if (identifier.QRCodeImageLocked)
+                {
+                    throw new InvalidOperationException(
+                        $"Hình ảnh QR code đã bị khóa. Không thể cập nhật hình ảnh cho ProductVariantIdentifier {identifierId}.");
+                }
+
+                // Sử dụng UpdateQRCodeImageOnlyAsync để xử lý
+                await UpdateQRCodeImageOnlyAsync(identifierId, imageBytes);
+
+                // Lấy lại identifier đã cập nhật
+                return GetById(identifierId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi cập nhật QR code image cho ProductVariantIdentifier {identifierId}: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi cập nhật QR code image: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Chỉ cập nhật/xóa hình ảnh QR code của ProductVariantIdentifier theo ID, không ảnh hưởng đến các trường khác
+        /// Lưu ảnh gốc lên NAS và lưu dữ liệu ảnh vào database
+        /// </summary>
+        /// <param name="identifierId">ID của ProductVariantIdentifier cần cập nhật</param>
+        /// <param name="imageBytes">Byte array của hình ảnh QR code (null để xóa)</param>
+        /// <returns>Task</returns>
+        public async Task UpdateQRCodeImageOnlyAsync(Guid identifierId, byte[] imageBytes)
+        {
+            try
+            {
+                // Kiểm tra identifier có tồn tại không
+                var identifier = GetById(identifierId);
+                if (identifier == null)
+                {
+                    throw new Exception($"Không tìm thấy ProductVariantIdentifier với ID {identifierId}");
+                }
+
+                // Kiểm tra xem hình ảnh có bị khóa không
+                if (identifier.QRCodeImageLocked)
+                {
+                    throw new InvalidOperationException(
+                        $"Hình ảnh QR code đã bị khóa. Không thể cập nhật hình ảnh cho ProductVariantIdentifier {identifierId}.");
+                }
+
+                // Xử lý xóa hình ảnh
+                if (imageBytes == null || imageBytes.Length == 0)
+                {
+                    // Xóa thông tin trong database
+                    identifier.QRCodeImage = null;
+                    identifier.QRCodeImagePath = null;
+                    identifier.QRCodeImageFullPath = null;
+                    identifier.QRCodeImageFileName = null;
+                    identifier.QRCodeImageStorageType = null;
+
+                    // Lưu vào database
+                    SaveOrUpdate(identifier);
+
+                    _logger.Info($"Đã xóa QR code image cho ProductVariantIdentifier {identifierId}");
+                    return;
+                }
+
+                // Xử lý upload hình ảnh mới
+                // 1. Tạo tên file
+                var fileExtension = ".jpg"; // Mặc định JPEG
+                try
+                {
+                    using (var ms = new MemoryStream(imageBytes))
+                    using (var img = Image.FromStream(ms))
+                    {
+                        if (img.RawFormat.Equals(ImageFormat.Png))
+                            fileExtension = ".png";
+                        else if (img.RawFormat.Equals(ImageFormat.Gif))
+                            fileExtension = ".gif";
+                    }
+                }
+                catch
+                {
+                    // Nếu không detect được, dùng .jpg mặc định
+                }
+
+                var fileName = $"PVI_{identifierId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+
+                // 2. Lưu ảnh gốc lên NAS
+                var storageResult = await GetImageStorage().SaveImageAsync(
+                    imageData: imageBytes,
+                    fileName: fileName,
+                    category: ImageCategory.ProductVariant, // Sử dụng ProductVariant category vì liên quan đến ProductVariant
+                    entityId: identifier.ProductVariantId,
+                    generateThumbnail: false // Không tạo thumbnail trên NAS
+                );
+
+                if (!storageResult.Success)
+                {
+                    throw new InvalidOperationException(
+                        $"Không thể lưu hình ảnh vào storage: {storageResult.ErrorMessage}");
+                }
+
+                // 3. Cập nhật thông tin hình ảnh vào DTO
+                identifier.QRCodeImage = imageBytes; // Lưu dữ liệu ảnh vào database
+                identifier.QRCodeImagePath = storageResult.RelativePath;
+                identifier.QRCodeImageFullPath = storageResult.FullPath;
+                identifier.QRCodeImageFileName = storageResult.FileName;
+                identifier.QRCodeImageStorageType = "NAS";
+
+                // 4. Lưu vào database
+                SaveOrUpdate(identifier);
+
+                _logger.Info($"Đã cập nhật QR code image cho ProductVariantIdentifier {identifierId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi cập nhật QR code image cho ProductVariantIdentifier {identifierId}: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi cập nhật QR code image: {ex.Message}", ex);
+            }
         }
 
         #endregion

@@ -3,9 +3,9 @@ using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
 
-namespace Inventory.Management
+namespace Inventory.ProductVariantIdentifier
 {
-    partial class FrmCreateNewSerialNumber
+    partial class FrmProductVariantIdentifierAddEdit
     {
         /// <summary>
         /// Required designer variable.
@@ -37,6 +37,7 @@ namespace Inventory.Management
             this.components = new System.ComponentModel.Container();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
+            this.NewIdentifierBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.SaveBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
@@ -49,28 +50,26 @@ namespace Inventory.Management
             this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
-            this.SerialNumberMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.VoucerNumberTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.SerialNumberQtyTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ProductVariantFullNameSimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ProductVariantIdentifierGridControl = new DevExpress.XtraGrid.GridControl();
             this.productVariantIdentifierItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ProductVariantIdentifierGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.ProductVariantIdentifierEnumGridColumn = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ProductVariantIdentifierEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
+            this.ProductVariantIdentifierValueGridColumn = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ProductVariantFullNameSimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SerialNumberMemoEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VoucerNumberTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SerialNumberQtyTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantFullNameSimpleLabelItem)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierItemBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierEnumComboBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantFullNameSimpleLabelItem)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -85,6 +84,7 @@ namespace Inventory.Management
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.SaveBarButtonItem,
             this.CloseBarButtonItem,
+            this.NewIdentifierBarButtonItem,
             this.barHeaderItem1,
             this.SoLuongNhapXuatBarStaticItem});
             this.barManager1.MainMenu = this.bar2;
@@ -98,11 +98,19 @@ namespace Inventory.Management
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NewIdentifierBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SaveBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
+            // 
+            // NewIdentifierBarButtonItem
+            // 
+            this.NewIdentifierBarButtonItem.Caption = "Mới";
+            this.NewIdentifierBarButtonItem.Id = 2;
+            this.NewIdentifierBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
+            this.NewIdentifierBarButtonItem.Name = "NewIdentifierBarButtonItem";
             // 
             // SaveBarButtonItem
             // 
@@ -124,15 +132,15 @@ namespace Inventory.Management
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(491, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(691, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 364);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 521);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(491, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(691, 0);
             // 
             // barDockControlLeft
             // 
@@ -140,15 +148,15 @@ namespace Inventory.Management
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 340);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 497);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(491, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(691, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 340);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 497);
             // 
             // barHeaderItem1
             // 
@@ -185,69 +193,120 @@ namespace Inventory.Management
             // 
             // dataLayoutControl1
             // 
-            this.dataLayoutControl1.Controls.Add(this.SerialNumberMemoEdit);
-            this.dataLayoutControl1.Controls.Add(this.VoucerNumberTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.SerialNumberQtyTextEdit);
+            this.dataLayoutControl1.Controls.Add(this.ProductVariantIdentifierGridControl);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(491, 340);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(691, 497);
             this.dataLayoutControl1.TabIndex = 14;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
-            // SerialNumberMemoEdit
+            // ProductVariantIdentifierGridControl
             // 
-            this.SerialNumberMemoEdit.Location = new System.Drawing.Point(121, 113);
-            this.SerialNumberMemoEdit.MenuManager = this.barManager1;
-            this.SerialNumberMemoEdit.Name = "SerialNumberMemoEdit";
-            this.SerialNumberMemoEdit.Size = new System.Drawing.Size(358, 215);
-            this.SerialNumberMemoEdit.StyleController = this.dataLayoutControl1;
-            this.SerialNumberMemoEdit.TabIndex = 6;
+            this.ProductVariantIdentifierGridControl.DataSource = this.productVariantIdentifierItemBindingSource;
+            this.ProductVariantIdentifierGridControl.Location = new System.Drawing.Point(12, 65);
+            this.ProductVariantIdentifierGridControl.MainView = this.ProductVariantIdentifierGridView;
+            this.ProductVariantIdentifierGridControl.MenuManager = this.barManager1;
+            this.ProductVariantIdentifierGridControl.Name = "ProductVariantIdentifierGridControl";
+            this.ProductVariantIdentifierGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.ProductVariantIdentifierEnumComboBox});
+            this.ProductVariantIdentifierGridControl.Size = new System.Drawing.Size(667, 420);
+            this.ProductVariantIdentifierGridControl.TabIndex = 44;
+            this.ProductVariantIdentifierGridControl.UseEmbeddedNavigator = true;
+            this.ProductVariantIdentifierGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.ProductVariantIdentifierGridView});
             // 
-            // VoucerNumberTextEdit
+            // productVariantIdentifierItemBindingSource
             // 
-            this.VoucerNumberTextEdit.Location = new System.Drawing.Point(121, 65);
-            this.VoucerNumberTextEdit.MenuManager = this.barManager1;
-            this.VoucerNumberTextEdit.Name = "VoucerNumberTextEdit";
-            this.VoucerNumberTextEdit.Size = new System.Drawing.Size(358, 20);
-            this.VoucerNumberTextEdit.StyleController = this.dataLayoutControl1;
-            this.VoucerNumberTextEdit.TabIndex = 4;
+            this.productVariantIdentifierItemBindingSource.DataSource = typeof(ProductVariantIdentifierItem);
             // 
-            // SerialNumberQtyTextEdit
+            // ProductVariantIdentifierGridView
             // 
-            this.SerialNumberQtyTextEdit.Location = new System.Drawing.Point(121, 89);
-            this.SerialNumberQtyTextEdit.MenuManager = this.barManager1;
-            this.SerialNumberQtyTextEdit.Name = "SerialNumberQtyTextEdit";
-            this.SerialNumberQtyTextEdit.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
-            this.SerialNumberQtyTextEdit.Properties.MaskSettings.Set("MaskManagerSignature", "allowNull=False");
-            this.SerialNumberQtyTextEdit.Properties.MaskSettings.Set("mask", "d");
-            this.SerialNumberQtyTextEdit.Properties.UseMaskAsDisplayFormat = true;
-            this.SerialNumberQtyTextEdit.Size = new System.Drawing.Size(358, 20);
-            this.SerialNumberQtyTextEdit.StyleController = this.dataLayoutControl1;
-            this.SerialNumberQtyTextEdit.TabIndex = 5;
+            this.ProductVariantIdentifierGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.ProductVariantIdentifierEnumGridColumn,
+            this.ProductVariantIdentifierValueGridColumn});
+            this.ProductVariantIdentifierGridView.GridControl = this.ProductVariantIdentifierGridControl;
+            this.ProductVariantIdentifierGridView.Name = "ProductVariantIdentifierGridView";
+            this.ProductVariantIdentifierGridView.NewItemRowText = "Click để thêm dòng mới";
+            this.ProductVariantIdentifierGridView.OptionsMenu.ShowAddNewSummaryItem = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductVariantIdentifierGridView.OptionsNavigation.AutoFocusNewRow = true;
+            this.ProductVariantIdentifierGridView.OptionsSelection.MultiSelect = true;
+            this.ProductVariantIdentifierGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.ProductVariantIdentifierGridView.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Bottom;
+            this.ProductVariantIdentifierGridView.OptionsView.ShowGroupPanel = false;
+            this.ProductVariantIdentifierGridView.OptionsView.ShowViewCaption = true;
+            this.ProductVariantIdentifierGridView.ViewCaption = "BẢNG DANH SÁCH ĐỊNH DANH";
+            // 
+            // ProductVariantIdentifierEnumGridColumn
+            // 
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceCell.Options.UseTextOptions = true;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.Options.UseBackColor = true;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.Options.UseFont = true;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.Options.UseForeColor = true;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.Options.UseTextOptions = true;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.ProductVariantIdentifierEnumGridColumn.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.ProductVariantIdentifierEnumGridColumn.Caption = "Kiểu định danh";
+            this.ProductVariantIdentifierEnumGridColumn.ColumnEdit = this.ProductVariantIdentifierEnumComboBox;
+            this.ProductVariantIdentifierEnumGridColumn.FieldName = "IdentifierType";
+            this.ProductVariantIdentifierEnumGridColumn.Name = "ProductVariantIdentifierEnumGridColumn";
+            this.ProductVariantIdentifierEnumGridColumn.Visible = true;
+            this.ProductVariantIdentifierEnumGridColumn.VisibleIndex = 1;
+            this.ProductVariantIdentifierEnumGridColumn.Width = 150;
+            // 
+            // ProductVariantIdentifierEnumComboBox
+            // 
+            this.ProductVariantIdentifierEnumComboBox.AutoHeight = false;
+            this.ProductVariantIdentifierEnumComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ProductVariantIdentifierEnumComboBox.Name = "ProductVariantIdentifierEnumComboBox";
+            // 
+            // ProductVariantIdentifierValueGridColumn
+            // 
+            this.ProductVariantIdentifierValueGridColumn.AppearanceCell.Options.UseTextOptions = true;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.Options.UseBackColor = true;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.Options.UseFont = true;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.Options.UseForeColor = true;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.Options.UseTextOptions = true;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.ProductVariantIdentifierValueGridColumn.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.ProductVariantIdentifierValueGridColumn.Caption = "Giá trị";
+            this.ProductVariantIdentifierValueGridColumn.FieldName = "Value";
+            this.ProductVariantIdentifierValueGridColumn.Name = "ProductVariantIdentifierValueGridColumn";
+            this.ProductVariantIdentifierValueGridColumn.Visible = true;
+            this.ProductVariantIdentifierValueGridColumn.VisibleIndex = 2;
+            this.ProductVariantIdentifierValueGridColumn.Width = 250;
             // 
             // Root
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
-            this.ProductVariantFullNameSimpleLabelItem,
             this.layoutControlItem2,
-            this.layoutControlItem3});
+            this.ProductVariantFullNameSimpleLabelItem});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(491, 340);
+            this.Root.Size = new System.Drawing.Size(691, 497);
             this.Root.TextVisible = false;
             // 
-            // layoutControlItem1
+            // layoutControlItem2
             // 
-            this.layoutControlItem1.Control = this.VoucerNumberTextEdit;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 53);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(471, 24);
-            this.layoutControlItem1.Text = "Số phiếu nhập/xuất";
-            this.layoutControlItem1.TextSize = new System.Drawing.Size(97, 13);
+            this.layoutControlItem2.Control = this.ProductVariantIdentifierGridControl;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 53);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.OptionsTableLayoutItem.RowIndex = 2;
+            this.layoutControlItem2.Size = new System.Drawing.Size(671, 424);
+            this.layoutControlItem2.TextVisible = false;
             // 
             // ProductVariantFullNameSimpleLabelItem
             // 
@@ -264,59 +323,35 @@ namespace Inventory.Management
             this.ProductVariantFullNameSimpleLabelItem.OptionsPrint.AppearanceItemText.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
             this.ProductVariantFullNameSimpleLabelItem.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
             this.ProductVariantFullNameSimpleLabelItem.Padding = new DevExpress.XtraLayout.Utils.Padding(20, 20, 20, 20);
-            this.ProductVariantFullNameSimpleLabelItem.Size = new System.Drawing.Size(471, 53);
+            this.ProductVariantFullNameSimpleLabelItem.Size = new System.Drawing.Size(671, 53);
             this.ProductVariantFullNameSimpleLabelItem.Text = "Thông tin sản phẩm ";
             this.ProductVariantFullNameSimpleLabelItem.TextSize = new System.Drawing.Size(97, 13);
             // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.SerialNumberQtyTextEdit;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 77);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(471, 24);
-            this.layoutControlItem2.Text = "Số lượng sản phẩm";
-            this.layoutControlItem2.TextSize = new System.Drawing.Size(97, 13);
-            // 
-            // layoutControlItem3
-            // 
-            this.layoutControlItem3.Control = this.SerialNumberMemoEdit;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 101);
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(471, 219);
-            this.layoutControlItem3.Text = "Serial Number";
-            this.layoutControlItem3.TextSize = new System.Drawing.Size(97, 13);
-            // 
-            // productVariantIdentifierItemBindingSource
-            // 
-            this.productVariantIdentifierItemBindingSource.DataSource = typeof(Inventory.Management.ProductVariantIdentifierItem);
-            // 
-            // FrmCreateNewSerialNumber
+            // FrmProductVariantIdentifierAddEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(491, 364);
+            this.ClientSize = new System.Drawing.Size(691, 521);
             this.Controls.Add(this.dataLayoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "FrmCreateNewSerialNumber";
+            this.Name = "FrmProductVariantIdentifierAddEdit";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Tạo số Serrial Number";
+            this.Text = "Định danh hàng hóa sản phẩm";
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.SerialNumberMemoEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VoucerNumberTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SerialNumberQtyTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantFullNameSimpleLabelItem)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierItemBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierEnumComboBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantFullNameSimpleLabelItem)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -334,17 +369,18 @@ namespace Inventory.Management
         private DXErrorProvider dxErrorProvider1;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colParentDepartmentName;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentName;
+        private BarButtonItem NewIdentifierBarButtonItem;
         private DataLayoutControl dataLayoutControl1;
         private LayoutControlGroup Root;
+        private DevExpress.XtraGrid.GridControl ProductVariantIdentifierGridControl;
         private System.Windows.Forms.BindingSource productVariantIdentifierItemBindingSource;
+        private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantIdentifierGridView;
+        private DevExpress.XtraGrid.Columns.GridColumn ProductVariantIdentifierEnumGridColumn;
+        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox ProductVariantIdentifierEnumComboBox;
+        private DevExpress.XtraGrid.Columns.GridColumn ProductVariantIdentifierValueGridColumn;
+        private LayoutControlItem layoutControlItem2;
         private SimpleLabelItem ProductVariantFullNameSimpleLabelItem;
         private BarHeaderItem barHeaderItem1;
         private BarStaticItem SoLuongNhapXuatBarStaticItem;
-        private DevExpress.XtraEditors.MemoEdit SerialNumberMemoEdit;
-        private DevExpress.XtraEditors.TextEdit VoucerNumberTextEdit;
-        private DevExpress.XtraEditors.TextEdit SerialNumberQtyTextEdit;
-        private LayoutControlItem layoutControlItem1;
-        private LayoutControlItem layoutControlItem2;
-        private LayoutControlItem layoutControlItem3;
     }
 }

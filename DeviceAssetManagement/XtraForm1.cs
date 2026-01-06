@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Inventory.Management
+namespace DeviceAssetManagement
 {
-    public partial class FrmProductVariantIdentifier : DevExpress.XtraEditors.XtraForm
+    public partial class XtraForm1 : DevExpress.XtraEditors.XtraForm
     {
-        public FrmProductVariantIdentifier()
+        public XtraForm1()
         {
             InitializeComponent();
         }
