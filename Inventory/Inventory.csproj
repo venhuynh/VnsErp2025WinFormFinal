@@ -97,6 +97,12 @@
     <Compile Include="Management\FrmProductVariantIdentifier.Designer.cs">
       <DependentUpon>FrmProductVariantIdentifier.cs</DependentUpon>
     </Compile>
+    <Compile Include="Management\FrmProductVariantIdentifierAddEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\FrmProductVariantIdentifierAddEdit.Designer.cs">
+      <DependentUpon>FrmProductVariantIdentifierAddEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="Management\FrmProductVariantIdentifierCreateQrCode.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -389,6 +395,9 @@
     </Compile>
     <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\FrmProductVariantIdentifierAddEdit.resx">
+      <DependentUpon>FrmProductVariantIdentifierAddEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmProductVariantIdentifierCreateQrCode.resx">
       <DependentUpon>FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
