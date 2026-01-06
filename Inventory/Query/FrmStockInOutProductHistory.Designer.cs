@@ -54,11 +54,6 @@ namespace Inventory.Query
             this.repositoryItemDateEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.XemBaoCaoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ChiTietPhieuNhapXuatBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.NhapBaoHanhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.NhapDinhDanhSPBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.XoaPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -67,8 +62,14 @@ namespace Inventory.Query
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapBaoHanhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XoaPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapDinhDanhSPBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.CreateQrCodeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridControl)).BeginInit();
@@ -92,7 +93,7 @@ namespace Inventory.Query
             this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1056, 371);
+            this.layoutControl1.Size = new System.Drawing.Size(1053, 480);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -105,7 +106,7 @@ namespace Inventory.Query
             this.StockInOutProductHistoryDtoGridControl.Name = "StockInOutProductHistoryDtoGridControl";
             this.StockInOutProductHistoryDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlRepositoryItemHypertextLabel});
-            this.StockInOutProductHistoryDtoGridControl.Size = new System.Drawing.Size(1032, 347);
+            this.StockInOutProductHistoryDtoGridControl.Size = new System.Drawing.Size(1029, 456);
             this.StockInOutProductHistoryDtoGridControl.TabIndex = 4;
             this.StockInOutProductHistoryDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.StockInOutProductHistoryDtoGridView});
@@ -440,9 +441,10 @@ namespace Inventory.Query
             this.ChiTietPhieuNhapXuatBarButtonItem,
             this.XoaPhieuBarButtonItem,
             this.KeyWordBarEditItem,
-            this.NhapDinhDanhSPBarButtonItem});
+            this.NhapDinhDanhSPBarButtonItem,
+            this.CreateQrCodeBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 18;
+            this.barManager1.MaxItemId = 19;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit1,
             this.repositoryItemDateEdit2,
@@ -461,7 +463,8 @@ namespace Inventory.Query
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.TuNgayBarEditItem, "", false, true, true, 117, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.DenNgayBarEditItem, "", false, true, true, 125, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBaoCaoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ChiTietPhieuNhapXuatBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ChiTietPhieuNhapXuatBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CreateQrCodeBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -527,44 +530,6 @@ namespace Inventory.Query
             this.ChiTietPhieuNhapXuatBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.hideproduct_32x32;
             this.ChiTietPhieuNhapXuatBarButtonItem.Name = "ChiTietPhieuNhapXuatBarButtonItem";
             // 
-            // InPhieuBarButtonItem
-            // 
-            this.InPhieuBarButtonItem.Caption = "In phiếu";
-            this.InPhieuBarButtonItem.Id = 2;
-            this.InPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.print_16x16;
-            this.InPhieuBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
-            this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
-            // 
-            // NhapBaoHanhBarButtonItem
-            // 
-            this.NhapBaoHanhBarButtonItem.Caption = "Nhập bảo hành";
-            this.NhapBaoHanhBarButtonItem.Id = 4;
-            this.NhapBaoHanhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.showtestreport_16x16;
-            this.NhapBaoHanhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.showtestreport_32x32;
-            this.NhapBaoHanhBarButtonItem.Name = "NhapBaoHanhBarButtonItem";
-            // 
-            // NhapDinhDanhSPBarButtonItem
-            // 
-            this.NhapDinhDanhSPBarButtonItem.Caption = "Nhập định danh";
-            this.NhapDinhDanhSPBarButtonItem.Id = 17;
-            this.NhapDinhDanhSPBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
-            this.NhapDinhDanhSPBarButtonItem.Name = "NhapDinhDanhSPBarButtonItem";
-            // 
-            // ThemHinhAnhBarButtonItem
-            // 
-            this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
-            this.ThemHinhAnhBarButtonItem.Id = 5;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
-            this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
-            // 
-            // XoaPhieuBarButtonItem
-            // 
-            this.XoaPhieuBarButtonItem.Caption = "Xóa";
-            this.XoaPhieuBarButtonItem.Id = 14;
-            this.XoaPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
-            this.XoaPhieuBarButtonItem.Name = "XoaPhieuBarButtonItem";
-            // 
             // bar1
             // 
             this.bar1.BarName = "Custom 3";
@@ -607,15 +572,15 @@ namespace Inventory.Query
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1056, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1053, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 395);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 504);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1056, 22);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1053, 22);
             // 
             // barDockControlLeft
             // 
@@ -623,15 +588,53 @@ namespace Inventory.Query
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 371);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 480);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1056, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1053, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 371);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 480);
+            // 
+            // InPhieuBarButtonItem
+            // 
+            this.InPhieuBarButtonItem.Caption = "In phiếu";
+            this.InPhieuBarButtonItem.Id = 2;
+            this.InPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.print_16x16;
+            this.InPhieuBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
+            this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
+            // 
+            // NhapBaoHanhBarButtonItem
+            // 
+            this.NhapBaoHanhBarButtonItem.Caption = "Nhập bảo hành";
+            this.NhapBaoHanhBarButtonItem.Id = 4;
+            this.NhapBaoHanhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.showtestreport_16x16;
+            this.NhapBaoHanhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.showtestreport_32x32;
+            this.NhapBaoHanhBarButtonItem.Name = "NhapBaoHanhBarButtonItem";
+            // 
+            // ThemHinhAnhBarButtonItem
+            // 
+            this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
+            this.ThemHinhAnhBarButtonItem.Id = 5;
+            this.ThemHinhAnhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
+            this.ThemHinhAnhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
+            this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
+            // 
+            // XoaPhieuBarButtonItem
+            // 
+            this.XoaPhieuBarButtonItem.Caption = "Xóa";
+            this.XoaPhieuBarButtonItem.Id = 14;
+            this.XoaPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
+            this.XoaPhieuBarButtonItem.Name = "XoaPhieuBarButtonItem";
+            // 
+            // NhapDinhDanhSPBarButtonItem
+            // 
+            this.NhapDinhDanhSPBarButtonItem.Caption = "Nhập định danh";
+            this.NhapDinhDanhSPBarButtonItem.Id = 17;
+            this.NhapDinhDanhSPBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
+            this.NhapDinhDanhSPBarButtonItem.Name = "NhapDinhDanhSPBarButtonItem";
             // 
             // Root
             // 
@@ -640,7 +643,7 @@ namespace Inventory.Query
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1056, 371);
+            this.Root.Size = new System.Drawing.Size(1053, 480);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -648,14 +651,21 @@ namespace Inventory.Query
             this.layoutControlItem1.Control = this.StockInOutProductHistoryDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1036, 351);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1033, 460);
             this.layoutControlItem1.TextVisible = false;
+            // 
+            // CreateQrCodeBarButtonItem
+            // 
+            this.CreateQrCodeBarButtonItem.Caption = "Tạo mã QR";
+            this.CreateQrCodeBarButtonItem.Id = 18;
+            this.CreateQrCodeBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
+            this.CreateQrCodeBarButtonItem.Name = "CreateQrCodeBarButtonItem";
             // 
             // FrmStockInOutProductHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1056, 417);
+            this.ClientSize = new System.Drawing.Size(1053, 526);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -724,5 +734,6 @@ namespace Inventory.Query
         private DevExpress.XtraGrid.Columns.GridColumn colTotalAmountIncludedVat;
         private DevExpress.XtraBars.BarButtonItem NhapDinhDanhSPBarButtonItem;
         private System.Windows.Forms.BindingSource stockInOutProductHistoryDtoBindingSource;
+        private DevExpress.XtraBars.BarButtonItem CreateQrCodeBarButtonItem;
     }
 }

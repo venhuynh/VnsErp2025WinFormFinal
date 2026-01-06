@@ -1,16 +1,17 @@
 ﻿using Bll.Inventory.InventoryManagement;
-using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using DevExpress.BarCodes;
 using DevExpress.Data;
 using DevExpress.Drawing.Extensions;
+using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -18,14 +19,54 @@ using QRCodeCompactionMode = DevExpress.BarCodes.QRCodeCompactionMode;
 
 namespace Inventory.Management
 {
-    public partial class FrmProductVariantIdentifierCreateQrCode : DevExpress.XtraEditors.XtraForm
+    public partial class FrmProductVariantIdentifierCreateQrCode : XtraForm
     {
+
         #region ========== FIELDS & PROPERTIES ==========
+        private readonly StockInOutProductHistoryDto _selectedDto;
 
         /// <summary>
         /// Business Logic Layer cho ProductVariantIdentifier
         /// </summary>
         private readonly ProductVariantIdentifierBll _productVariantIdentifierBll = new ProductVariantIdentifierBll();
+
+        /// <summary>
+        /// Kích thước in QR code (Width x Height) tính bằng mm
+        /// Mặc định: 50mm x 50mm (kích thước label tiêu chuẩn)
+        /// </summary>
+        private float _printWidthMm = 50.0f;
+        private float _printHeightMm = 50.0f;
+
+        /// <summary>
+        /// Kích thước in QR code - Width (mm)
+        /// </summary>
+        public float PrintWidthMm
+        {
+            get => _printWidthMm;
+            set
+            {
+                if (value > 0)
+                {
+                    _printWidthMm = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Kích thước in QR code - Height (mm)
+        /// </summary>
+        public float PrintHeightMm
+        {
+            get => _printHeightMm;
+            set
+            {
+                if (value > 0)
+                {
+                    _printHeightMm = value;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Cache danh sách ID đã có trong database (lazy load)
@@ -39,12 +80,46 @@ namespace Inventory.Management
 
         #endregion
 
-        public FrmProductVariantIdentifierCreateQrCode()
+        public FrmProductVariantIdentifierCreateQrCode(StockInOutProductHistoryDto selectedDto)
         {
+            _selectedDto = selectedDto;
             InitializeComponent();
             InitializeProductVariantIdentifierGrid();
             InitializeQrCodePictureEdit();
             InitializeBarButtonEvents();
+            InitializeFormEvents();
+        }
+
+        /// <summary>
+        /// Khởi tạo các event handlers cho form
+        /// </summary>
+        private void InitializeFormEvents()
+        {
+            try
+            {
+                Load += FrmProductVariantIdentifierCreateQrCode_Load;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeFormEvents: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi form được load
+        /// </summary>
+        private void FrmProductVariantIdentifierCreateQrCode_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                // Load ProductVariantFullName khi form được load
+                LoadProductVariantInfo();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"FrmProductVariantIdentifierCreateQrCode_Load: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi tải thông tin sản phẩm: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -55,6 +130,8 @@ namespace Inventory.Management
             try
             {
                 TaoQcCodeBarButtonItem.ItemClick += TaoQcCodeBarButtonItem_ItemClick;
+                SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
+                InQrCodeBarButtonItem.ItemClick += InQrCodeBarButtonItem_ItemClick;
             }
             catch (Exception ex)
             {
@@ -69,14 +146,249 @@ namespace Inventory.Management
         {
             try
             {
-                //FIXME: Đảm bảo không có dòng nào chưa có dữ liệu và không có enum nào trùng nhau
-                
                 GenerateQrCode();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"TaoQcCodeBarButtonItem_ItemClick: Exception occurred - {ex.Message}");
                 MsgBox.ShowError($"Lỗi tạo QR code: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi click nút "In QR Code"
+        /// Cho phép chọn máy in trước khi in
+        /// </summary>
+        private void InQrCodeBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Kiểm tra xem đã có QR code chưa
+                if (QrCodePictureEdit == null || QrCodePictureEdit.Image == null)
+                {
+                    MsgBox.ShowWarning("Chưa có mã QR code để in. Vui lòng tạo QR code trước.");
+                    return;
+                }
+
+                // Hiển thị dialog chọn máy in
+                using (var printDialog = new PrintDialog())
+                {
+                    // Lấy danh sách máy in có sẵn
+                    printDialog.AllowPrintToFile = false;
+                    printDialog.AllowSomePages = false;
+                    printDialog.UseEXDialog = true;
+
+                    // Hiển thị dialog chọn máy in
+                    if (printDialog.ShowDialog() != DialogResult.OK)
+                    {
+                        // Người dùng hủy chọn máy in
+                        return;
+                    }
+
+                    // In QR code với máy in đã chọn
+                    PrintQrCode(printDialog.PrinterSettings);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InQrCodeBarButtonItem_ItemClick: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi in QR code: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// In QR code với máy in đã chọn
+        /// </summary>
+        /// <param name="printerSettings">Cài đặt máy in</param>
+        private void PrintQrCode(PrinterSettings printerSettings)
+        {
+            try
+            {
+                if (printerSettings == null)
+                {
+                    MsgBox.ShowWarning("Không có thông tin máy in.");
+                    return;
+                }
+
+                if (QrCodePictureEdit?.Image == null)
+                {
+                    MsgBox.ShowWarning("Chưa có mã QR code để in.");
+                    return;
+                }
+
+                // Tạo PrintDocument
+                using (var printDocument = new PrintDocument())
+                {
+                    // Set máy in
+                    printDocument.PrinterSettings = printerSettings;
+
+                    // Convert kích thước từ mm sang 1/100 inch (đơn vị của PaperSize)
+                    // 1 inch = 25.4 mm, nên 1 mm = 100/25.4 = 3.937 1/100 inch
+                    const float mmToHundredthsInch = 3.937f;
+                    var widthInHundredthsInch = (int)(_printWidthMm * mmToHundredthsInch);
+                    var heightInHundredthsInch = (int)(_printHeightMm * mmToHundredthsInch);
+
+                    // Set kích thước trang tùy chỉnh theo kích thước label
+                    printDocument.DefaultPageSettings.PaperSize = new PaperSize(
+                        $"Custom {_printWidthMm}mm x {_printHeightMm}mm",
+                        widthInHundredthsInch,
+                        heightInHundredthsInch);
+
+                    // Set margins = 0 để in đầy trang
+                    printDocument.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
+
+                    // Event handler để vẽ QR code
+                    printDocument.PrintPage += (sender, e) =>
+                    {
+                        try
+                        {
+                            var qrImage = QrCodePictureEdit.Image;
+                            if (qrImage == null)
+                            {
+                                e.Cancel = true;
+                                return;
+                            }
+
+                            // Tính toán vị trí để căn giữa QR code trên trang
+                            var pageBounds = e.PageBounds;
+                            var imageSize = qrImage.Size;
+
+                            // Scale QR code để vừa với kích thước trang đã thiết lập (giữ nguyên tỷ lệ)
+                            // Sử dụng toàn bộ không gian trang (không có margin vì đã set margins = 0)
+                            float scaleX = (float)pageBounds.Width / imageSize.Width;
+                            float scaleY = (float)pageBounds.Height / imageSize.Height;
+                            float scale = Math.Min(scaleX, scaleY); // Scale để vừa với trang
+
+                            var scaledWidth = imageSize.Width * scale;
+                            var scaledHeight = imageSize.Height * scale;
+
+                            // Căn giữa
+                            var x = (pageBounds.Width - scaledWidth) / 2;
+                            var y = (pageBounds.Height - scaledHeight) / 2;
+
+                            // Vẽ QR code
+                            var rect = new RectangleF(x, y, scaledWidth, scaledHeight);
+                            e.Graphics.DrawImage(qrImage, rect);
+
+                            // Vẽ thông tin sản phẩm phía dưới QR code (nếu có)
+                            if (_selectedDto != null && !string.IsNullOrWhiteSpace(_selectedDto.ProductVariantFullName))
+                            {
+                                using (var font = new Font("Arial", 10, FontStyle.Regular))
+                                using (var brush = new SolidBrush(Color.Black))
+                                {
+                                    var textY = y + scaledHeight + 20;
+                                    var textRect = new RectangleF(0, textY, pageBounds.Width, 50);
+                                    var sf = new StringFormat
+                                    {
+                                        Alignment = StringAlignment.Center,
+                                        LineAlignment = StringAlignment.Near
+                                    };
+                                    e.Graphics.DrawString(_selectedDto.ProductVariantFullName, font, brush, textRect, sf);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"PrintPage: Exception occurred - {ex.Message}");
+                            e.Cancel = true;
+                        }
+                    };
+
+                    // In
+                    printDocument.Print();
+                    MsgBox.ShowSuccess("Đã gửi lệnh in QR code thành công.");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"PrintQrCode: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi in QR code: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi click nút "Lưu"
+        /// </summary>
+        private void SaveBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Validate dữ liệu trước khi lưu
+                var (isValid, errorMessage) = ValidateDataBeforeSave();
+                if (!isValid)
+                {
+                    MsgBox.ShowWarning(errorMessage);
+                    return;
+                }
+
+                // Lấy danh sách items từ grid
+                var items = GetIdentifierItems();
+                if (items == null || items.Count == 0)
+                {
+                    MsgBox.ShowWarning("Chưa có dữ liệu để lưu. Vui lòng thêm ít nhất một định danh.");
+                    return;
+                }
+
+                // Convert items sang DTOs và lưu
+                int successCount = 0;
+                int errorCount = 0;
+                var errorMessages = new List<string>();
+
+                foreach (var item in items)
+                {
+                    try
+                    {
+                        var dto = ConvertItemToDto(item);
+                        if (dto == null)
+                        {
+                            errorCount++;
+                            errorMessages.Add($"Dòng {items.IndexOf(item) + 1}: Không thể convert sang DTO");
+                            continue;
+                        }
+
+                        // Lưu vào database
+                        var result = _productVariantIdentifierBll.SaveOrUpdate(dto);
+                        if (result != null)
+                        {
+                            successCount++;
+                        }
+                        else
+                        {
+                            errorCount++;
+                            errorMessages.Add($"Dòng {items.IndexOf(item) + 1}: Lưu thất bại");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCount++;
+                        errorMessages.Add($"Dòng {items.IndexOf(item) + 1}: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"SaveBarButtonItem_ItemClick: Error saving item {item.Id} - {ex.Message}");
+                    }
+                }
+
+                // Hiển thị kết quả
+                if (errorCount == 0)
+                {
+                    MsgBox.ShowSuccess($"Đã lưu thành công {successCount} định danh.");
+                    // Reset cache để reload dữ liệu mới
+                    ResetIdsCache();
+                }
+                else if (successCount > 0)
+                {
+                    var errorText = string.Join("\n", errorMessages);
+                    MsgBox.ShowWarning($"Đã lưu thành công {successCount} định danh.\nCó {errorCount} lỗi:\n{errorText}");
+                    ResetIdsCache();
+                }
+                else
+                {
+                    var errorText = string.Join("\n", errorMessages);
+                    MsgBox.ShowError($"Lưu thất bại. Các lỗi:\n{errorText}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SaveBarButtonItem_ItemClick: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
             }
         }
 
@@ -291,7 +603,7 @@ namespace Inventory.Management
                             if (valueColumn != null)
                             {
                                 // Delay một chút để đảm bảo grid đã refresh
-                                System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                                Timer timer = new Timer();
                                 timer.Interval = 100;
                                 timer.Tick += (s, args) =>
                                 {
@@ -791,6 +1103,340 @@ namespace Inventory.Management
 
         #endregion
 
+        #region ========== LOAD PRODUCT VARIANT ==========
+
+        /// <summary>
+        /// Load và hiển thị ProductVariantFullName dựa vào ProductVariantId
+        /// </summary>
+        private void LoadProductVariantInfo()
+        {
+            try
+            {
+                // Kiểm tra ProductVariantId
+                ProductVariantFullNameSimpleLabelItem.Text = _selectedDto.ProductVariantFullName;
+
+                SoLuongNhapXuatBarStaticItem.Caption =
+                    $@"Số lượng nhập/xuất: <color='red'><b> {(_selectedDto.StockInQty > 0 ? _selectedDto.StockInQty : _selectedDto.StockOutQty)}</color></b>";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"LoadProductVariantInfo: Exception occurred - {ex.Message}");
+                SetProductVariantDisplayText($"Lỗi tải thông tin: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Set text cho ProductVariant display control (hỗ trợ cả HtmlContentControl và MemoEdit)
+        /// </summary>
+        /// <param name="text">Text hoặc HTML content cần hiển thị</param>
+        private void SetProductVariantDisplayText(string text)
+        {
+            try
+            {
+                // Kiểm tra xem có HtmlContentControl không (nếu đã thay đổi trong Designer)
+
+                if (Controls.Find("ProductVariantFullNameHtmlContentControl", true)
+                        .FirstOrDefault() is HtmlContentControl htmlContentControl)
+                {
+                    // Sử dụng HtmlContentControl - render HTML tốt nhất
+                    htmlContentControl.HtmlTemplate.Template = text;
+                }
+                else if (ProductVariantFullNameSimpleLabelItem != null)
+                {
+                    // Fallback: sử dụng MemoEdit
+                    ProductVariantFullNameSimpleLabelItem.Text = text;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SetProductVariantDisplayText: Exception occurred - {ex.Message}");
+            }
+        }
+
+
+        #endregion
+
+        #region ========== SAVE DATA ==========
+
+        /// <summary>
+        /// Validate dữ liệu trước khi lưu (bao gồm kiểm tra trùng lặp với database)
+        /// </summary>
+        /// <returns>Tuple (isValid, errorMessage)</returns>
+        private (bool isValid, string errorMessage) ValidateDataBeforeSave()
+        {
+            try
+            {
+                // Validate cơ bản trước (giống như ValidateDataBeforeGenerateQrCode)
+                var (isValid, errorMessage) = ValidateDataBeforeGenerateQrCode();
+                if (!isValid)
+                {
+                    return (false, errorMessage);
+                }
+
+                // Lấy danh sách items từ grid
+                var items = GetIdentifierItems();
+                if (items == null || items.Count == 0)
+                {
+                    return (false, "Chưa có dữ liệu để lưu. Vui lòng thêm ít nhất một định danh.");
+                }
+
+                // Kiểm tra trùng lặp với database
+                LoadExistingIdsCache();
+                
+                // Lấy tất cả identifier hiện có trong database để kiểm tra trùng lặp
+                var existingIdentifiers = _productVariantIdentifierBll.GetAll();
+                
+                // Kiểm tra từng item xem có trùng với database không
+                foreach (var item in items)
+                {
+                    var dto = ConvertItemToDto(item);
+                    if (dto == null) continue;
+
+                    // Kiểm tra trùng lặp theo từng loại identifier
+                    var duplicate = existingIdentifiers.FirstOrDefault(existing =>
+                    {
+                        // Bỏ qua chính nó nếu đang update
+                        if (existing.Id == dto.Id && dto.Id != Guid.Empty)
+                        {
+                            return false;
+                        }
+
+                        // Kiểm tra trùng theo từng loại identifier
+                        switch (item.IdentifierType)
+                        {
+                            case ProductVariantIdentifierEnum.SerialNumber:
+                                return !string.IsNullOrWhiteSpace(existing.SerialNumber) &&
+                                       existing.SerialNumber == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.Barcode:
+                                return !string.IsNullOrWhiteSpace(existing.Barcode) &&
+                                       existing.Barcode == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.QRCode:
+                                return !string.IsNullOrWhiteSpace(existing.QRCode) &&
+                                       existing.QRCode == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.SKU:
+                                return !string.IsNullOrWhiteSpace(existing.SKU) &&
+                                       existing.SKU == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.RFID:
+                                return !string.IsNullOrWhiteSpace(existing.RFID) &&
+                                       existing.RFID == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.MACAddress:
+                                return !string.IsNullOrWhiteSpace(existing.MACAddress) &&
+                                       existing.MACAddress == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.IMEI:
+                                return !string.IsNullOrWhiteSpace(existing.IMEI) &&
+                                       existing.IMEI == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.AssetTag:
+                                return !string.IsNullOrWhiteSpace(existing.AssetTag) &&
+                                       existing.AssetTag == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.LicenseKey:
+                                return !string.IsNullOrWhiteSpace(existing.LicenseKey) &&
+                                       existing.LicenseKey == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.UPC:
+                                return !string.IsNullOrWhiteSpace(existing.UPC) &&
+                                       existing.UPC == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.EAN:
+                                return !string.IsNullOrWhiteSpace(existing.EAN) &&
+                                       existing.EAN == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.ID:
+                                return !string.IsNullOrWhiteSpace(existing.ID) &&
+                                       existing.ID == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            case ProductVariantIdentifierEnum.OtherIdentifier:
+                                return !string.IsNullOrWhiteSpace(existing.OtherIdentifier) &&
+                                       existing.OtherIdentifier == item.Value &&
+                                       existing.ProductVariantId == dto.ProductVariantId;
+                            default:
+                                return false;
+                        }
+                    });
+
+                    if (duplicate != null)
+                    {
+                        var identifierTypeName = GetProductVariantIdentifierDescription(item.IdentifierType);
+                        return (false, $"Giá trị \"{item.Value}\" của loại định danh \"{identifierTypeName}\" đã tồn tại trong hệ thống. Vui lòng kiểm tra lại.");
+                    }
+                }
+
+                // Kiểm tra phải có hình mã QR Code trước khi lưu
+                if (QrCodePictureEdit == null || QrCodePictureEdit.Image == null)
+                {
+                    return (false, "Chưa có hình mã QR Code. Vui lòng tạo QR Code trước khi lưu.");
+                }
+
+                // Kiểm tra phải có dữ liệu thông số của QR Code
+                var qrCodePayload = BuildQrCodePayload();
+                if (string.IsNullOrWhiteSpace(qrCodePayload))
+                {
+                    return (false, "Chưa có dữ liệu thông số của QR Code. Vui lòng tạo QR Code trước khi lưu.");
+                }
+
+                return (true, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ValidateDataBeforeSave: Exception occurred - {ex.Message}");
+                return (false, $"Lỗi kiểm tra dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Convert ProductVariantIdentifierItem sang ProductVariantIdentifierDto
+        /// Cập nhật luôn hình ảnh và giá trị QR Code để lưu vào database
+        /// </summary>
+        /// <param name="item">ProductVariantIdentifierItem</param>
+        /// <returns>ProductVariantIdentifierDto hoặc null nếu không thể convert</returns>
+        private ProductVariantIdentifierDto ConvertItemToDto(ProductVariantIdentifierItem item)
+        {
+            try
+            {
+                if (item == null)
+                {
+                    return null;
+                }
+
+                var dto = new ProductVariantIdentifierDto
+                {
+                    Id = item.Id != Guid.Empty ? item.Id : Guid.NewGuid(),
+                    ProductVariantId = _selectedDto.ProductVariantId,
+                };
+
+                // Map giá trị vào property tương ứng theo IdentifierType
+                switch (item.IdentifierType)
+                {
+                    case ProductVariantIdentifierEnum.SerialNumber:
+                        dto.SerialNumber = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.Barcode:
+                        dto.Barcode = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.QRCode:
+                        dto.QRCode = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.SKU:
+                        dto.SKU = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.RFID:
+                        dto.RFID = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.MACAddress:
+                        dto.MACAddress = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.IMEI:
+                        dto.IMEI = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.AssetTag:
+                        dto.AssetTag = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.LicenseKey:
+                        dto.LicenseKey = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.UPC:
+                        dto.UPC = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.EAN:
+                        dto.EAN = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.ID:
+                        dto.ID = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.OtherIdentifier:
+                        dto.OtherIdentifier = item.Value;
+                        break;
+                    default:
+                        System.Diagnostics.Debug.WriteLine($"ConvertItemToDto: Unknown IdentifierType {item.IdentifierType}");
+                        return null;
+                }
+
+                // Cập nhật giá trị QR Code từ payload (cho tất cả items)
+                var qrCodePayload = BuildQrCodePayload();
+                if (!string.IsNullOrWhiteSpace(qrCodePayload))
+                {
+                    // Set QRCode property với giá trị payload (nếu chưa có)
+                    if (string.IsNullOrWhiteSpace(dto.QRCode))
+                    {
+                        dto.QRCode = qrCodePayload;
+                    }
+                }
+
+                // Cập nhật hình ảnh QR Code nếu có
+                if (QrCodePictureEdit != null && QrCodePictureEdit.Image != null)
+                {
+                    try
+                    {
+                        // Convert image sang byte array
+                        byte[] imageBytes = ImageToByteArray(QrCodePictureEdit.Image);
+                        if (imageBytes != null && imageBytes.Length > 0)
+                        {
+                            // Lưu image vào DTO (có thể cần property để lưu byte array)
+                            // Hoặc lưu vào temp file và set path
+                            // Tạm thời, BLL sẽ xử lý việc lưu file image
+                            // Ở đây chỉ đảm bảo có image data
+                            
+                            // Generate file name cho QR code image
+                            var fileName = $"QRCode_{dto.Id}_{DateTime.Now:yyyyMMddHHmmss}.png";
+                            dto.QRCodeImageFileName = fileName;
+                            
+                            // Note: Việc lưu file image vào NAS sẽ được xử lý ở BLL layer
+                            // DTO chỉ chứa metadata về image
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"ConvertItemToDto: Error converting QR code image - {ex.Message}");
+                        // Không throw exception, chỉ log để không block việc lưu dữ liệu khác
+                    }
+                }
+
+                return dto;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ConvertItemToDto: Exception occurred - {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Convert Image sang byte array
+        /// </summary>
+        /// <param name="image">Image object</param>
+        /// <returns>Byte array hoặc null nếu có lỗi</returns>
+        private byte[] ImageToByteArray(Image image)
+        {
+            try
+            {
+                if (image == null)
+                {
+                    return null;
+                }
+
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    // Lưu image dưới dạng PNG
+                    image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    return ms.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ImageToByteArray: Exception occurred - {ex.Message}");
+                return null;
+            }
+        }
+
+        #endregion
+
         #region ========== QR CODE GENERATION ==========
 
         /// <summary>
@@ -807,27 +1453,15 @@ namespace Inventory.Management
                     return string.Empty;
                 }
 
-                // Lọc các item có giá trị hợp lệ
-                var validItems = items
-                    .Where(item => item.IdentifierType != default(ProductVariantIdentifierEnum) &&
-                                   !string.IsNullOrWhiteSpace(item.Value))
-                    .OrderBy(item => ApplicationEnumUtils.GetValue(item.IdentifierType))
-                    .ToList();
-
-                if (validItems.Count == 0)
-                {
-                    return string.Empty;
-                }
-
                 // Tạo chuỗi: Value|Value|Value|... (chỉ lấy các giá trị, cách nhau bởi |)
                 var payloadBuilder = new StringBuilder();
-                for (int i = 0; i < validItems.Count; i++)
+                for (int i = 0; i < items.Count; i++)
                 {
                     if (i > 0)
                     {
                         payloadBuilder.Append("|");
                     }
-                    payloadBuilder.Append(validItems[i].Value);
+                    payloadBuilder.Append(items[i].Value);
                 }
 
                 return payloadBuilder.ToString();
@@ -855,7 +1489,7 @@ namespace Inventory.Management
                 {
                     if (item is ProductVariantIdentifierItem identifierItem)
                     {
-                        if(!string.IsNullOrWhiteSpace(identifierItem.Value))
+                        if(string.IsNullOrWhiteSpace(identifierItem.Value))
                             return (false, $"Dòng {identifierItem.IdentifierType} chưa có giá trị");
 
                         items.Add(identifierItem);
@@ -926,9 +1560,9 @@ namespace Inventory.Management
                     }
                     
                     // Hiển thị thông báo lỗi
-                    if (QrValueSimpleLabelItem != null)
+                    if (QrCodeValueMemoEdit != null)
                     {
-                        QrValueSimpleLabelItem.Text = $"Giá trị QR: {errorMessage}";
+                        QrCodeValueMemoEdit.Text = $@"Giá trị QR: {errorMessage}";
                     }
                     return;
                 }
@@ -936,9 +1570,9 @@ namespace Inventory.Management
                 var payload = BuildQrCodePayload();
                 
                 // Hiển thị payload lên QrValueSimpleLabelItem
-                if (QrValueSimpleLabelItem != null)
+                if (QrCodeValueMemoEdit != null)
                 {
-                    QrValueSimpleLabelItem.Text = string.IsNullOrWhiteSpace(payload) 
+                    QrCodeValueMemoEdit.Text = string.IsNullOrWhiteSpace(payload) 
                         ? "Giá trị QR: (Chưa có dữ liệu)" 
                         : $"Giá trị QR: {payload}";
                 }

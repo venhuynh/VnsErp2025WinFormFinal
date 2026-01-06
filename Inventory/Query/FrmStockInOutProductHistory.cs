@@ -16,6 +16,7 @@ using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.StockOut.XuatHangThuongMai;
 using Inventory.StockOut.XuatLuuChuyenKho;
 using Inventory.StockOut.XuatNoiBo;
+using Inventory.Management;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -117,6 +118,7 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
             XoaPhieuBarButtonItem.ItemClick += XoaPhieuBarButtonItem_ItemClick;
             NhapDinhDanhSPBarButtonItem.ItemClick += NhapDinhDanhSPBarButtonItem_ItemClick;
+            CreateQrCodeBarButtonItem.ItemClick += CreateQrCodeBarButtonItem_ItemClick;
 
 
             // GridView events
@@ -334,6 +336,71 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
         {
             _logger.Error("NhapDinhDanhSPBarButtonItem_ItemClick: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi mở form nhập định danh: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Event handler cho nút Tạo mã QR
+    /// Mở form tạo QR code cho sản phẩm được chọn, truyền ProductVariantId và Id (StockInOutDetailId)
+    /// </summary>
+    private void CreateQrCodeBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            // Kiểm tra số lượng dòng được chọn - chỉ cho phép 1 dòng
+            var selectedCount = StockInOutProductHistoryDtoGridView.SelectedRowsCount;
+            if (selectedCount == 0)
+            {
+                MsgBox.ShowWarning("Vui lòng chọn một sản phẩm để tạo mã QR.");
+                return;
+            }
+
+            if (selectedCount > 1)
+            {
+                MsgBox.ShowWarning("Chỉ cho phép tạo mã QR cho 1 sản phẩm. Vui lòng bỏ chọn bớt.");
+                return;
+            }
+
+            // Lấy DTO từ row được chọn
+            var focusedRowHandle = StockInOutProductHistoryDtoGridView.FocusedRowHandle;
+            if (focusedRowHandle < 0)
+            {
+                MsgBox.ShowWarning("Vui lòng chọn sản phẩm để tạo mã QR.");
+                return;
+            }
+
+            if (StockInOutProductHistoryDtoGridView.GetRow(focusedRowHandle) is not StockInOutProductHistoryDto selectedDto)
+            {
+                MsgBox.ShowWarning("Không thể lấy thông tin sản phẩm được chọn.");
+                return;
+            }
+
+            // Kiểm tra ProductVariantId
+            if (selectedDto.ProductVariantId == Guid.Empty)
+            {
+                MsgBox.ShowWarning("Sản phẩm được chọn không có ProductVariantId hợp lệ.");
+                return;
+            }
+
+            // Kiểm tra Id (StockInOutDetailId)
+            if (selectedDto.Id == Guid.Empty)
+            {
+                MsgBox.ShowWarning("Sản phẩm được chọn không có Id hợp lệ.");
+                return;
+            }
+
+            // Mở form tạo QR code với OverlayManager
+            using (OverlayManager.ShowScope(this))
+            {
+                using var form = new FrmProductVariantIdentifierCreateQrCode(selectedDto);
+                
+                form.ShowDialog(this);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("CreateQrCodeBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi mở form tạo mã QR: {ex.Message}");
         }
     }
 
@@ -826,12 +893,13 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
             // Lấy số lượng dòng được chọn
             var selectedCount = StockInOutProductHistoryDtoGridView.SelectedRowsCount;
 
-            // Các nút chỉ cho phép 1 dòng: Chi tiết, In phiếu, Nhập bảo hành, Thêm hình ảnh, Nhập định danh
+            // Các nút chỉ cho phép 1 dòng: Chi tiết, In phiếu, Nhập bảo hành, Thêm hình ảnh, Nhập định danh, Tạo mã QR
             ChiTietPhieuNhapXuatBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             InPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             NhapBaoHanhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             ThemHinhAnhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             NhapDinhDanhSPBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+            CreateQrCodeBarButtonItem.Enabled = hasSelection && selectedCount == 1;
 
             // Nút Xóa: cho phép xóa nhiều dòng (chỉ cần có selection)
             XoaPhieuBarButtonItem.Enabled = selectedCount > 0;

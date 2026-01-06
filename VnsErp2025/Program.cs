@@ -184,7 +184,7 @@ namespace VnsErp2025
 
 
 
-            Application.Run(new FrmProductVariantIdentifierCreateQrCode());
+            Application.Run(new FrmStockInOutProductHistory());
 
             #endregion
 
