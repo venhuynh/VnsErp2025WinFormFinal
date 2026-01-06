@@ -33,7 +33,7 @@ public interface IProductVariantIdentifierRepository
     List<ProductVariantIdentifierDto> GetByProductVariantId(Guid productVariantId);
 
     /// <summary>
-    /// Tìm ProductVariantIdentifier theo giá trị định danh (SerialNumber, Barcode, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ISBN)
+    /// Tìm ProductVariantIdentifier theo giá trị định danh (SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ISBN)
     /// </summary>
     /// <param name="identifierValue">Giá trị định danh cần tìm</param>
     /// <returns>ProductVariantIdentifierDto nếu tìm thấy, null nếu không tìm thấy</returns>
@@ -47,7 +47,7 @@ public interface IProductVariantIdentifierRepository
     ProductVariantIdentifierDto FindBySerialNumber(string serialNumber);
 
     /// <summary>
-    /// Tìm ProductVariantIdentifier theo Barcode
+    /// Tìm ProductVariantIdentifier theo PartNumber
     /// </summary>
     /// <param name="barcode">Mã vạch cần tìm</param>
     /// <returns>ProductVariantIdentifierDto nếu tìm thấy, null nếu không tìm thấy</returns>
@@ -78,6 +78,7 @@ public interface IProductVariantIdentifierRepository
     /// <returns>ProductVariantIdentifierDto đã được lưu</returns>
     ProductVariantIdentifierDto SaveOrUpdate(ProductVariantIdentifierDto dto);
 
+
     #endregion
 
     #region ========== DELETE OPERATIONS ==========
@@ -90,4 +91,6 @@ public interface IProductVariantIdentifierRepository
     bool Delete(Guid id);
 
     #endregion
+
+    
 }

@@ -54,6 +54,8 @@ namespace Inventory.Query
             this.repositoryItemDateEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.XemBaoCaoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ChiTietPhieuNhapXuatBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.CreateQrCodeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.IdentifiterBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -69,7 +71,6 @@ namespace Inventory.Query
             this.NhapDinhDanhSPBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.CreateQrCodeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridControl)).BeginInit();
@@ -442,9 +443,10 @@ namespace Inventory.Query
             this.XoaPhieuBarButtonItem,
             this.KeyWordBarEditItem,
             this.NhapDinhDanhSPBarButtonItem,
-            this.CreateQrCodeBarButtonItem});
+            this.CreateQrCodeBarButtonItem,
+            this.IdentifiterBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 19;
+            this.barManager1.MaxItemId = 20;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit1,
             this.repositoryItemDateEdit2,
@@ -464,7 +466,8 @@ namespace Inventory.Query
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.DenNgayBarEditItem, "", false, true, true, 125, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBaoCaoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ChiTietPhieuNhapXuatBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CreateQrCodeBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CreateQrCodeBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.IdentifiterBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -529,6 +532,21 @@ namespace Inventory.Query
             this.ChiTietPhieuNhapXuatBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.hideproduct_16x16;
             this.ChiTietPhieuNhapXuatBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.hideproduct_32x32;
             this.ChiTietPhieuNhapXuatBarButtonItem.Name = "ChiTietPhieuNhapXuatBarButtonItem";
+            // 
+            // CreateQrCodeBarButtonItem
+            // 
+            this.CreateQrCodeBarButtonItem.Caption = "Tạo mã QR";
+            this.CreateQrCodeBarButtonItem.Id = 18;
+            this.CreateQrCodeBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
+            this.CreateQrCodeBarButtonItem.Name = "CreateQrCodeBarButtonItem";
+            // 
+            // IdentifiterBarButtonItem
+            // 
+            this.IdentifiterBarButtonItem.Caption = "Định danh";
+            this.IdentifiterBarButtonItem.Id = 19;
+            this.IdentifiterBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.tag_16x16;
+            this.IdentifiterBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.tag_32x32;
+            this.IdentifiterBarButtonItem.Name = "IdentifiterBarButtonItem";
             // 
             // bar1
             // 
@@ -654,13 +672,6 @@ namespace Inventory.Query
             this.layoutControlItem1.Size = new System.Drawing.Size(1033, 460);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // CreateQrCodeBarButtonItem
-            // 
-            this.CreateQrCodeBarButtonItem.Caption = "Tạo mã QR";
-            this.CreateQrCodeBarButtonItem.Id = 18;
-            this.CreateQrCodeBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
-            this.CreateQrCodeBarButtonItem.Name = "CreateQrCodeBarButtonItem";
-            // 
             // FrmStockInOutProductHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -735,5 +746,6 @@ namespace Inventory.Query
         private DevExpress.XtraBars.BarButtonItem NhapDinhDanhSPBarButtonItem;
         private System.Windows.Forms.BindingSource stockInOutProductHistoryDtoBindingSource;
         private DevExpress.XtraBars.BarButtonItem CreateQrCodeBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem IdentifiterBarButtonItem;
     }
 }

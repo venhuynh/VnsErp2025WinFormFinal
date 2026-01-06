@@ -596,7 +596,7 @@ namespace Inventory.Management
                     }
                     else
                     {
-                        // Với các loại khác (SerialNumber, Barcode, etc.), focus vào cột Value để user nhập
+                        // Với các loại khác (SerialNumber, PartNumber, etc.), focus vào cột Value để user nhập
                         if (string.IsNullOrWhiteSpace(rowData.Value))
                         {
                             var valueColumn = ProductVariantIdentifierGridView.Columns["Value"];
@@ -1208,9 +1208,9 @@ namespace Inventory.Management
                                 return !string.IsNullOrWhiteSpace(existing.SerialNumber) &&
                                        existing.SerialNumber == item.Value &&
                                        existing.ProductVariantId == dto.ProductVariantId;
-                            case ProductVariantIdentifierEnum.Barcode:
-                                return !string.IsNullOrWhiteSpace(existing.Barcode) &&
-                                       existing.Barcode == item.Value &&
+                            case ProductVariantIdentifierEnum.PartNumber:
+                                return !string.IsNullOrWhiteSpace(existing.PartNumber) &&
+                                       existing.PartNumber == item.Value &&
                                        existing.ProductVariantId == dto.ProductVariantId;
                             case ProductVariantIdentifierEnum.QRCode:
                                 return !string.IsNullOrWhiteSpace(existing.QRCode) &&
@@ -1317,8 +1317,8 @@ namespace Inventory.Management
                     case ProductVariantIdentifierEnum.SerialNumber:
                         dto.SerialNumber = item.Value;
                         break;
-                    case ProductVariantIdentifierEnum.Barcode:
-                        dto.Barcode = item.Value;
+                    case ProductVariantIdentifierEnum.PartNumber:
+                        dto.PartNumber = item.Value;
                         break;
                     case ProductVariantIdentifierEnum.QRCode:
                         dto.QRCode = item.Value;

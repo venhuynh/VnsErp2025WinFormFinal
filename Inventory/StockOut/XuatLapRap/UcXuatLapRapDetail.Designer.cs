@@ -363,7 +363,7 @@ namespace Inventory.StockOut.XuatLapRap
             this.dockPanel.Options.ShowCloseButton = false;
             this.dockPanel.OriginalSize = new System.Drawing.Size(343, 200);
             this.dockPanel.Size = new System.Drawing.Size(343, 704);
-            this.dockPanel.Text = "Đọc Barcode";
+            this.dockPanel.Text = "Đọc PartNumber";
             // 
             // dockPanel1_Container
             // 

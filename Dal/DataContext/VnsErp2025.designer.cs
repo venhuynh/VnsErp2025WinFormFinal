@@ -16408,7 +16408,7 @@ namespace Dal.DataContext
 					this.OnBarcodeChanging(value);
 					this.SendPropertyChanging();
 					this._Barcode = value;
-					this.SendPropertyChanged("Barcode");
+					this.SendPropertyChanged("PartNumber");
 					this.OnBarcodeChanged();
 				}
 			}

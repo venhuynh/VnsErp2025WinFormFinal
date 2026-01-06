@@ -40,7 +40,7 @@ namespace Dal.DtoConverter
 
                 // Định danh sản phẩm
                 SerialNumber = entity.SerialNumber,
-                Barcode = entity.Barcode,
+                PartNumber = entity.Barcode,
                 QRCode = entity.QRCode,
                 SKU = entity.SKU,
                 RFID = entity.RFID,
@@ -162,7 +162,7 @@ namespace Dal.DtoConverter
 
             // Map properties - Định danh sản phẩm
             entity.SerialNumber = dto.SerialNumber;
-            entity.Barcode = dto.Barcode;
+            entity.Barcode = dto.PartNumber;
             entity.QRCode = dto.QRCode;
             entity.SKU = dto.SKU;
             entity.RFID = dto.RFID;
@@ -172,7 +172,7 @@ namespace Dal.DtoConverter
             entity.LicenseKey = dto.LicenseKey;
             entity.UPC = dto.UPC;
             entity.EAN = dto.EAN;
-            entity.Id = Guid.Parse(dto.ID);
+            entity.Id = dto.Id;
             entity.OtherIdentifier = dto.OtherIdentifier;
 
             // Map properties - Quản lý hình ảnh QR code

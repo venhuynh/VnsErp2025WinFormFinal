@@ -219,7 +219,7 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
     }
 
     /// <summary>
-    /// Tìm ProductVariantIdentifier theo giá trị định danh (SerialNumber, Barcode, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ISBN)
+    /// Tìm ProductVariantIdentifier theo giá trị định danh (SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ISBN)
     /// </summary>
     /// <param name="identifierValue">Giá trị định danh cần tìm</param>
     /// <returns>ProductVariantIdentifierDto nếu tìm thấy, null nếu không tìm thấy</returns>
@@ -318,7 +318,7 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
     }
 
     /// <summary>
-    /// Tìm ProductVariantIdentifier theo Barcode
+    /// Tìm ProductVariantIdentifier theo PartNumber
     /// </summary>
     /// <param name="barcode">Mã vạch cần tìm</param>
     /// <returns>ProductVariantIdentifierDto nếu tìm thấy, null nếu không tìm thấy</returns>
@@ -329,11 +329,11 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
         {
             if (string.IsNullOrWhiteSpace(barcode))
             {
-                _logger.Warning("FindByBarcode: Barcode is null or empty");
+                _logger.Warning("FindByBarcode: PartNumber is null or empty");
                 return null;
             }
 
-            _logger.Debug("FindByBarcode: Tìm định danh sản phẩm, Barcode={0}", barcode);
+            _logger.Debug("FindByBarcode: Tìm định danh sản phẩm, PartNumber={0}", barcode);
 
             var entity = context.ProductVariantIdentifiers.FirstOrDefault(pvi =>
                 pvi.IsActive &&
@@ -342,14 +342,14 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
 
             if (entity == null)
             {
-                _logger.Warning("FindByBarcode: Không tìm thấy định danh sản phẩm với Barcode, Barcode={0}", barcode);
+                _logger.Warning("FindByBarcode: Không tìm thấy định danh sản phẩm với PartNumber, PartNumber={0}", barcode);
                 return null;
             }
 
             // Fetch related data trước khi convert để tránh DataContext disposed errors
             var (productVariantFullName, customerCategory) = GetProductVariantInfo(context, entity.ProductVariantId);
 
-            _logger.Info("FindByBarcode: Tìm thấy định danh sản phẩm, Id={0}, Barcode={1}", entity.Id, barcode);
+            _logger.Info("FindByBarcode: Tìm thấy định danh sản phẩm, Id={0}, PartNumber={1}", entity.Id, barcode);
             return entity.ToDto(productVariantFullName, customerCategory);
         }
         catch (Exception ex)
@@ -442,7 +442,7 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
     /// <returns>ProductVariantIdentifierDto đã được lưu</returns>
     public ProductVariantIdentifierDto SaveOrUpdate(ProductVariantIdentifierDto dto)
     {
-        using var context = CreateNewContext();
+        var context = new VnsErp2025DataContext(_connectionString);
         try
         {
             if (dto == null)
@@ -500,6 +500,7 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
             throw;
         }
     }
+
 
     #endregion
 

@@ -154,7 +154,7 @@ namespace Bll.Inventory.InventoryManagement
         }
 
         /// <summary>
-        /// Tìm ProductVariantIdentifier theo giá trị định danh (SerialNumber, Barcode, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ISBN)
+        /// Tìm ProductVariantIdentifier theo giá trị định danh (SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ISBN)
         /// </summary>
         /// <param name="identifierValue">Giá trị định danh cần tìm</param>
         /// <returns>ProductVariantIdentifierDto nếu tìm thấy, null nếu không tìm thấy</returns>
@@ -229,7 +229,7 @@ namespace Bll.Inventory.InventoryManagement
         }
 
         /// <summary>
-        /// Tìm ProductVariantIdentifier theo Barcode
+        /// Tìm ProductVariantIdentifier theo PartNumber
         /// </summary>
         /// <param name="barcode">Mã vạch cần tìm</param>
         /// <returns>ProductVariantIdentifierDto nếu tìm thấy, null nếu không tìm thấy</returns>
@@ -239,21 +239,21 @@ namespace Bll.Inventory.InventoryManagement
             {
                 if (string.IsNullOrWhiteSpace(barcode))
                 {
-                    _logger.Warning("FindByBarcode: Barcode is null or empty");
+                    _logger.Warning("FindByBarcode: PartNumber is null or empty");
                     return null;
                 }
 
-                _logger.Debug("FindByBarcode: Tìm định danh sản phẩm, Barcode={0}", barcode);
+                _logger.Debug("FindByBarcode: Tìm định danh sản phẩm, PartNumber={0}", barcode);
 
                 var dto = GetProductVariantIdentifierRepository().FindByBarcode(barcode);
 
                 if (dto == null)
                 {
-                    _logger.Warning("FindByBarcode: Không tìm thấy định danh sản phẩm với Barcode, Barcode={0}", barcode);
+                    _logger.Warning("FindByBarcode: Không tìm thấy định danh sản phẩm với PartNumber, PartNumber={0}", barcode);
                 }
                 else
                 {
-                    _logger.Info("FindByBarcode: Tìm thấy định danh sản phẩm, Id={0}, Barcode={1}", dto.Id, barcode);
+                    _logger.Info("FindByBarcode: Tìm thấy định danh sản phẩm, Id={0}, PartNumber={1}", dto.Id, barcode);
                 }
 
                 return dto;
@@ -359,6 +359,7 @@ namespace Bll.Inventory.InventoryManagement
             }
         }
 
+        
         /// <summary>
         /// Validate dữ liệu trước khi lưu
         /// </summary>
@@ -374,7 +375,7 @@ namespace Bll.Inventory.InventoryManagement
             // Kiểm tra ít nhất một định danh phải có giá trị
             if (!dto.HasAnyIdentifier())
             {
-                throw new InvalidOperationException("Phải có ít nhất một định danh được nhập (SerialNumber, Barcode, QRCode, SKU, v.v.)");
+                throw new InvalidOperationException("Phải có ít nhất một định danh được nhập (SerialNumber, PartNumber, QRCode, SKU, v.v.)");
             }
 
             // Kiểm tra tính duy nhất của các định danh (nếu cần)
@@ -417,5 +418,7 @@ namespace Bll.Inventory.InventoryManagement
         }
 
         #endregion
+
+        
     }
 }

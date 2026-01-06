@@ -20,10 +20,10 @@ namespace DTO.Inventory.InventoryManagement
         SerialNumber = 0,
 
         /// <summary>
-        /// Mã vạch
+        /// Part Number
         /// </summary>
-        [Description("Barcode")]
-        Barcode = 1,
+        [Description("Part Number")]
+        PartNumber = 1,
 
         /// <summary>
         /// Mã QR
@@ -136,7 +136,7 @@ namespace DTO.Inventory.InventoryManagement
 
     /// <summary>
     /// Data Transfer Object cho ProductVariantIdentifier entity
-    /// Quản lý các loại định danh cho ProductVariant: SerialNumber, Barcode, QRCode, SKU, RFID, MAC, IMEI, AssetTag, LicenseKey, UPC, EAN, ISBN, v.v.
+    /// Quản lý các loại định danh cho ProductVariant: SerialNumber, PartNumber, QRCode, SKU, RFID, MAC, IMEI, AssetTag, LicenseKey, UPC, EAN, ISBN, v.v.
     /// </summary>
     public class ProductVariantIdentifierDto
     {
@@ -188,10 +188,10 @@ namespace DTO.Inventory.InventoryManagement
         /// <summary>
         /// Mã vạch
         /// </summary>
-        [DisplayName("Barcode")]
+        [DisplayName("Part Number")]
         [Display(Order = 11)]
-        [StringLength(255, ErrorMessage = "Barcode không được vượt quá 255 ký tự")]
-        public string Barcode { get; set; }
+        [StringLength(255, ErrorMessage = "PartNumber không được vượt quá 255 ký tự")]
+        public string PartNumber { get; set; }
 
         /// <summary>
         /// Mã QR
@@ -300,7 +300,7 @@ namespace DTO.Inventory.InventoryManagement
                 var identifiers = new[]
                 {
                     (ProductVariantIdentifierEnum.SerialNumber, SerialNumber, "Serial Number"),
-                    (ProductVariantIdentifierEnum.Barcode, Barcode, "Barcode"),
+                    (ProductVariantIdentifierEnum.PartNumber, PartNumber, "Part Number"),
                     (ProductVariantIdentifierEnum.QRCode, QRCode, "QR Code"),
                     (ProductVariantIdentifierEnum.SKU, SKU, "SKU"),
                     (ProductVariantIdentifierEnum.RFID, RFID, "RFID"),
@@ -340,7 +340,7 @@ namespace DTO.Inventory.InventoryManagement
                         string valueColor = "#212121"; // Mặc định màu đen
                         if (identifierType == ProductVariantIdentifierEnum.SerialNumber || 
                             identifierType == ProductVariantIdentifierEnum.SKU ||
-                            identifierType == ProductVariantIdentifierEnum.Barcode)
+                            identifierType == ProductVariantIdentifierEnum.PartNumber)
                         {
                             valueColor = "blue"; // Màu xanh cho các định danh quan trọng
                         }
@@ -551,7 +551,7 @@ namespace DTO.Inventory.InventoryManagement
             return identifierType switch
             {
                 ProductVariantIdentifierEnum.SerialNumber => SerialNumber,
-                ProductVariantIdentifierEnum.Barcode => Barcode,
+                ProductVariantIdentifierEnum.PartNumber => PartNumber,
                 ProductVariantIdentifierEnum.QRCode => QRCode,
                 ProductVariantIdentifierEnum.SKU => SKU,
                 ProductVariantIdentifierEnum.RFID => RFID,
@@ -579,8 +579,8 @@ namespace DTO.Inventory.InventoryManagement
                 case ProductVariantIdentifierEnum.SerialNumber:
                     SerialNumber = value;
                     break;
-                case ProductVariantIdentifierEnum.Barcode:
-                    Barcode = value;
+                case ProductVariantIdentifierEnum.PartNumber:
+                    PartNumber = value;
                     break;
                 case ProductVariantIdentifierEnum.QRCode:
                     QRCode = value;
@@ -628,8 +628,8 @@ namespace DTO.Inventory.InventoryManagement
 
             if (!string.IsNullOrWhiteSpace(SerialNumber))
                 identifiers[ProductVariantIdentifierEnum.SerialNumber] = SerialNumber;
-            if (!string.IsNullOrWhiteSpace(Barcode))
-                identifiers[ProductVariantIdentifierEnum.Barcode] = Barcode;
+            if (!string.IsNullOrWhiteSpace(PartNumber))
+                identifiers[ProductVariantIdentifierEnum.PartNumber] = PartNumber;
             if (!string.IsNullOrWhiteSpace(QRCode))
                 identifiers[ProductVariantIdentifierEnum.QRCode] = QRCode;
             if (!string.IsNullOrWhiteSpace(SKU))
@@ -663,7 +663,7 @@ namespace DTO.Inventory.InventoryManagement
         public bool HasAnyIdentifier()
         {
             return !string.IsNullOrWhiteSpace(SerialNumber) ||
-                   !string.IsNullOrWhiteSpace(Barcode) ||
+                   !string.IsNullOrWhiteSpace(PartNumber) ||
                    !string.IsNullOrWhiteSpace(QRCode) ||
                    !string.IsNullOrWhiteSpace(SKU) ||
                    !string.IsNullOrWhiteSpace(RFID) ||

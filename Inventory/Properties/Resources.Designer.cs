@@ -533,6 +533,26 @@ namespace Inventory.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap tag_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("tag_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tag_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("tag_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Ven___Solutions_logo_1438x617_background_transfer {
             get {
                 object obj = ResourceManager.GetObject("Ven - Solutions logo_1438x617_background_transfer", resourceCulture);
