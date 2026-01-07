@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Bll.Inventory.InventoryManagement;
 using Common.Utils;
@@ -7,7 +8,7 @@ using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.Query
 {
-    public partial class FrmCreateNewSerialNumber : DevExpress.XtraEditors.XtraForm
+    public partial class FrmCreateNewSerialNumberFromStockInOut : DevExpress.XtraEditors.XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -21,11 +22,16 @@ namespace Inventory.Query
         /// </summary>
         private readonly ProductVariantIdentifierBll _productVariantIdentifierBll = new ProductVariantIdentifierBll();
 
+        /// <summary>
+        /// Business Logic Layer cho ProductVariantIdentifierHistory
+        /// </summary>
+        private readonly ProductVariantIdentifierHistoryBll _productVariantIdentifierHistoryBll = new ProductVariantIdentifierHistoryBll();
+
         #endregion
 
         #region ========== CONSTRUCTOR ==========
 
-        public FrmCreateNewSerialNumber(StockInOutProductHistoryDto selectedDto)
+        public FrmCreateNewSerialNumberFromStockInOut(StockInOutProductHistoryDto selectedDto)
         {
             _selectedDto = selectedDto ?? throw new ArgumentNullException(nameof(selectedDto));
             InitializeComponent();
@@ -123,12 +129,12 @@ namespace Inventory.Query
 
                 // Tính số lượng sản phẩm nhập xuất (lấy số lượng lớn hơn giữa nhập và xuất)
                 decimal quantity = _selectedDto.StockInQty > 0 ? _selectedDto.StockInQty : _selectedDto.StockOutQty;
-                SerialNumberQtyTextEdit.Text = quantity.ToString();
+                SerialNumberQtyTextEdit.Text = quantity.ToString(CultureInfo.CurrentCulture);
 
                 // Hiển thị thông tin sản phẩm
                 if (!string.IsNullOrWhiteSpace(_selectedDto.ProductVariantFullName))
                 {
-                    ProductVariantFullNameSimpleLabelItem.Text = $"<b>Sản phẩm:</b> {_selectedDto.ProductVariantFullName}";
+                    ProductVariantFullNameSimpleLabelItem.Text = $@"<b>Sản phẩm:</b> {_selectedDto.ProductVariantFullName}";
                 }
 
                 // Tự động tạo serial numbers ban đầu
@@ -224,7 +230,14 @@ namespace Inventory.Query
                         };
 
                         // Lưu vào database
-                        _productVariantIdentifierBll.SaveOrUpdate(dto);
+                        var savedDto = _productVariantIdentifierBll.SaveOrUpdate(dto);
+                        
+                        // Lưu lịch sử thay đổi
+                        if (savedDto != null)
+                        {
+                            SaveProductVariantIdentifierHistory(savedDto);
+                        }
+                        
                         successCount++;
                     }
                     catch (Exception ex)
@@ -385,6 +398,96 @@ namespace Inventory.Query
             {
                 System.Diagnostics.Debug.WriteLine($"GenerateSerialNumbers: Exception occurred - {ex.Message}");
                 SerialNumberMemoEdit.Text = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Lưu lịch sử thay đổi ProductVariantIdentifier khi lưu từ nhập xuất kho
+        /// </summary>
+        /// <param name="savedDto">ProductVariantIdentifierDto đã được lưu</param>
+        private void SaveProductVariantIdentifierHistory(ProductVariantIdentifierDto savedDto)
+        {
+            try
+            {
+                if (_selectedDto == null || savedDto == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("SaveProductVariantIdentifierHistory: _selectedDto hoặc savedDto is null");
+                    return;
+                }
+
+                // Xác định ChangeType dựa trên LoaiNhapXuatKho
+                // Logic: LoaiNhapXuatKhoEnum < 10 = Nhập kho, >= 10 = Xuất kho
+                var changeTypeEnum = (int)_selectedDto.LoaiNhapXuatKho < 10
+                    ? ProductVariantIdentifierHistoryChangeTypeEnum.Nhap
+                    : ProductVariantIdentifierHistoryChangeTypeEnum.Xuat;
+
+                // Tạo Value string chứa thông tin nhập xuất
+                var valueParts = new List<string>();
+
+                // Thông tin khách hàng
+                if (!string.IsNullOrWhiteSpace(_selectedDto.CustomerName))
+                {
+                    valueParts.Add($"Khách hàng: {_selectedDto.CustomerName}");
+                }
+
+                // Thông tin kho nhập xuất
+                if (!string.IsNullOrWhiteSpace(_selectedDto.WarehouseName))
+                {
+                    valueParts.Add($"Kho: {_selectedDto.WarehouseName}");
+                }
+
+                // Thông tin số phiếu
+                if (!string.IsNullOrWhiteSpace(_selectedDto.VocherNumber))
+                {
+                    valueParts.Add($"Số phiếu: {_selectedDto.VocherNumber}");
+                }
+
+                // Thông tin loại nhập xuất
+                if (!string.IsNullOrWhiteSpace(_selectedDto.LoaiNhapXuatKhoName))
+                {
+                    valueParts.Add($"Loại: {_selectedDto.LoaiNhapXuatKhoName}");
+                }
+
+                // Gộp tất cả thành một chuỗi
+                var value = string.Join(" | ", valueParts);
+
+                // Lấy ChangedBy từ ApplicationUser hiện tại (nếu có)
+                Guid? changedBy = null;
+                try
+                {
+                    // Có thể lấy từ ApplicationUserManager hoặc tương tự
+                    // Tạm thời để null, có thể mở rộng sau
+                }
+                catch
+                {
+                    // Ignore nếu không lấy được
+                }
+
+                // Tạo DTO lịch sử với ChangeDate là ngày nhập xuất
+                var historyDto = new ProductVariantIdentifierHistoryDto
+                {
+                    Id = Guid.NewGuid(),
+                    ProductVariantIdentifierId = savedDto.Id,
+                    ProductVariantId = savedDto.ProductVariantId,
+                    ChangeTypeEnum = changeTypeEnum,
+                    ChangeDate = _selectedDto.StockInOutDate != default(DateTime) 
+                        ? _selectedDto.StockInOutDate 
+                        : DateTime.Now,
+                    Value = value,
+                    Notes = $"Tạo serial number từ phiếu nhập xuất kho: {_selectedDto.VocherNumber}",
+                    ChangedBy = changedBy
+                };
+
+                // Lưu bản ghi lịch sử
+                _productVariantIdentifierHistoryBll.SaveOrUpdate(historyDto);
+
+                System.Diagnostics.Debug.WriteLine($"SaveProductVariantIdentifierHistory: Đã lưu lịch sử thay đổi, ProductVariantIdentifierId={savedDto.Id}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SaveProductVariantIdentifierHistory: Exception occurred - {ex.Message}");
+                // Không throw exception để không block việc lưu ProductVariantIdentifier
+                // Chỉ log lỗi
             }
         }
 

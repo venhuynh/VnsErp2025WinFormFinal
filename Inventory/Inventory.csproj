@@ -85,11 +85,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Query\FrmCreateNewSerialNumber.cs">
+    <Compile Include="Query\FrmCreateNewSerialNumberFromStockInOut.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Query\FrmCreateNewSerialNumber.Designer.cs">
-      <DependentUpon>FrmCreateNewSerialNumber.cs</DependentUpon>
+    <Compile Include="Query\FrmCreateNewSerialNumberFromStockInOut.Designer.cs">
+      <DependentUpon>FrmCreateNewSerialNumberFromStockInOut.cs</DependentUpon>
     </Compile>
     <Compile Include="Management\FrmInventoryBalanceDto.cs">
       <SubType>Form</SubType>
@@ -417,8 +417,8 @@
     <Compile Include="XtraForm1.Designer.cs">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Query\FrmCreateNewSerialNumber.resx">
-      <DependentUpon>FrmCreateNewSerialNumber.cs</DependentUpon>
+    <EmbeddedResource Include="Query\FrmCreateNewSerialNumberFromStockInOut.resx">
+      <DependentUpon>FrmCreateNewSerialNumberFromStockInOut.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>

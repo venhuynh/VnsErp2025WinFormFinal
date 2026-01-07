@@ -6,7 +6,7 @@ using Inventory.ProductVariantIdentifier;
 
 namespace Inventory.Query
 {
-    partial class FrmCreateNewSerialNumber
+    partial class FrmCreateNewSerialNumberFromStockInOut
     {
         /// <summary>
         /// Required designer variable.
