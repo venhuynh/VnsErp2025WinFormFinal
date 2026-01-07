@@ -92,6 +92,7 @@
     <Compile Include="Inventory\InventoryManagement\DeviceTransactionHistoryBll.cs" />
     <Compile Include="Inventory\InventoryManagement\InventoryBalanceBll.cs" />
     <Compile Include="Inventory\InventoryManagement\ProductVariantIdentifierBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\ProductVariantIdentifierHistoryBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutDocumentBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutDetailBll.cs" />

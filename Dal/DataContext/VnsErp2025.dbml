@@ -713,11 +713,8 @@
       <Column Name="ChangeType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="ChangeDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="ChangedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="OldValue" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
-      <Column Name="NewValue" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
-      <Column Name="FieldName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="Description" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Association Name="ProductVariant_ProductVariantIdentifierHistory" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
       <Association Name="ProductVariantIdentifier_ProductVariantIdentifierHistory" Member="ProductVariantIdentifier" ThisKey="ProductVariantIdentifierId" OtherKey="Id" Type="ProductVariantIdentifier" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>

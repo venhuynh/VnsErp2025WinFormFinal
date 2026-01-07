@@ -2,8 +2,9 @@
 using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
+using Inventory.ProductVariantIdentifier;
 
-namespace Inventory.ProductVariantIdentifier
+namespace Inventory.Query
 {
     partial class FrmCreateNewSerialNumber
     {
@@ -50,7 +51,7 @@ namespace Inventory.ProductVariantIdentifier
             this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
             this.SerialNumberMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.VoucerNumberTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.PrefixIdentifierTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.SerialNumberQtyTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -63,7 +64,7 @@ namespace Inventory.ProductVariantIdentifier
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SerialNumberMemoEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VoucerNumberTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PrefixIdentifierTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SerialNumberQtyTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
@@ -186,7 +187,7 @@ namespace Inventory.ProductVariantIdentifier
             // dataLayoutControl1
             // 
             this.dataLayoutControl1.Controls.Add(this.SerialNumberMemoEdit);
-            this.dataLayoutControl1.Controls.Add(this.VoucerNumberTextEdit);
+            this.dataLayoutControl1.Controls.Add(this.PrefixIdentifierTextEdit);
             this.dataLayoutControl1.Controls.Add(this.SerialNumberQtyTextEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
@@ -205,14 +206,14 @@ namespace Inventory.ProductVariantIdentifier
             this.SerialNumberMemoEdit.StyleController = this.dataLayoutControl1;
             this.SerialNumberMemoEdit.TabIndex = 6;
             // 
-            // VoucerNumberTextEdit
+            // PrefixIdentifierTextEdit
             // 
-            this.VoucerNumberTextEdit.Location = new System.Drawing.Point(121, 65);
-            this.VoucerNumberTextEdit.MenuManager = this.barManager1;
-            this.VoucerNumberTextEdit.Name = "VoucerNumberTextEdit";
-            this.VoucerNumberTextEdit.Size = new System.Drawing.Size(358, 20);
-            this.VoucerNumberTextEdit.StyleController = this.dataLayoutControl1;
-            this.VoucerNumberTextEdit.TabIndex = 4;
+            this.PrefixIdentifierTextEdit.Location = new System.Drawing.Point(121, 65);
+            this.PrefixIdentifierTextEdit.MenuManager = this.barManager1;
+            this.PrefixIdentifierTextEdit.Name = "PrefixIdentifierTextEdit";
+            this.PrefixIdentifierTextEdit.Size = new System.Drawing.Size(358, 20);
+            this.PrefixIdentifierTextEdit.StyleController = this.dataLayoutControl1;
+            this.PrefixIdentifierTextEdit.TabIndex = 4;
             // 
             // SerialNumberQtyTextEdit
             // 
@@ -242,11 +243,11 @@ namespace Inventory.ProductVariantIdentifier
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.VoucerNumberTextEdit;
+            this.layoutControlItem1.Control = this.PrefixIdentifierTextEdit;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 53);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(471, 24);
-            this.layoutControlItem1.Text = "Số phiếu nhập/xuất";
+            this.layoutControlItem1.Text = "Tiền tố";
             this.layoutControlItem1.TextSize = new System.Drawing.Size(97, 13);
             // 
             // ProductVariantFullNameSimpleLabelItem
@@ -288,7 +289,7 @@ namespace Inventory.ProductVariantIdentifier
             // 
             // productVariantIdentifierItemBindingSource
             // 
-            this.productVariantIdentifierItemBindingSource.DataSource = typeof(ProductVariantIdentifierItem);
+            this.productVariantIdentifierItemBindingSource.DataSource = typeof(Inventory.ProductVariantIdentifier.ProductVariantIdentifierItem);
             // 
             // FrmCreateNewSerialNumber
             // 
@@ -309,7 +310,7 @@ namespace Inventory.ProductVariantIdentifier
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.SerialNumberMemoEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VoucerNumberTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PrefixIdentifierTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SerialNumberQtyTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
@@ -341,7 +342,7 @@ namespace Inventory.ProductVariantIdentifier
         private BarHeaderItem barHeaderItem1;
         private BarStaticItem SoLuongNhapXuatBarStaticItem;
         private DevExpress.XtraEditors.MemoEdit SerialNumberMemoEdit;
-        private DevExpress.XtraEditors.TextEdit VoucerNumberTextEdit;
+        private DevExpress.XtraEditors.TextEdit PrefixIdentifierTextEdit;
         private DevExpress.XtraEditors.TextEdit SerialNumberQtyTextEdit;
         private LayoutControlItem layoutControlItem1;
         private LayoutControlItem layoutControlItem2;

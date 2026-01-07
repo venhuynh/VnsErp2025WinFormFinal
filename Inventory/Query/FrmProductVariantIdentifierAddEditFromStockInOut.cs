@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -27,6 +27,11 @@ namespace Inventory.Query
         /// Business Logic Layer cho ProductVariantIdentifier
         /// </summary>
         private readonly ProductVariantIdentifierBll _productVariantIdentifierBll = new ProductVariantIdentifierBll();
+
+        /// <summary>
+        /// Business Logic Layer cho ProductVariantIdentifierHistory
+        /// </summary>
+        private readonly ProductVariantIdentifierHistoryBll _productVariantIdentifierHistoryBll = new ProductVariantIdentifierHistoryBll();
 
         /// <summary>
         /// Cache danh sách ID đã có trong database (lazy load)
@@ -313,7 +318,13 @@ namespace Inventory.Query
                 var dto = ConvertItemToDto(items);
 
                 // Gọi BLL để lưu dữ liệu
-                _productVariantIdentifierBll.SaveOrUpdate(dto);
+                var savedDto = _productVariantIdentifierBll.SaveOrUpdate(dto);
+
+                // Lưu lịch sử thay đổi
+                if (savedDto != null)
+                {
+                    SaveProductVariantIdentifierHistory(savedDto);
+                }
 
                 // Hiển thị thông báo thành công
                 MsgBox.ShowSuccess("Lưu dữ liệu thành công");
@@ -1323,6 +1334,96 @@ namespace Inventory.Query
             {
                 System.Diagnostics.Debug.WriteLine($"GetProductVariantIdentifierDescription: Exception occurred for {identifierType} - {ex.Message}");
                 return identifierType.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Lưu lịch sử thay đổi ProductVariantIdentifier khi lưu từ nhập xuất kho
+        /// </summary>
+        /// <param name="savedDto">ProductVariantIdentifierDto đã được lưu</param>
+        private void SaveProductVariantIdentifierHistory(ProductVariantIdentifierDto savedDto)
+        {
+            try
+            {
+                if (_selectedDto == null || savedDto == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("SaveProductVariantIdentifierHistory: _selectedDto hoặc savedDto is null");
+                    return;
+                }
+
+                // Xác định ChangeType dựa trên LoaiNhapXuatKho
+                // Logic: LoaiNhapXuatKhoEnum < 10 = Nhập kho, >= 10 = Xuất kho
+                var changeTypeEnum = (int)_selectedDto.LoaiNhapXuatKho < 10
+                    ? ProductVariantIdentifierHistoryChangeTypeEnum.Nhap
+                    : ProductVariantIdentifierHistoryChangeTypeEnum.Xuat;
+
+                // Tạo Value string chứa thông tin nhập xuất
+                var valueParts = new List<string>();
+
+                // Thông tin khách hàng
+                if (!string.IsNullOrWhiteSpace(_selectedDto.CustomerName))
+                {
+                    valueParts.Add($"Khách hàng: {_selectedDto.CustomerName}");
+                }
+
+                // Thông tin kho nhập xuất
+                if (!string.IsNullOrWhiteSpace(_selectedDto.WarehouseName))
+                {
+                    valueParts.Add($"Kho: {_selectedDto.WarehouseName}");
+                }
+
+                // Thông tin số phiếu
+                if (!string.IsNullOrWhiteSpace(_selectedDto.VocherNumber))
+                {
+                    valueParts.Add($"Số phiếu: {_selectedDto.VocherNumber}");
+                }
+
+                // Thông tin loại nhập xuất
+                if (!string.IsNullOrWhiteSpace(_selectedDto.LoaiNhapXuatKhoName))
+                {
+                    valueParts.Add($"Loại: {_selectedDto.LoaiNhapXuatKhoName}");
+                }
+
+                // Gộp tất cả thành một chuỗi
+                var value = string.Join(" | ", valueParts);
+
+                // Lấy ChangedBy từ ApplicationUser hiện tại (nếu có)
+                Guid? changedBy = null;
+                try
+                {
+                    // Có thể lấy từ ApplicationUserManager hoặc tương tự
+                    // Tạm thời để null, có thể mở rộng sau
+                }
+                catch
+                {
+                    // Ignore nếu không lấy được
+                }
+
+                // Tạo DTO lịch sử với ChangeDate là ngày nhập xuất
+                var historyDto = new ProductVariantIdentifierHistoryDto
+                {
+                    Id = Guid.NewGuid(),
+                    ProductVariantIdentifierId = savedDto.Id,
+                    ProductVariantId = savedDto.ProductVariantId,
+                    ChangeTypeEnum = changeTypeEnum,
+                    ChangeDate = _selectedDto.StockInOutDate != default(DateTime) 
+                        ? _selectedDto.StockInOutDate 
+                        : DateTime.Now,
+                    Value = value,
+                    Notes = $"Lưu từ phiếu nhập xuất kho: {_selectedDto.VocherNumber}",
+                    ChangedBy = changedBy
+                };
+
+                // Lưu bản ghi lịch sử
+                _productVariantIdentifierHistoryBll.SaveOrUpdate(historyDto);
+
+                System.Diagnostics.Debug.WriteLine($"SaveProductVariantIdentifierHistory: Đã lưu lịch sử thay đổi, ProductVariantIdentifierId={savedDto.Id}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SaveProductVariantIdentifierHistory: Exception occurred - {ex.Message}");
+                // Không throw exception để không block việc lưu ProductVariantIdentifier
+                // Chỉ log lỗi
             }
         }
 

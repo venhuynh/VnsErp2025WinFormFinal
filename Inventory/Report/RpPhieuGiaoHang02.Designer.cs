@@ -331,36 +331,32 @@
             // 
             // xrTableCell41
             // 
-            this.xrTableCell41.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right)));
+            this.xrTableCell41.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrTableCell41.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9.75F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrTableCell41.Multiline = true;
             this.xrTableCell41.Name = "xrTableCell41";
             this.xrTableCell41.StylePriority.UseBorders = false;
             this.xrTableCell41.StylePriority.UseFont = false;
             this.xrTableCell41.StylePriority.UseTextAlignment = false;
-            this.xrTableCell41.Text = "Xác nhận của người nhận hàng";
+            this.xrTableCell41.Text = "Người nhận hàng";
             this.xrTableCell41.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.xrTableCell41.Weight = 1D;
             // 
             // xrTableCell42
             // 
-            this.xrTableCell42.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right)));
+            this.xrTableCell42.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrTableCell42.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9.75F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrTableCell42.Multiline = true;
             this.xrTableCell42.Name = "xrTableCell42";
             this.xrTableCell42.StylePriority.UseBorders = false;
             this.xrTableCell42.StylePriority.UseFont = false;
             this.xrTableCell42.StylePriority.UseTextAlignment = false;
-            this.xrTableCell42.Text = "Đại diện khách hàng";
             this.xrTableCell42.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.xrTableCell42.Weight = 1D;
             // 
             // xrTableCell43
             // 
-            this.xrTableCell43.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right)));
+            this.xrTableCell43.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrTableCell43.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9.75F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrTableCell43.Multiline = true;
             this.xrTableCell43.Name = "xrTableCell43";
@@ -382,9 +378,7 @@
             // 
             // xrTableCell27
             // 
-            this.xrTableCell27.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell27.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrTableCell27.Multiline = true;
             this.xrTableCell27.Name = "xrTableCell27";
             this.xrTableCell27.StylePriority.UseBorders = false;
@@ -394,9 +388,7 @@
             // 
             // xrTableCell29
             // 
-            this.xrTableCell29.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell29.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrTableCell29.Multiline = true;
             this.xrTableCell29.Name = "xrTableCell29";
             this.xrTableCell29.StylePriority.UseBorders = false;
@@ -406,9 +398,7 @@
             // 
             // xrTableCell30
             // 
-            this.xrTableCell30.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell30.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrTableCell30.Multiline = true;
             this.xrTableCell30.Name = "xrTableCell30";
             this.xrTableCell30.StylePriority.UseBorders = false;

@@ -200,6 +200,10 @@ public interface IUnitOfWork : IDisposable
 
     IAssetRepository GetAssetRepository();
 
+    IProductVariantIdentifierRepository GetProductVariantIdentifierRepository();
+
+    IProductVariantIdentifierHistoryRepository GetProductVariantIdentifierHistoryRepository();
+
     #endregion
 
     #endregion

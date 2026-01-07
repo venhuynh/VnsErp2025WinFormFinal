@@ -5,7 +5,7 @@ using Bll.Inventory.InventoryManagement;
 using Common.Utils;
 using DTO.Inventory.InventoryManagement;
 
-namespace Inventory.ProductVariantIdentifier
+namespace Inventory.Query
 {
     public partial class FrmCreateNewSerialNumber : DevExpress.XtraEditors.XtraForm
     {
@@ -46,10 +46,10 @@ namespace Inventory.ProductVariantIdentifier
             try
             {
                 // SuperTip cho Số phiếu nhập/xuất
-                if (VoucerNumberTextEdit != null)
+                if (PrefixIdentifierTextEdit != null)
                 {
                     SuperToolTipHelper.SetTextEditSuperTip(
-                        VoucerNumberTextEdit,
+                        PrefixIdentifierTextEdit,
                         title: @"<b><color=DarkBlue>📄 Số phiếu nhập/xuất</color></b>",
                         content: @"Số phiếu nhập/xuất kho được hiển thị từ thông tin phiếu đã chọn.<br/><br/><b>Chức năng:</b><br/>• Hiển thị số phiếu nhập/xuất từ DTO<br/>• Dùng để tạo serial numbers theo format: <b>{VoucherNumber}-XXX</b><br/>• Không thể chỉnh sửa (read-only)<br/><br/><b>Format Serial Number:</b><br/>• <b>{VoucherNumber}-001</b><br/>• <b>{VoucherNumber}-002</b><br/>• <b>{VoucherNumber}-003</b><br/>• ...<br/><br/><color=Gray>Lưu ý:</color> Serial numbers sẽ được tạo tự động dựa trên số phiếu này và số lượng sản phẩm."
                     );
@@ -119,7 +119,7 @@ namespace Inventory.ProductVariantIdentifier
             try
             {
                 // Hiển thị số phiếu nhập xuất
-                VoucerNumberTextEdit.Text = _selectedDto.VocherNumber ?? string.Empty;
+                PrefixIdentifierTextEdit.Text = _selectedDto.VocherNumber ?? string.Empty;
 
                 // Tính số lượng sản phẩm nhập xuất (lấy số lượng lớn hơn giữa nhập và xuất)
                 decimal quantity = _selectedDto.StockInQty > 0 ? _selectedDto.StockInQty : _selectedDto.StockOutQty;
@@ -301,7 +301,7 @@ namespace Inventory.ProductVariantIdentifier
             }
 
             // Kiểm tra voucher number
-            if (string.IsNullOrWhiteSpace(VoucerNumberTextEdit.Text))
+            if (string.IsNullOrWhiteSpace(PrefixIdentifierTextEdit.Text))
             {
                 return (false, "Số phiếu nhập/xuất không được để trống.");
             }
@@ -346,7 +346,7 @@ namespace Inventory.ProductVariantIdentifier
         {
             try
             {
-                string voucherNumber = VoucerNumberTextEdit.Text?.Trim() ?? string.Empty;
+                string voucherNumber = PrefixIdentifierTextEdit.Text?.Trim() ?? string.Empty;
                 string qtyText = SerialNumberQtyTextEdit.Text?.Trim() ?? string.Empty;
 
                 // Kiểm tra điều kiện

@@ -17176,15 +17176,9 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _ChangedBy;
 		
-		private string _OldValue;
-		
-		private string _NewValue;
-		
-		private string _FieldName;
-		
-		private string _Description;
-		
 		private string _Notes;
+		
+		private string _Value;
 		
 		private EntityRef<ProductVariant> _ProductVariant;
 		
@@ -17206,16 +17200,10 @@ namespace Dal.DataContext
     partial void OnChangeDateChanged();
     partial void OnChangedByChanging(System.Nullable<System.Guid> value);
     partial void OnChangedByChanged();
-    partial void OnOldValueChanging(string value);
-    partial void OnOldValueChanged();
-    partial void OnNewValueChanging(string value);
-    partial void OnNewValueChanged();
-    partial void OnFieldNameChanging(string value);
-    partial void OnFieldNameChanged();
-    partial void OnDescriptionChanging(string value);
-    partial void OnDescriptionChanged();
     partial void OnNotesChanging(string value);
     partial void OnNotesChanged();
+    partial void OnValueChanging(string value);
+    partial void OnValueChanged();
     #endregion
 		
 		public ProductVariantIdentifierHistory()
@@ -17353,86 +17341,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OldValue", DbType="NVarChar(500)")]
-		public string OldValue
-		{
-			get
-			{
-				return this._OldValue;
-			}
-			set
-			{
-				if ((this._OldValue != value))
-				{
-					this.OnOldValueChanging(value);
-					this.SendPropertyChanging();
-					this._OldValue = value;
-					this.SendPropertyChanged("OldValue");
-					this.OnOldValueChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewValue", DbType="NVarChar(500)")]
-		public string NewValue
-		{
-			get
-			{
-				return this._NewValue;
-			}
-			set
-			{
-				if ((this._NewValue != value))
-				{
-					this.OnNewValueChanging(value);
-					this.SendPropertyChanging();
-					this._NewValue = value;
-					this.SendPropertyChanged("NewValue");
-					this.OnNewValueChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FieldName", DbType="NVarChar(100)")]
-		public string FieldName
-		{
-			get
-			{
-				return this._FieldName;
-			}
-			set
-			{
-				if ((this._FieldName != value))
-				{
-					this.OnFieldNameChanging(value);
-					this.SendPropertyChanging();
-					this._FieldName = value;
-					this.SendPropertyChanged("FieldName");
-					this.OnFieldNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(1000)")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
-			set
-			{
-				if ((this._Description != value))
-				{
-					this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
 		public string Notes
 		{
@@ -17449,6 +17357,26 @@ namespace Dal.DataContext
 					this._Notes = value;
 					this.SendPropertyChanged("Notes");
 					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Value", DbType="NVarChar(1000)")]
+		public string Value
+		{
+			get
+			{
+				return this._Value;
+			}
+			set
+			{
+				if ((this._Value != value))
+				{
+					this.OnValueChanging(value);
+					this.SendPropertyChanging();
+					this._Value = value;
+					this.SendPropertyChanged("Value");
+					this.OnValueChanged();
 				}
 			}
 		}

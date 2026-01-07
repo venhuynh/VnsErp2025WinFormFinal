@@ -520,6 +520,24 @@ namespace Dal.DataAccess.Implementations
                 : new AssetRepository(globalConnectionString);
         }
 
+        public IProductVariantIdentifierRepository GetProductVariantIdentifierRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new ProductVariantIdentifierRepository(globalConnectionString);
+        }
+
+        public IProductVariantIdentifierHistoryRepository GetProductVariantIdentifierHistoryRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new ProductVariantIdentifierHistoryRepository(globalConnectionString);
+        }
+
         #endregion
 
         
