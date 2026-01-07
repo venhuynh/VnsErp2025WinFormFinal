@@ -15,7 +15,6 @@ using DevExpress.Drawing.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DTO.Inventory.InventoryManagement;
-using Inventory.Management;
 using QRCodeCompactionMode = DevExpress.BarCodes.QRCodeCompactionMode;
 
 namespace Inventory.ProductVariantIdentifier

@@ -1,13 +1,9 @@
 ﻿using Bll.Inventory.InventoryManagement;
 using Common.Utils;
-using DevExpress.XtraReports.UI;
 using DTO.Inventory.Report;
 using Logger;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using Logger.Configuration;
 using Logger.Interfaces;
 

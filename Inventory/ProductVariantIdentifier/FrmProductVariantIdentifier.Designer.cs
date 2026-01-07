@@ -55,9 +55,9 @@
             this.FilterByProductVariantKeyWordBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.FilterByIdentifierValueBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.AddNewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
-            this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.LichSuThayDoiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
@@ -68,6 +68,10 @@
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
+            this.dockPanel1 = new DevExpress.XtraBars.Docking.DockPanel();
+            this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
+            this.ucProductVariantIdentifierTransactionHistory1 = new Inventory.ProductVariantIdentifier.UcProductVariantIdentifierTransactionHistory();
             this.NamRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
             this.ThangRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -83,6 +87,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
+            this.dockPanel1.SuspendLayout();
+            this.dockPanel1_Container.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -96,7 +103,7 @@
             this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1357, 486);
+            this.layoutControl1.Size = new System.Drawing.Size(1123, 486);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -113,7 +120,7 @@
             this.ProductVariantIdentifierStatusEnumComboBox,
             this.NotesMemoEdit,
             this.IsActiveCheckEdit});
-            this.ProductVariantIdentifierDtoGridControl.Size = new System.Drawing.Size(1333, 462);
+            this.ProductVariantIdentifierDtoGridControl.Size = new System.Drawing.Size(1099, 462);
             this.ProductVariantIdentifierDtoGridControl.TabIndex = 4;
             this.ProductVariantIdentifierDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.ProductVariantIdentifierDtoGridView});
@@ -356,6 +363,7 @@
             this.barManager1.DockControls.Add(this.barDockControlBottom);
             this.barManager1.DockControls.Add(this.barDockControlLeft);
             this.barManager1.DockControls.Add(this.barDockControlRight);
+            this.barManager1.DockManager = this.dockManager1;
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.FilterShowAllBarButtonItem,
@@ -363,7 +371,7 @@
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
             this.ExportFileBarButtonItem,
-            this.barButtonItem1,
+            this.LichSuThayDoiBarButtonItem,
             this.AddNewBarButtonItem,
             this.EditBarButtonItem,
             this.barButtonItem4,
@@ -391,7 +399,7 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.FilterDataBarSubItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddNewBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem1),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LichSuThayDoiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem4),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem5)});
@@ -450,11 +458,20 @@
             this.AddNewBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
             this.AddNewBarButtonItem.Name = "AddNewBarButtonItem";
             // 
-            // barButtonItem1
+            // EditBarButtonItem
             // 
-            this.barButtonItem1.Caption = "LS Nhập/Xuất";
-            this.barButtonItem1.Id = 22;
-            this.barButtonItem1.Name = "barButtonItem1";
+            this.EditBarButtonItem.Caption = "Điều chỉnh";
+            this.EditBarButtonItem.Id = 24;
+            this.EditBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.edit_16x16;
+            this.EditBarButtonItem.Name = "EditBarButtonItem";
+            // 
+            // LichSuThayDoiBarButtonItem
+            // 
+            this.LichSuThayDoiBarButtonItem.Caption = "LS thay đổi";
+            this.LichSuThayDoiBarButtonItem.Id = 22;
+            this.LichSuThayDoiBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.historyitem_16x16;
+            this.LichSuThayDoiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.historyitem_32x32;
+            this.LichSuThayDoiBarButtonItem.Name = "LichSuThayDoiBarButtonItem";
             // 
             // ExportFileBarButtonItem
             // 
@@ -462,13 +479,6 @@
             this.ExportFileBarButtonItem.Id = 18;
             this.ExportFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.exporttoxps_16x16;
             this.ExportFileBarButtonItem.Name = "ExportFileBarButtonItem";
-            // 
-            // EditBarButtonItem
-            // 
-            this.EditBarButtonItem.Caption = "Điều chỉnh";
-            this.EditBarButtonItem.Id = 24;
-            this.EditBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.edit_16x16;
-            this.EditBarButtonItem.Name = "EditBarButtonItem";
             // 
             // barButtonItem4
             // 
@@ -550,6 +560,53 @@
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 486);
             // 
+            // dockManager1
+            // 
+            this.dockManager1.Form = this;
+            this.dockManager1.MenuManager = this.barManager1;
+            this.dockManager1.RootPanels.AddRange(new DevExpress.XtraBars.Docking.DockPanel[] {
+            this.dockPanel1});
+            this.dockManager1.TopZIndexControls.AddRange(new string[] {
+            "DevExpress.XtraBars.BarDockControl",
+            "DevExpress.XtraBars.StandaloneBarDockControl",
+            "System.Windows.Forms.MenuStrip",
+            "System.Windows.Forms.StatusStrip",
+            "System.Windows.Forms.StatusBar",
+            "DevExpress.XtraBars.Ribbon.RibbonStatusBar",
+            "DevExpress.XtraBars.Ribbon.RibbonControl",
+            "DevExpress.XtraBars.Navigation.OfficeNavigationBar",
+            "DevExpress.XtraBars.Navigation.TileNavPane",
+            "DevExpress.XtraBars.TabFormControl",
+            "DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl",
+            "DevExpress.XtraBars.ToolbarForm.ToolbarFormControl"});
+            // 
+            // dockPanel1
+            // 
+            this.dockPanel1.Controls.Add(this.dockPanel1_Container);
+            this.dockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Right;
+            this.dockPanel1.ID = new System.Guid("4c26169e-85a8-49b1-8feb-83228e87a3f5");
+            this.dockPanel1.Location = new System.Drawing.Point(1123, 24);
+            this.dockPanel1.Name = "dockPanel1";
+            this.dockPanel1.OriginalSize = new System.Drawing.Size(234, 200);
+            this.dockPanel1.Size = new System.Drawing.Size(234, 486);
+            this.dockPanel1.Text = "Lịch sử thay đổi";
+            // 
+            // dockPanel1_Container
+            // 
+            this.dockPanel1_Container.Controls.Add(this.ucProductVariantIdentifierTransactionHistory1);
+            this.dockPanel1_Container.Location = new System.Drawing.Point(4, 26);
+            this.dockPanel1_Container.Name = "dockPanel1_Container";
+            this.dockPanel1_Container.Size = new System.Drawing.Size(227, 457);
+            this.dockPanel1_Container.TabIndex = 0;
+            // 
+            // ucProductVariantIdentifierTransactionHistory1
+            // 
+            this.ucProductVariantIdentifierTransactionHistory1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ucProductVariantIdentifierTransactionHistory1.Location = new System.Drawing.Point(0, 0);
+            this.ucProductVariantIdentifierTransactionHistory1.Name = "ucProductVariantIdentifierTransactionHistory1";
+            this.ucProductVariantIdentifierTransactionHistory1.Size = new System.Drawing.Size(227, 457);
+            this.ucProductVariantIdentifierTransactionHistory1.TabIndex = 0;
+            // 
             // NamRepositoryItemSpinEdit
             // 
             this.NamRepositoryItemSpinEdit.AutoHeight = false;
@@ -593,7 +650,7 @@
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1357, 486);
+            this.Root.Size = new System.Drawing.Size(1123, 486);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -601,7 +658,7 @@
             this.layoutControlItem1.Control = this.ProductVariantIdentifierDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1337, 466);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1103, 466);
             this.layoutControlItem1.TextVisible = false;
             // 
             // FrmProductVariantIdentifier
@@ -610,6 +667,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1357, 532);
             this.Controls.Add(this.layoutControl1);
+            this.Controls.Add(this.dockPanel1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
@@ -627,6 +685,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
+            this.dockPanel1.ResumeLayout(false);
+            this.dockPanel1_Container.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
@@ -659,7 +720,7 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlRepositoryItemHypertextLabel;
         private System.Windows.Forms.BindingSource productVariantIdentifierDtoBindingSource;
         private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantIdentifierDtoGridView;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private DevExpress.XtraBars.BarButtonItem LichSuThayDoiBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem AddNewBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem barButtonItem4;
@@ -680,5 +741,9 @@
         private DevExpress.XtraBars.BarButtonItem FilterByUpdateDateBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem FilterByProductVariantKeyWordBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem FilterByIdentifierValueBarButtonItem;
+        private DevExpress.XtraBars.Docking.DockManager dockManager1;
+        private DevExpress.XtraBars.Docking.DockPanel dockPanel1;
+        private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
+        private UcProductVariantIdentifierTransactionHistory ucProductVariantIdentifierTransactionHistory1;
     }
 }

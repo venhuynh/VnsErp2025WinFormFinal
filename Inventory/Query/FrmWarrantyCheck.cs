@@ -1,18 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Bll.Inventory.InventoryManagement;
-using Common.Common;
-using Common.Helpers;
-using Common.Utils;
-using DevExpress.XtraGrid.Views.Base;
-using DTO.DeviceAssetManagement;
-using DTO.Inventory.InventoryManagement;
-using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
-
-namespace Inventory.Query;
+﻿namespace Inventory.Query;
 
 /// <summary>
 /// Form kiểm tra bảo hành

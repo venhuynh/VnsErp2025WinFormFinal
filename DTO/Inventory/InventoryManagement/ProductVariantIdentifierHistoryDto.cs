@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -163,6 +164,139 @@ namespace DTO.Inventory.InventoryManagement
         [Display(Order = 15)]
         [StringLength(1000, ErrorMessage = "Ghi chú không được vượt quá 1000 ký tự")]
         public string Notes { get; set; }
+
+        #endregion
+
+        #region Properties - HTML Display
+
+        /// <summary>
+        /// Loại thay đổi dưới dạng HTML theo format DevExpress
+        /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+        /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+        /// </summary>
+        [DisplayName("Loại thay đổi HTML")]
+        [Display(Order = 20)]
+        [Description("Loại thay đổi dưới dạng HTML")]
+        public string ChangeTypeHtml
+        {
+            get
+            {
+                var changeTypeDescription = GetChangeTypeDescription();
+                if (string.IsNullOrWhiteSpace(changeTypeDescription))
+                    return string.Empty;
+
+                // Màu sắc phù hợp với từng loại thay đổi
+                string color;
+                switch (ChangeTypeEnum)
+                {
+                    case ProductVariantIdentifierHistoryChangeTypeEnum.Nhap:
+                        color = "#4CAF50"; // Xanh lá (nhập)
+                        break;
+                    case ProductVariantIdentifierHistoryChangeTypeEnum.Xuat:
+                        color = "#F44336"; // Đỏ (xuất)
+                        break;
+                    case ProductVariantIdentifierHistoryChangeTypeEnum.HoTroKyThuat:
+                        color = "#2196F3"; // Xanh dương (hỗ trợ)
+                        break;
+                    case ProductVariantIdentifierHistoryChangeTypeEnum.ThayDoiThongSo:
+                        color = "#FF9800"; // Cam (thay đổi)
+                        break;
+                    case ProductVariantIdentifierHistoryChangeTypeEnum.ThayDoiNguoiDung:
+                        color = "#9C27B0"; // Tím (người dùng)
+                        break;
+                    default:
+                        color = "#757575"; // Xám (khác)
+                        break;
+                }
+
+                return $"<b><color='{color}'>{changeTypeDescription}</color></b>";
+            }
+        }
+
+        /// <summary>
+        /// Giá trị thay đổi dưới dạng HTML theo format DevExpress
+        /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+        /// </summary>
+        [DisplayName("Giá trị thay đổi HTML")]
+        [Display(Order = 21)]
+        [Description("Giá trị thay đổi dưới dạng HTML")]
+        public string ValueHtml
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Value))
+                    return string.Empty;
+
+                // Format giá trị với màu xám cho label, đen cho value
+                return $"<color='#757575'>Giá trị:</color> <color='#212121'><b>{Value}</b></color>";
+            }
+        }
+
+        /// <summary>
+        /// Thông tin lịch sử thay đổi dưới dạng HTML theo format DevExpress
+        /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+        /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+        /// Format tương tự BusinessPartnerListDto.ThongTinHtml để đảm bảo consistency
+        /// </summary>
+        [DisplayName("Thông tin HTML")]
+        [Display(Order = 22)]
+        [Description("Thông tin lịch sử thay đổi dưới dạng HTML")]
+        public string ThongTinHtml
+        {
+            get
+            {
+                var htmlParts = new List<string>();
+
+                // Loại thay đổi (primary info)
+                var changeTypeDescription = GetChangeTypeDescription();
+                if (!string.IsNullOrWhiteSpace(changeTypeDescription))
+                {
+                    string color;
+                    switch (ChangeTypeEnum)
+                    {
+                        case ProductVariantIdentifierHistoryChangeTypeEnum.Nhap:
+                            color = "#4CAF50";
+                            break;
+                        case ProductVariantIdentifierHistoryChangeTypeEnum.Xuat:
+                            color = "#F44336";
+                            break;
+                        case ProductVariantIdentifierHistoryChangeTypeEnum.HoTroKyThuat:
+                            color = "#2196F3";
+                            break;
+                        case ProductVariantIdentifierHistoryChangeTypeEnum.ThayDoiThongSo:
+                            color = "#FF9800";
+                            break;
+                        case ProductVariantIdentifierHistoryChangeTypeEnum.ThayDoiNguoiDung:
+                            color = "#9C27B0";
+                            break;
+                        default:
+                            color = "#757575";
+                            break;
+                    }
+                    htmlParts.Add($"<b><color='{color}'>{changeTypeDescription}</color></b>");
+                }
+
+                // Ngày thay đổi
+                if (ChangeDate != default(DateTime))
+                {
+                    htmlParts.Add($"<br><color='#757575'>Ngày:</color> <color='#212121'><b>{ChangeDate:dd/MM/yyyy HH:mm}</b></color>");
+                }
+
+                // Giá trị thay đổi (nếu có)
+                if (!string.IsNullOrWhiteSpace(Value))
+                {
+                    htmlParts.Add($"<br><color='#757575'>Giá trị:</color> <color='#212121'><b>{Value}</b></color>");
+                }
+
+                // Ghi chú (nếu có)
+                if (!string.IsNullOrWhiteSpace(Notes))
+                {
+                    htmlParts.Add($"<br><color='#757575'>Ghi chú:</color> <color='#212121'><i>{Notes}</i></color>");
+                }
+
+                return string.Join(string.Empty, htmlParts);
+            }
+        }
 
         #endregion
 

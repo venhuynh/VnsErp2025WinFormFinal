@@ -1,23 +1,24 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Controls;
 using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
+using DevExpress.XtraBars.Docking;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
 using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Inventory.ProductVariantIdentifier
 {
-    public partial class FrmProductVariantIdentifier : DevExpress.XtraEditors.XtraForm
+    public partial class FrmProductVariantIdentifier : XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -112,10 +113,10 @@ namespace Inventory.ProductVariantIdentifier
                 }
 
                 // SuperTip cho nút LS Nhập/Xuất
-                if (barButtonItem1 != null)
+                if (LichSuThayDoiBarButtonItem != null)
                 {
                     SuperToolTipHelper.SetBarButtonSuperTip(
-                        barButtonItem1,
+                        LichSuThayDoiBarButtonItem,
                         title: @"<b><color=Orange>📋 Lịch sử Nhập/Xuất</color></b>",
                         content: @"Xem lịch sử nhập xuất kho cho sản phẩm của định danh được chọn.<br/><br/><b>Chức năng:</b><br/>• Mở form lịch sử nhập xuất kho<br/>• Lọc theo ProductVariantId của định danh được chọn<br/>• Hiển thị tất cả các phiếu nhập/xuất liên quan<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn một định danh<br/>• Định danh phải có ProductVariantId hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Chức năng này đang được phát triển."
                     );
@@ -182,7 +183,7 @@ namespace Inventory.ProductVariantIdentifier
                 FilterByIdentifierValueBarButtonItem.ItemClick += FilterByIdentifierValueBarButtonItem_ItemClick;
                 FilterByProductVariantKeyWordBarButtonItem.ItemClick += FilterByProductVariantKeyWordBarButtonItem_ItemClick;
                 ExportFileBarButtonItem.ItemClick += ExportFileBarButtonItem_ItemClick;
-                barButtonItem1.ItemClick += BarButtonItem1_ItemClick;
+                LichSuThayDoiBarButtonItem.ItemClick += LichSuThayDoiBarButtonItem_ItemClick;
                 AddNewBarButtonItem.ItemClick += BarButtonItem2_ItemClick;
                 EditBarButtonItem.ItemClick += BarButtonItem3_ItemClick;
                 barButtonItem4.ItemClick += BarButtonItem4_ItemClick;
@@ -217,7 +218,8 @@ namespace Inventory.ProductVariantIdentifier
         {
             try
             {
-                // Có thể thêm logic khởi tạo khi form load
+                // Ẩn dockPanel khi form load
+                dockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.Hidden;
             }
             catch (Exception ex)
             {
@@ -363,7 +365,7 @@ namespace Inventory.ProductVariantIdentifier
         /// <summary>
         /// Event handler cho nút LS Nhập/Xuất
         /// </summary>
-        private void BarButtonItem1_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void LichSuThayDoiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
@@ -386,12 +388,39 @@ namespace Inventory.ProductVariantIdentifier
                     return;
                 }
 
-                // TODO: Mở form lịch sử nhập/xuất cho ProductVariantId này
-                MsgBox.ShowWarning("Chức năng xem lịch sử nhập/xuất đang được phát triển.");
+                // Kiểm tra selectedDto có hợp lệ không
+                if (selectedDto.Id == Guid.Empty)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin định danh được chọn.");
+                    return;
+                }
+
+                // UserControl đã được khai báo trong designer, chỉ cần truyền DTO vào và hiển thị DockPanel
+                try
+                {
+                    // Truyền DTO vào UserControl đã có sẵn
+                    ucProductVariantIdentifierTransactionHistory1.LoadHistory(selectedDto);
+
+                    // Set độ rộng bằng 2/3 màn hình hiện tại
+                    int screenWidth = Screen.PrimaryScreen.WorkingArea.Width;
+                    int panelWidth = (int)(screenWidth * 2.0 / 3.0);
+                    dockPanel1.Width = panelWidth;
+                    //dockPanel1.OriginalSize = new System.Drawing.Size(panelWidth, 200);
+                    //dockPanel1.Size = new System.Drawing.Size(panelWidth, dockPanel1.Size.Height);
+                    
+                    // Hiển thị DockPanel
+                    dockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.Visible;
+                    dockPanel1.Show();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"LichSuThayDoiBarButtonItem_ItemClick: Lỗi khi load lịch sử: {ex.Message}", ex);
+                    MsgBox.ShowError($"Lỗi khi load lịch sử: {ex.Message}");
+                }
             }
             catch (Exception ex)
             {
-                _logger.Error("BarButtonItem1_ItemClick: Exception occurred", ex);
+                _logger.Error("LichSuThayDoiBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi: {ex.Message}");
             }
         }
@@ -722,11 +751,11 @@ namespace Inventory.ProductVariantIdentifier
         /// Event handler để validate và convert giá trị trước khi set vào property
         /// Xử lý conversion từ string (Description) sang enum
         /// </summary>
-        private void ProductVariantIdentifierDtoGridView_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        private void ProductVariantIdentifierDtoGridView_ValidatingEditor(object sender, BaseContainerValidateEditorEventArgs e)
         {
             try
             {
-                var view = sender as DevExpress.XtraGrid.Views.Grid.GridView;
+                var view = sender as GridView;
                 if (view == null) return;
 
                 var focusedColumn = view.FocusedColumn;
@@ -984,7 +1013,7 @@ namespace Inventory.ProductVariantIdentifier
                 var selectedCount = ProductVariantIdentifierDtoGridView.SelectedRowsCount;
 
                 // Các nút chỉ cho phép 1 dòng: LS Nhập/Xuất, Điều chỉnh
-                barButtonItem1.Enabled = hasSelection;
+                LichSuThayDoiBarButtonItem.Enabled = hasSelection;
                 EditBarButtonItem.Enabled = hasSelection;
 
                 // Các nút cho phép nhiều dòng: Xóa, In tem
@@ -1239,8 +1268,8 @@ namespace Inventory.ProductVariantIdentifier
                 }
 
                 // Cấu hình ComboBox
-                ProductVariantIdentifierStatusEnumComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-                ProductVariantIdentifierStatusEnumComboBox.ShowDropDown = DevExpress.XtraEditors.Controls.ShowDropDown.SingleClick;
+                ProductVariantIdentifierStatusEnumComboBox.TextEditStyle = TextEditStyles.DisableTextEditor;
+                ProductVariantIdentifierStatusEnumComboBox.ShowDropDown = ShowDropDown.SingleClick;
 
                 // Sử dụng CustomDisplayText để hiển thị Description với màu sắc
                 ProductVariantIdentifierStatusEnumComboBox.CustomDisplayText += ProductVariantIdentifierStatusEnumRepositoryComboBox_CustomDisplayText;
@@ -1273,7 +1302,7 @@ namespace Inventory.ProductVariantIdentifier
         /// <summary>
         /// Event handler để hiển thị Description với màu sắc trong RepositoryItemComboBox
         /// </summary>
-        private void ProductVariantIdentifierStatusEnumRepositoryComboBox_CustomDisplayText(object sender, DevExpress.XtraEditors.Controls.CustomDisplayTextEventArgs e)
+        private void ProductVariantIdentifierStatusEnumRepositoryComboBox_CustomDisplayText(object sender, CustomDisplayTextEventArgs e)
         {
             try
             {

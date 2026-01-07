@@ -3,7 +3,6 @@ using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
 using DTO.Inventory.InventoryManagement;
 using Inventory.OverlayForm;
@@ -22,7 +21,6 @@ using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 

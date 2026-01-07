@@ -1,23 +1,3 @@
-using Bll.Inventory.InventoryManagement;
-using Bll.Inventory.StockInOut;
-using Bll.MasterData.ProductServiceBll;
-using Common.Common;
-using Common.Utils;
-using DTO.Inventory;
-using DTO.MasterData.ProductService;
-using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-
 namespace Inventory.OverlayForm
 {
     public partial class FrmTaoThietBiNhapLapRap : DevExpress.XtraEditors.XtraForm

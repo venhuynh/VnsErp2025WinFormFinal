@@ -16,7 +16,6 @@ using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.StockOut.XuatHangThuongMai;
 using Inventory.StockOut.XuatLuuChuyenKho;
 using Inventory.StockOut.XuatNoiBo;
-using Inventory.Management;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -24,7 +23,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Inventory.ProductVariantIdentifier;
 
 namespace Inventory.Query;
 
