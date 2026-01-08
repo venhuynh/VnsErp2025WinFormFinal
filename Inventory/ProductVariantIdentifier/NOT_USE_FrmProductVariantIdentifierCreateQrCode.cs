@@ -19,7 +19,7 @@ using QRCodeCompactionMode = DevExpress.BarCodes.QRCodeCompactionMode;
 
 namespace Inventory.ProductVariantIdentifier
 {
-    public partial class FrmProductVariantIdentifierCreateQrCode : XtraForm
+    public partial class NOT_USE_FrmProductVariantIdentifierCreateQrCode : XtraForm
     {
 
         #region ========== FIELDS & PROPERTIES ==========
@@ -80,7 +80,7 @@ namespace Inventory.ProductVariantIdentifier
 
         #endregion
 
-        public FrmProductVariantIdentifierCreateQrCode(StockInOutProductHistoryDto selectedDto)
+        public NOT_USE_FrmProductVariantIdentifierCreateQrCode(StockInOutProductHistoryDto selectedDto)
         {
             _selectedDto = selectedDto;
             InitializeComponent();

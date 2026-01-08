@@ -51,6 +51,7 @@ namespace Inventory.Query
             this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
+            this.InputTypeComboBoxEdit = new DevExpress.XtraEditors.ComboBoxEdit();
             this.ProductVariantIdentifierGridControl = new DevExpress.XtraGrid.GridControl();
             this.productVariantIdentifierItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantIdentifierGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -60,10 +61,12 @@ namespace Inventory.Query
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.ProductVariantFullNameSimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.InputTypeComboBoxEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierItemBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierGridView)).BeginInit();
@@ -71,6 +74,7 @@ namespace Inventory.Query
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantFullNameSimpleLabelItem)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -194,6 +198,7 @@ namespace Inventory.Query
             // 
             // dataLayoutControl1
             // 
+            this.dataLayoutControl1.Controls.Add(this.InputTypeComboBoxEdit);
             this.dataLayoutControl1.Controls.Add(this.ProductVariantIdentifierGridControl);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
@@ -203,16 +208,33 @@ namespace Inventory.Query
             this.dataLayoutControl1.TabIndex = 14;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
+            // InputTypeComboBoxEdit
+            // 
+            this.InputTypeComboBoxEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
+            this.InputTypeComboBoxEdit.EditValue = "<color=\'blue\'>Nhập 1 lượt nhiều định danh</color>";
+            this.InputTypeComboBoxEdit.Location = new System.Drawing.Point(121, 65);
+            this.InputTypeComboBoxEdit.MenuManager = this.barManager1;
+            this.InputTypeComboBoxEdit.Name = "InputTypeComboBoxEdit";
+            this.InputTypeComboBoxEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.InputTypeComboBoxEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.InputTypeComboBoxEdit.Properties.Items.AddRange(new object[] {
+            "<color=\'blue\'>Nhập 1 lượt nhiều định danh</color>",
+            "<color=\'red\'>Nhập từng định danh riêng lẻ</color>"});
+            this.InputTypeComboBoxEdit.Size = new System.Drawing.Size(558, 20);
+            this.InputTypeComboBoxEdit.StyleController = this.dataLayoutControl1;
+            this.InputTypeComboBoxEdit.TabIndex = 45;
+            // 
             // ProductVariantIdentifierGridControl
             // 
             this.ProductVariantIdentifierGridControl.DataSource = this.productVariantIdentifierItemBindingSource;
-            this.ProductVariantIdentifierGridControl.Location = new System.Drawing.Point(12, 65);
+            this.ProductVariantIdentifierGridControl.Location = new System.Drawing.Point(12, 89);
             this.ProductVariantIdentifierGridControl.MainView = this.ProductVariantIdentifierGridView;
             this.ProductVariantIdentifierGridControl.MenuManager = this.barManager1;
             this.ProductVariantIdentifierGridControl.Name = "ProductVariantIdentifierGridControl";
             this.ProductVariantIdentifierGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.ProductVariantIdentifierEnumComboBox});
-            this.ProductVariantIdentifierGridControl.Size = new System.Drawing.Size(667, 420);
+            this.ProductVariantIdentifierGridControl.Size = new System.Drawing.Size(667, 396);
             this.ProductVariantIdentifierGridControl.TabIndex = 44;
             this.ProductVariantIdentifierGridControl.UseEmbeddedNavigator = true;
             this.ProductVariantIdentifierGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -220,7 +242,7 @@ namespace Inventory.Query
             // 
             // productVariantIdentifierItemBindingSource
             // 
-            this.productVariantIdentifierItemBindingSource.DataSource = typeof(ProductVariantIdentifierItem);
+            this.productVariantIdentifierItemBindingSource.DataSource = typeof(Inventory.ProductVariantIdentifier.ProductVariantIdentifierItem);
             // 
             // ProductVariantIdentifierGridView
             // 
@@ -295,7 +317,8 @@ namespace Inventory.Query
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem2,
-            this.ProductVariantFullNameSimpleLabelItem});
+            this.ProductVariantFullNameSimpleLabelItem,
+            this.layoutControlItem1});
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(691, 497);
             this.Root.TextVisible = false;
@@ -303,10 +326,10 @@ namespace Inventory.Query
             // layoutControlItem2
             // 
             this.layoutControlItem2.Control = this.ProductVariantIdentifierGridControl;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 53);
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 77);
             this.layoutControlItem2.Name = "layoutControlItem2";
             this.layoutControlItem2.OptionsTableLayoutItem.RowIndex = 2;
-            this.layoutControlItem2.Size = new System.Drawing.Size(671, 424);
+            this.layoutControlItem2.Size = new System.Drawing.Size(671, 400);
             this.layoutControlItem2.TextVisible = false;
             // 
             // ProductVariantFullNameSimpleLabelItem
@@ -328,7 +351,18 @@ namespace Inventory.Query
             this.ProductVariantFullNameSimpleLabelItem.Text = "Thông tin sản phẩm ";
             this.ProductVariantFullNameSimpleLabelItem.TextSize = new System.Drawing.Size(97, 13);
             // 
-            // FrmProductVariantIdentifierAddEdit
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.AllowHtmlStringInCaption = true;
+            this.layoutControlItem1.Control = this.InputTypeComboBoxEdit;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 53);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.layoutControlItem1.Size = new System.Drawing.Size(671, 24);
+            this.layoutControlItem1.Text = "Kiểu nhập";
+            this.layoutControlItem1.TextSize = new System.Drawing.Size(97, 13);
+            // 
+            // FrmProductVariantIdentifierAddEditFromStockInOut
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -339,13 +373,14 @@ namespace Inventory.Query
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "FrmProductVariantIdentifierAddEdit";
+            this.Name = "FrmProductVariantIdentifierAddEditFromStockInOut";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Định danh hàng hóa sản phẩm";
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.InputTypeComboBoxEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierItemBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierGridView)).EndInit();
@@ -353,6 +388,7 @@ namespace Inventory.Query
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantFullNameSimpleLabelItem)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -383,5 +419,7 @@ namespace Inventory.Query
         private SimpleLabelItem ProductVariantFullNameSimpleLabelItem;
         private BarHeaderItem barHeaderItem1;
         private BarStaticItem SoLuongNhapXuatBarStaticItem;
+        private DevExpress.XtraEditors.ComboBoxEdit InputTypeComboBoxEdit;
+        private LayoutControlItem layoutControlItem1;
     }
 }

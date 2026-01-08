@@ -6,7 +6,7 @@ using DevExpress.XtraLayout;
 
 namespace Inventory.ProductVariantIdentifier
 {
-    partial class FrmProductVariantIdentifierQrCode
+    partial class NOT_USE_FrmProductVariantIdentifierQrCode
     {
         /// <summary>
         /// Required designer variable.

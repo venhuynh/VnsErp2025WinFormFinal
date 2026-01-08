@@ -200,6 +200,7 @@ namespace Inventory.Query
                 int successCount = 0;
                 int failCount = 0;
                 var failedSerialNumbers = new List<string>();
+                var savedDtos = new List<ProductVariantIdentifierDto>(); // Lưu danh sách DTO đã lưu thành công
 
                 //FIXME: Phải lặp từng dòng trong SerialNumberMemoEdit để lưu từng số serial vào database
                 foreach (var serialNumber in serialNumbers)
@@ -236,6 +237,7 @@ namespace Inventory.Query
                         if (savedDto != null)
                         {
                             SaveProductVariantIdentifierHistory(savedDto);
+                            savedDtos.Add(savedDto); // Lưu vào danh sách để in sau
                         }
                         
                         successCount++;
@@ -252,6 +254,17 @@ namespace Inventory.Query
                 if (successCount > 0 && failCount == 0)
                 {
                     MsgBox.ShowSuccess($"Đã lưu thành công {successCount} serial number(s).");
+                    
+                    // Hỏi người dùng có muốn in không
+                    if (savedDtos.Count > 0 && MsgBox.ShowYesNo("Bạn có muốn in tem QR Code cho các serial number vừa tạo không?", "In tem QR Code"))
+                    {
+                        // Mở màn hình in QR Code
+                        using (var printForm = new ProductVariantIdentifier.FrmQrCodePrintPreview(savedDtos))
+                        {
+                            printForm.ShowDialog(this);
+                        }
+                    }
+                    
                     this.Close();
                 }
                 else if (successCount > 0 && failCount > 0)
@@ -264,6 +277,16 @@ namespace Inventory.Query
                         message += $"\n... và {failedSerialNumbers.Count - 10} serial number(s) khác.";
                     }
                     MsgBox.ShowWarning(message);
+                    
+                    // Hỏi người dùng có muốn in không (chỉ in các serial number đã lưu thành công)
+                    if (savedDtos.Count > 0 && MsgBox.ShowYesNo($"Bạn có muốn in tem QR Code cho {savedDtos.Count} serial number(s) đã lưu thành công không?", "In tem QR Code"))
+                    {
+                        // Mở màn hình in QR Code
+                        using (var printForm = new ProductVariantIdentifier.FrmQrCodePrintPreview(savedDtos))
+                        {
+                            printForm.ShowDialog(this);
+                        }
+                    }
                 }
                 else
                 {

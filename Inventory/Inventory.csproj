@@ -85,11 +85,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierQrCode.cs">
+    <Compile Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierQrCode.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierQrCode.Designer.cs">
-      <DependentUpon>FrmProductVariantIdentifierQrCode.cs</DependentUpon>
+    <Compile Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierQrCode.Designer.cs">
+      <DependentUpon>NOT_USE_FrmProductVariantIdentifierQrCode.cs</DependentUpon>
     </Compile>
     <Compile Include="ProductVariantIdentifier\FrmQrCodePrintPreview.cs">
       <SubType>Form</SubType>
@@ -134,11 +134,11 @@
     <Compile Include="Query\FrmProductVariantIdentifierAddEditFromStockInOut.Designer.cs">
       <DependentUpon>FrmProductVariantIdentifierAddEditFromStockInOut.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierCreateQrCode.cs">
+    <Compile Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierCreateQrCode.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierCreateQrCode.Designer.cs">
-      <DependentUpon>FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
+    <Compile Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierCreateQrCode.Designer.cs">
+      <DependentUpon>NOT_USE_FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
     </Compile>
     <Compile Include="ProductVariantIdentifier\ProductVariantIdentifierItem.cs" />
     <Compile Include="OverlayForm\FrmStockInOutAddImages.cs">
@@ -430,8 +430,8 @@
     <Compile Include="XtraForm1.Designer.cs">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ProductVariantIdentifier\FrmProductVariantIdentifierQrCode.resx">
-      <DependentUpon>FrmProductVariantIdentifierQrCode.cs</DependentUpon>
+    <EmbeddedResource Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierQrCode.resx">
+      <DependentUpon>NOT_USE_FrmProductVariantIdentifierQrCode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProductVariantIdentifier\FrmQrCodePrintPreview.resx">
       <DependentUpon>FrmQrCodePrintPreview.cs</DependentUpon>
@@ -454,8 +454,8 @@
     <EmbeddedResource Include="Query\FrmProductVariantIdentifierAddEditFromStockInOut.resx">
       <DependentUpon>FrmProductVariantIdentifierAddEditFromStockInOut.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProductVariantIdentifier\FrmProductVariantIdentifierCreateQrCode.resx">
-      <DependentUpon>FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
+    <EmbeddedResource Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierCreateQrCode.resx">
+      <DependentUpon>NOT_USE_FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>

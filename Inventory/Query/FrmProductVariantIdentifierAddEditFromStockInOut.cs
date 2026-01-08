@@ -85,7 +85,7 @@ namespace Inventory.Query
                     SuperToolTipHelper.SetBarButtonSuperTip(
                         SaveBarButtonItem,
                         title: @"<b><color=Green>💾 Lưu</color></b>",
-                        content: @"Lưu tất cả định danh sản phẩm vào database.<br/><br/><b>Chức năng:</b><br/>• Validate dữ liệu trước khi lưu<br/>• Kiểm tra trùng lặp với database<br/>• Convert items từ grid sang DTO<br/>• Lưu vào bảng ProductVariantIdentifier<br/><br/><b>Quy trình:</b><br/>1. Validate dữ liệu (kiểm tra có dữ liệu, trùng lặp, enum trùng nhau)<br/>2. Lấy danh sách items từ grid<br/>3. Convert items sang DTO<br/>4. Gọi BLL.SaveOrUpdate() để lưu<br/>5. Hiển thị thông báo thành công<br/><br/><b>Validation:</b><br/>• Phải có ít nhất một định danh<br/>• Không được trùng lặp với database<br/>• Mỗi loại định danh chỉ được sử dụng một lần<br/>• Phải có ProductVariantId hợp lệ<br/><br/><b>Thông tin lưu:</b><br/>• ProductVariantId: Từ DTO đã chọn<br/>• Các định danh: SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ID, OtherIdentifier<br/><br/><color=Gray>Lưu ý:</color> Hệ thống sẽ kiểm tra trùng lặp và hiển thị cảnh báo nếu có."
+                        content: @"Lưu định danh sản phẩm vào database theo chế độ đã chọn.<br/><br/><b>Chức năng:</b><br/>• Kiểm tra kiểu nhập từ InputTypeComboBoxEdit<br/>• Validate dữ liệu trước khi lưu<br/>• Kiểm tra trùng lặp với database và trong grid<br/>• Convert items từ grid sang DTO<br/>• Lưu vào bảng ProductVariantIdentifier<br/><br/><b>Hai chế độ lưu:</b><br/><br/><b><color=Blue>1. Nhập 1 lượt nhiều định danh (Index 0):</color></b><br/>• <b>Cách lưu:</b> Mỗi định danh được lưu thành một DTO riêng biệt<br/>• <b>Cho phép:</b> Nhiều định danh cùng loại (ví dụ: có thể có nhiều SerialNumber khác nhau)<br/>• <b>Validation:</b><br/>  - Không được trùng Value trong cùng grid (cùng IdentifierType + Value)<br/>  - Không được trùng với database<br/>  - Cho phép nhiều IdentifierType giống nhau (chỉ cần Value khác nhau)<br/>• <b>Kết quả:</b> Mỗi định danh tạo thành một bản ghi riêng trong database<br/>• <b>Thông báo:</b> Hiển thị số lượng thành công/thất bại cho từng định danh<br/><br/><b><color=Red>2. Nhập từng định danh riêng lẻ (Index 1):</color></b><br/>• <b>Cách lưu:</b> Gom tất cả định danh thành một DTO duy nhất<br/>• <b>Không cho phép:</b> Nhiều định danh cùng loại (mỗi IdentifierType chỉ được dùng một lần)<br/>• <b>Validation:</b><br/>  - Không được trùng IdentifierType trong cùng grid<br/>  - Không được trùng Value với database<br/>  - Mỗi loại định danh chỉ được sử dụng một lần<br/>• <b>Kết quả:</b> Tất cả định danh được lưu vào một bản ghi duy nhất trong database<br/>• <b>Thông báo:</b> Hiển thị thông báo lưu thành công hoặc lỗi validation<br/><br/><b>Quy trình chung:</b><br/>1. Lấy danh sách items từ grid<br/>2. Kiểm tra InputTypeComboBoxEdit.SelectedIndex<br/>3. Validate dữ liệu theo chế độ đã chọn<br/>4. Convert items sang DTO (một hoặc nhiều DTO tùy chế độ)<br/>5. Gọi BLL.SaveOrUpdate() để lưu<br/>6. Lưu lịch sử thay đổi (ProductVariantIdentifierHistory)<br/>7. Hiển thị thông báo kết quả<br/><br/><b>Validation chung:</b><br/>• Phải có ít nhất một định danh<br/>• Không được trùng lặp với database (theo ProductVariantId)<br/>• Phải có ProductVariantId hợp lệ<br/>• Mỗi item phải có IdentifierType và Value hợp lệ<br/><br/><b>Thông tin lưu:</b><br/>• ProductVariantId: Từ DTO đã chọn (_selectedDto.ProductVariantId)<br/>• Các loại định danh: SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ID, OtherIdentifier<br/><br/><color=Gray>Lưu ý:</color> Hệ thống sẽ kiểm tra trùng lặp và hiển thị cảnh báo chi tiết nếu có lỗi. Mỗi chế độ có quy tắc validation khác nhau."
                     );
                 }
 
@@ -299,14 +299,6 @@ namespace Inventory.Query
         {
             try
             {
-                // Validate dữ liệu trước khi lưu
-                var (isValid, errorMessage) = ValidateDataBeforeSave();
-                if (!isValid)
-                {
-                    MsgBox.ShowWarning(errorMessage);
-                    return;
-                }
-
                 // Lấy danh sách items từ grid
                 var items = GetIdentifierItems();
                 if (items == null || items.Count == 0)
@@ -315,7 +307,57 @@ namespace Inventory.Query
                     return;
                 }
 
+                // Kiểm tra InputTypeComboBoxEdit để xác định cách lưu
+                int selectedIndex = InputTypeComboBoxEdit.SelectedIndex;
+                
+                if (selectedIndex == 0)
+                {
+                    // Trường hợp 1: Nhập 1 lượt nhiều định danh - Lưu mỗi định danh thành một DTO riêng
+                    // Cho phép nhiều định danh cùng loại
+                    SaveEachIdentifierAsSeparateDto(items, allowDuplicateIdentifierType: true);
+                }
+                else if (selectedIndex == 1)
+                {
+                    // Trường hợp 2: Nhập từng định danh riêng lẻ - Gom tất cả các items thành một DTO duy nhất
+                    // Không cho phép nhiều định danh cùng loại
+                    SaveMultipleIdentifiersAsOneDto(items);
+                }
+                else
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn kiểu nhập hợp lệ.");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SaveBarButtonItem_ItemClick: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Lưu nhiều định danh vào một DTO duy nhất (trường hợp: Nhập từng định danh riêng lẻ)
+        /// Không cho phép nhiều định danh cùng loại
+        /// </summary>
+        private void SaveMultipleIdentifiersAsOneDto(List<ProductVariantIdentifierItem> items)
+        {
+            try
+            {
+                // Validate dữ liệu trước khi lưu (bao gồm kiểm tra enum trùng nhau)
+                var (isValid, errorMessage) = ValidateDataBeforeSave();
+                if (!isValid)
+                {
+                    MsgBox.ShowWarning(errorMessage);
+                    return;
+                }
+
+                // Gom tất cả items thành một DTO
                 var dto = ConvertItemToDto(items);
+
+                if (dto == null)
+                {
+                    MsgBox.ShowWarning("Lỗi chuyển đổi dữ liệu. Vui lòng kiểm tra lại.");
+                    return;
+                }
 
                 // Gọi BLL để lưu dữ liệu
                 var savedDto = _productVariantIdentifierBll.SaveOrUpdate(dto);
@@ -331,8 +373,144 @@ namespace Inventory.Query
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"SaveBarButtonItem_ItemClick: Exception occurred - {ex.Message}");
-                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"SaveMultipleIdentifiersAsOneDto: Exception occurred - {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Lưu mỗi định danh thành một DTO riêng biệt (trường hợp: Nhập 1 lượt nhiều định danh)
+        /// </summary>
+        /// <param name="items">Danh sách items cần lưu</param>
+        /// <param name="allowDuplicateIdentifierType">Cho phép nhiều định danh cùng loại hay không</param>
+        private void SaveEachIdentifierAsSeparateDto(List<ProductVariantIdentifierItem> items, bool allowDuplicateIdentifierType = false)
+        {
+            try
+            {
+                int successCount = 0;
+                int failCount = 0;
+                var failedItems = new List<string>();
+                var savedDtos = new List<ProductVariantIdentifierDto>();
+
+                // Lấy tất cả identifier hiện có trong database để kiểm tra trùng lặp
+                var existingIdentifiers = _productVariantIdentifierBll.GetAll();
+
+                // Lặp qua từng item và lưu thành DTO riêng
+                for (int i = 0; i < items.Count; i++)
+                {
+                    var item = items[i];
+                    try
+                    {
+                        // Validate item
+                        if (string.IsNullOrWhiteSpace(item.Value))
+                        {
+                            failedItems.Add($"{GetProductVariantIdentifierDescription(item.IdentifierType)}: (Giá trị rỗng)");
+                            failCount++;
+                            continue;
+                        }
+
+                        // Kiểm tra trùng lặp trong cùng grid (cùng IdentifierType và Value)
+                        var duplicateInGrid = items.Skip(i + 1).FirstOrDefault(otherItem =>
+                            otherItem.IdentifierType == item.IdentifierType &&
+                            otherItem.Value == item.Value);
+
+                        if (duplicateInGrid != null)
+                        {
+                            var identifierTypeName = GetProductVariantIdentifierDescription(item.IdentifierType);
+                            failedItems.Add($"{identifierTypeName} \"{item.Value}\": (trùng lặp trong danh sách)");
+                            failCount++;
+                            continue;
+                        }
+
+                        // Kiểm tra trùng lặp IdentifierType trong cùng grid (nếu không cho phép)
+                        if (!allowDuplicateIdentifierType)
+                        {
+                            var duplicateTypeInGrid = items.Skip(i + 1).FirstOrDefault(otherItem =>
+                                otherItem.IdentifierType == item.IdentifierType);
+
+                            if (duplicateTypeInGrid != null)
+                            {
+                                var identifierTypeName = GetProductVariantIdentifierDescription(item.IdentifierType);
+                                failedItems.Add($"{identifierTypeName}: (loại định danh đã được sử dụng trong danh sách)");
+                                failCount++;
+                                continue;
+                            }
+                        }
+
+                        // Kiểm tra trùng lặp với database
+                        var duplicate = existingIdentifiers.FirstOrDefault(existing =>
+                        {
+                            if (existing.ProductVariantId != _selectedDto.ProductVariantId)
+                            {
+                                return false;
+                            }
+
+                            return CheckDuplicateIdentifier(existing, item, null);
+                        });
+
+                        if (duplicate != null)
+                        {
+                            var identifierTypeName = GetProductVariantIdentifierDescription(item.IdentifierType);
+                            failedItems.Add($"{identifierTypeName} \"{item.Value}\": (đã tồn tại trong database)");
+                            failCount++;
+                            continue;
+                        }
+
+                        // Convert item thành DTO
+                        var dto = ConvertSingleItemToDto(item);
+
+                        // Lưu vào database
+                        var savedDto = _productVariantIdentifierBll.SaveOrUpdate(dto);
+
+                        // Lưu lịch sử thay đổi
+                        if (savedDto != null)
+                        {
+                            SaveProductVariantIdentifierHistory(savedDto);
+                            savedDtos.Add(savedDto);
+                        }
+
+                        successCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"SaveEachIdentifierAsSeparateDto: Lỗi lưu item {item.IdentifierType} - {item.Value}: {ex.Message}");
+                        var identifierTypeName = GetProductVariantIdentifierDescription(item.IdentifierType);
+                        failedItems.Add($"{identifierTypeName} \"{item.Value}\": ({ex.Message})");
+                        failCount++;
+                    }
+                }
+
+                // Hiển thị kết quả
+                if (successCount > 0 && failCount == 0)
+                {
+                    MsgBox.ShowSuccess($"Đã lưu thành công {successCount} định danh.");
+                }
+                else if (successCount > 0 && failCount > 0)
+                {
+                    var message = $"Đã lưu thành công {successCount} định danh.\n\n" +
+                                  $"Không thể lưu {failCount} định danh:\n" +
+                                  string.Join("\n", failedItems.Take(10));
+                    if (failedItems.Count > 10)
+                    {
+                        message += $"\n... và {failedItems.Count - 10} định danh khác.";
+                    }
+                    MsgBox.ShowWarning(message);
+                }
+                else
+                {
+                    var message = $"Không thể lưu bất kỳ định danh nào:\n" +
+                                  string.Join("\n", failedItems.Take(10));
+                    if (failedItems.Count > 10)
+                    {
+                        message += $"\n... và {failedItems.Count - 10} định danh khác.";
+                    }
+                    MsgBox.ShowError(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SaveEachIdentifierAsSeparateDto: Exception occurred - {ex.Message}");
+                throw;
             }
         }
 
@@ -953,7 +1131,16 @@ namespace Inventory.Query
         /// </summary>
         private bool CheckDuplicateIdentifier(ProductVariantIdentifierDto existing, ProductVariantIdentifierItem item, ProductVariantIdentifierDto dto)
         {
-            if (existing.ProductVariantId != dto.ProductVariantId)
+            // Nếu dto là null, sử dụng ProductVariantId từ _selectedDto
+            Guid productVariantId = dto?.ProductVariantId ?? _selectedDto?.ProductVariantId ?? Guid.Empty;
+            
+            if (existing.ProductVariantId != productVariantId)
+            {
+                return false;
+            }
+
+            // Bỏ qua chính nó nếu đang update (chỉ khi dto không null)
+            if (dto != null && existing.Id == dto.Id && dto.Id != Guid.Empty)
             {
                 return false;
             }
@@ -1001,6 +1188,83 @@ namespace Inventory.Query
                            existing.OtherIdentifier == item.Value;
                 default:
                     return false;
+            }
+        }
+
+        /// <summary>
+        /// Convert một ProductVariantIdentifierItem sang ProductVariantIdentifierDto
+        /// </summary>
+        /// <param name="item">ProductVariantIdentifierItem cần convert</param>
+        /// <returns>ProductVariantIdentifierDto hoặc null nếu không thể convert</returns>
+        private ProductVariantIdentifierDto ConvertSingleItemToDto(ProductVariantIdentifierItem item)
+        {
+            try
+            {
+                if (item == null || string.IsNullOrWhiteSpace(item.Value))
+                {
+                    return null;
+                }
+
+                var dto = new ProductVariantIdentifierDto
+                {
+                    Id = item.Id == Guid.Empty ? Guid.NewGuid() : item.Id,
+                    ProductVariantId = _selectedDto.ProductVariantId,
+                };
+
+                // Map giá trị vào property tương ứng theo IdentifierType
+                switch (item.IdentifierType)
+                {
+                    case ProductVariantIdentifierEnum.SerialNumber:
+                        dto.SerialNumber = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.PartNumber:
+                        dto.PartNumber = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.QRCode:
+                        dto.QRCode = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.SKU:
+                        dto.SKU = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.RFID:
+                        dto.RFID = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.MACAddress:
+                        dto.MACAddress = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.IMEI:
+                        dto.IMEI = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.AssetTag:
+                        dto.AssetTag = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.LicenseKey:
+                        dto.LicenseKey = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.UPC:
+                        dto.UPC = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.EAN:
+                        dto.EAN = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.ID:
+                        dto.ID = item.Value;
+                        break;
+                    case ProductVariantIdentifierEnum.OtherIdentifier:
+                        dto.OtherIdentifier = item.Value;
+                        break;
+                    default:
+                        System.Diagnostics.Debug.WriteLine(
+                            $"ConvertSingleItemToDto: Unknown IdentifierType {item.IdentifierType}");
+                        return null;
+                }
+
+                return dto;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ConvertSingleItemToDto: Exception occurred - {ex.Message}");
+                return null;
             }
         }
 

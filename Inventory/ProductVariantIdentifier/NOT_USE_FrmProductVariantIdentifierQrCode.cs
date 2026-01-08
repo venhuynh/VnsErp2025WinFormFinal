@@ -20,7 +20,7 @@ using QRCodeCompactionMode = DevExpress.BarCodes.QRCodeCompactionMode;
 
 namespace Inventory.ProductVariantIdentifier
 {
-    public partial class FrmProductVariantIdentifierQrCode : XtraForm
+    public partial class NOT_USE_FrmProductVariantIdentifierQrCode : XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -93,7 +93,7 @@ namespace Inventory.ProductVariantIdentifier
         /// <summary>
         /// Constructor mặc định
         /// </summary>
-        public FrmProductVariantIdentifierQrCode()
+        public NOT_USE_FrmProductVariantIdentifierQrCode()
         {
             InitializeComponent();
             InitializeForm();
@@ -103,7 +103,7 @@ namespace Inventory.ProductVariantIdentifier
         /// Constructor với một định danh sản phẩm
         /// </summary>
         /// <param name="identifier">Định danh sản phẩm cần in QR Code</param>
-        public FrmProductVariantIdentifierQrCode(ProductVariantIdentifierDto identifier) : this()
+        public NOT_USE_FrmProductVariantIdentifierQrCode(ProductVariantIdentifierDto identifier) : this()
         {
             _identifier = identifier;
         }
