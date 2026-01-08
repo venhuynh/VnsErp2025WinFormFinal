@@ -1,7 +1,6 @@
 using Bll.Inventory.InventoryManagement;
 using Bll.MasterData.ProductServiceBll;
 using Common.Utils;
-using DevExpress.XtraEditors;
 using DTO.Inventory;
 using DTO.Inventory.InventoryManagement;
 using System;
@@ -33,12 +32,12 @@ namespace Inventory.OverlayForm
         /// <summary>
         /// Danh sách tất cả identifier đã quét (để tránh trùng)
         /// </summary>
-        private readonly HashSet<string> _identifierValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly List<ProductVariantIdentifierDto> _identifierValues = new List<ProductVariantIdentifierDto>();
 
         /// <summary>
-        /// Map ProductVariantId -> danh sách identifier thuộc biến thể đó
+        /// Map ProductVariantId -> danh sách ProductVariantIdentifierDto thuộc biến thể đó
         /// </summary>
-        private readonly Dictionary<Guid, List<string>> _variantIdentifierMap = new Dictionary<Guid, List<string>>();
+        private readonly Dictionary<Guid, List<ProductVariantIdentifierDto>> _variantIdentifierMap = new Dictionary<Guid, List<ProductVariantIdentifierDto>>();
 
         #endregion
 
@@ -77,6 +76,9 @@ namespace Inventory.OverlayForm
             // Event khi giá trị IdentifierValueTextEdit thay đổi (để xử lý paste text có TAB/ENTER)
             IdentifierValueTextEdit.EditValueChanged += IdentifierValueTextEdit_EditValueChanged;
             IdentifierValueTextEdit.KeyDown += IdentifierValueTextEdit_KeyDown;
+            
+            // Event cho nút xóa
+            RemoveHyperlinkLabelControl.Click += RemoveHyperlinkLabelControl_Click;
         }
 
         #endregion
@@ -143,32 +145,32 @@ namespace Inventory.OverlayForm
                 return;
             }
 
-            // Tránh quét trùng cùng identifier
-            if (_identifierValues.Contains(identifierValue))
+            // Tránh quét trùng cùng identifier (kiểm tra theo Id)
+            if (_identifierValues.Any(x => x.Id == identifier.Id))
             {
                 // Định danh đã tồn tại, bỏ qua
                 return;
             }
 
-            // Thêm vào danh sách identifier toàn cục
-            _identifierValues.Add(identifierValue);
-
-            // Lấy list identifier theo ProductVariant
-            if (!_variantIdentifierMap.TryGetValue(identifier.ProductVariantId, out var identifiersForVariant))
-            {
-                identifiersForVariant = new List<string>();
-                _variantIdentifierMap[identifier.ProductVariantId] = identifiersForVariant;
-            }
-
-            identifiersForVariant.Add(identifierValue);
-
-            // Lấy thông tin ProductVariant
+            // Lấy thông tin ProductVariant trước khi thêm vào danh sách (để tránh thêm vào danh sách nếu productVariant không tồn tại)
             var productVariant = _productVariantBll.GetById(identifier.ProductVariantId);
             if (productVariant == null)
             {
                 MsgBox.ShowError($"Không tìm thấy thông tin sản phẩm với ID: {identifier.ProductVariantId}");
                 return;
             }
+
+            // Thêm vào danh sách identifier toàn cục
+            _identifierValues.Add(identifier);
+
+            // Lấy list identifier theo ProductVariant
+            if (!_variantIdentifierMap.TryGetValue(identifier.ProductVariantId, out var identifiersForVariant))
+            {
+                identifiersForVariant = new List<ProductVariantIdentifierDto>();
+                _variantIdentifierMap[identifier.ProductVariantId] = identifiersForVariant;
+            }
+
+            identifiersForVariant.Add(identifier);
 
             // Kiểm tra xem đã tồn tại trong danh sách chưa (theo ProductVariantId)
             var existingItem = _stockInOutDetailList.FirstOrDefault(x => x.ProductVariantId == identifier.ProductVariantId);
@@ -177,7 +179,7 @@ namespace Inventory.OverlayForm
             {
                 // Cập nhật số lượng bằng số identifier đã quét cho biến thể này
                 existingItem.StockOutQty = identifiersForVariant.Count;
-                existingItem.GhiChu = $"Định danh: {string.Join(", ", identifiersForVariant)}";
+                existingItem.GhiChu = GetIdentifierNamesText(identifiersForVariant);
             }
             else
             {
@@ -192,7 +194,7 @@ namespace Inventory.OverlayForm
                     StockOutQty = identifiersForVariant.Count, // bằng số identifier đã quét
                     UnitPrice = 0,
                     Vat = 0,
-                    GhiChu = $"Định danh: {string.Join(", ", identifiersForVariant)}"
+                    GhiChu = GetIdentifierNamesText(identifiersForVariant)
                 };
 
                 // Thêm vào danh sách
@@ -232,6 +234,79 @@ namespace Inventory.OverlayForm
             }
         }
 
+        /// <summary>
+        /// Xử lý khi click nút xóa (RemoveHyperlinkLabelControl)
+        /// </summary>
+        private void RemoveHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Lấy các dòng được chọn trong GridView
+                var selectedRowHandles = StockInOutDetailForUIDtoGridView.GetSelectedRows();
+                
+                if (selectedRowHandles == null || selectedRowHandles.Length == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn ít nhất một dòng để xóa.");
+                    return;
+                }
+
+                // Lấy danh sách ProductVariantId từ các dòng được chọn
+                var productVariantIdsToRemove = new HashSet<Guid>();
+                var itemsToRemove = new List<StockInOutDetailForUIDto>();
+
+                foreach (var rowHandle in selectedRowHandles)
+                {
+                    if (rowHandle >= 0)
+                    {
+                        if (StockInOutDetailForUIDtoGridView.GetRow(rowHandle) is StockInOutDetailForUIDto rowData)
+                        {
+                            productVariantIdsToRemove.Add(rowData.ProductVariantId);
+                            itemsToRemove.Add(rowData);
+                        }
+                    }
+                }
+
+                if (productVariantIdsToRemove.Count == 0)
+                {
+                    return;
+                }
+
+                // Xác nhận xóa
+                var confirmMessage = $"Bạn có chắc chắn muốn xóa {itemsToRemove.Count} dòng đã chọn?";
+                if (MsgBox.ShowYesNoCancel(confirmMessage) != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                // Xóa các dòng khỏi danh sách
+                foreach (var item in itemsToRemove)
+                {
+                    _stockInOutDetailList.Remove(item);
+                }
+
+                // Xóa tất cả identifier có ProductVariantId tương ứng khỏi _identifierValues
+                _identifierValues.RemoveAll(x => productVariantIdsToRemove.Contains(x.ProductVariantId));
+
+                // Xóa khỏi _variantIdentifierMap
+                foreach (var productVariantId in productVariantIdsToRemove)
+                {
+                    _variantIdentifierMap.Remove(productVariantId);
+                }
+
+                // Cập nhật LineNumber cho tất cả các dòng còn lại
+                UpdateLineNumbers();
+
+                // Refresh binding source
+                stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
+
+                AlertHelper.ShowInfo($"Đã xóa {itemsToRemove.Count} dòng thành công.");
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowError($"Lỗi khi xóa dòng: {ex.Message}");
+            }
+        }
+
         #endregion
 
         #region ========== HELPER METHODS ==========
@@ -245,6 +320,118 @@ namespace Inventory.OverlayForm
             {
                 _stockInOutDetailList[i].LineNumber = i + 1;
             }
+        }
+
+        /// <summary>
+        /// Lấy danh sách tên định danh kèm giá trị từ danh sách ProductVariantIdentifierDto (loại trừ ID)
+        /// </summary>
+        private string GetIdentifierNamesText(List<ProductVariantIdentifierDto> identifiers)
+        {
+            // Dictionary để nhóm các giá trị theo loại định danh
+            var identifierGroups = new Dictionary<string, List<string>>();
+
+            foreach (var identifier in identifiers)
+            {
+                // Serial Number
+                if (!string.IsNullOrWhiteSpace(identifier.SerialNumber))
+                {
+                    if (!identifierGroups.ContainsKey("Serial Number"))
+                        identifierGroups["Serial Number"] = new List<string>();
+                    identifierGroups["Serial Number"].Add(identifier.SerialNumber);
+                }
+                // Part Number
+                if (!string.IsNullOrWhiteSpace(identifier.PartNumber))
+                {
+                    if (!identifierGroups.ContainsKey("Part Number"))
+                        identifierGroups["Part Number"] = new List<string>();
+                    identifierGroups["Part Number"].Add(identifier.PartNumber);
+                }
+                // QR Code
+                if (!string.IsNullOrWhiteSpace(identifier.QRCode))
+                {
+                    if (!identifierGroups.ContainsKey("QR Code"))
+                        identifierGroups["QR Code"] = new List<string>();
+                    identifierGroups["QR Code"].Add(identifier.QRCode);
+                }
+                // SKU
+                if (!string.IsNullOrWhiteSpace(identifier.SKU))
+                {
+                    if (!identifierGroups.ContainsKey("SKU"))
+                        identifierGroups["SKU"] = new List<string>();
+                    identifierGroups["SKU"].Add(identifier.SKU);
+                }
+                // RFID
+                if (!string.IsNullOrWhiteSpace(identifier.RFID))
+                {
+                    if (!identifierGroups.ContainsKey("RFID"))
+                        identifierGroups["RFID"] = new List<string>();
+                    identifierGroups["RFID"].Add(identifier.RFID);
+                }
+                // MAC Address
+                if (!string.IsNullOrWhiteSpace(identifier.MACAddress))
+                {
+                    if (!identifierGroups.ContainsKey("MAC Address"))
+                        identifierGroups["MAC Address"] = new List<string>();
+                    identifierGroups["MAC Address"].Add(identifier.MACAddress);
+                }
+                // IMEI
+                if (!string.IsNullOrWhiteSpace(identifier.IMEI))
+                {
+                    if (!identifierGroups.ContainsKey("IMEI"))
+                        identifierGroups["IMEI"] = new List<string>();
+                    identifierGroups["IMEI"].Add(identifier.IMEI);
+                }
+                // Asset Tag
+                if (!string.IsNullOrWhiteSpace(identifier.AssetTag))
+                {
+                    if (!identifierGroups.ContainsKey("Asset Tag"))
+                        identifierGroups["Asset Tag"] = new List<string>();
+                    identifierGroups["Asset Tag"].Add(identifier.AssetTag);
+                }
+                // License Key
+                if (!string.IsNullOrWhiteSpace(identifier.LicenseKey))
+                {
+                    if (!identifierGroups.ContainsKey("License Key"))
+                        identifierGroups["License Key"] = new List<string>();
+                    identifierGroups["License Key"].Add(identifier.LicenseKey);
+                }
+                // UPC
+                if (!string.IsNullOrWhiteSpace(identifier.UPC))
+                {
+                    if (!identifierGroups.ContainsKey("UPC"))
+                        identifierGroups["UPC"] = new List<string>();
+                    identifierGroups["UPC"].Add(identifier.UPC);
+                }
+                // EAN
+                if (!string.IsNullOrWhiteSpace(identifier.EAN))
+                {
+                    if (!identifierGroups.ContainsKey("EAN"))
+                        identifierGroups["EAN"] = new List<string>();
+                    identifierGroups["EAN"].Add(identifier.EAN);
+                }
+                // Other Identifier
+                if (!string.IsNullOrWhiteSpace(identifier.OtherIdentifier))
+                {
+                    if (!identifierGroups.ContainsKey("Other Identifier"))
+                        identifierGroups["Other Identifier"] = new List<string>();
+                    identifierGroups["Other Identifier"].Add(identifier.OtherIdentifier);
+                }
+                // Loại trừ ID như yêu cầu
+            }
+
+            if (identifierGroups.Count == 0)
+            {
+                return "Định danh";
+            }
+
+            // Tạo chuỗi kết quả: "Tên loại: giá trị1, giá trị2, ..."
+            var resultParts = identifierGroups.Select(kvp =>
+            {
+                var values = string.Join(", ", kvp.Value);
+                return $"{kvp.Key}: {values}";
+            });
+
+            return $"Định danh: {string.Join("; ", resultParts)}";
         }
 
         #endregion
