@@ -52,6 +52,7 @@
             this.ucStockInMaster1 = new Inventory.StockIn.NhapHangThuongMai.UcNhapThuongMaiMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.IdentifiterBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -70,18 +71,18 @@
             // 
             this.layoutControl1.Controls.Add(this.ucStockInDetail1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(483, 39);
+            this.layoutControl1.Location = new System.Drawing.Point(483, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(888, 753);
+            this.layoutControl1.Size = new System.Drawing.Size(888, 768);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // ucStockInDetail1
             // 
-            this.ucStockInDetail1.Location = new System.Drawing.Point(16, 16);
+            this.ucStockInDetail1.Location = new System.Drawing.Point(12, 12);
             this.ucStockInDetail1.Name = "ucStockInDetail1";
-            this.ucStockInDetail1.Size = new System.Drawing.Size(856, 721);
+            this.ucStockInDetail1.Size = new System.Drawing.Size(864, 744);
             this.ucStockInDetail1.TabIndex = 4;
             // 
             // Root
@@ -91,7 +92,7 @@
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(888, 753);
+            this.Root.Size = new System.Drawing.Size(888, 768);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -99,7 +100,7 @@
             this.layoutControlItem1.Control = this.ucStockInDetail1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(862, 727);
+            this.layoutControlItem1.Size = new System.Drawing.Size(868, 748);
             this.layoutControlItem1.TextVisible = false;
             // 
             // dockManager1
@@ -138,9 +139,10 @@
             this.CloseBarButtonItem,
             this.ThemHinhAnhBarButtonItem,
             this.HotKeyBarStaticItem,
-            this.ReloadDataSourceBarButtonItem});
+            this.ReloadDataSourceBarButtonItem,
+            this.IdentifiterBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 8;
+            this.barManager1.MaxItemId = 9;
             // 
             // bar2
             // 
@@ -153,6 +155,7 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapLaiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ReloadDataSourceBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LuuPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.IdentifiterBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.HotKeyBarStaticItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
@@ -213,7 +216,7 @@
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1371, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1371, 24);
             // 
             // barDockControlBottom
             // 
@@ -227,36 +230,36 @@
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 753);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 768);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1371, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1371, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 753);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 768);
             // 
             // dockPanel2
             // 
             this.dockPanel2.Controls.Add(this.dockPanel2_Container);
             this.dockPanel2.Dock = DevExpress.XtraBars.Docking.DockingStyle.Left;
             this.dockPanel2.ID = new System.Guid("54f2f597-37f8-4f4b-8a0d-e5c712426dc2");
-            this.dockPanel2.Location = new System.Drawing.Point(0, 39);
+            this.dockPanel2.Location = new System.Drawing.Point(0, 24);
             this.dockPanel2.Name = "dockPanel2";
             this.dockPanel2.Options.ShowCloseButton = false;
             this.dockPanel2.OriginalSize = new System.Drawing.Size(483, 200);
-            this.dockPanel2.Size = new System.Drawing.Size(483, 753);
+            this.dockPanel2.Size = new System.Drawing.Size(483, 768);
             this.dockPanel2.Text = "THÔNG TIN PHIẾU NHẬP HÀNG THƯƠNG MẠI";
             // 
             // dockPanel2_Container
             // 
             this.dockPanel2_Container.Controls.Add(this.layoutControl2);
-            this.dockPanel2_Container.Location = new System.Drawing.Point(3, 38);
+            this.dockPanel2_Container.Location = new System.Drawing.Point(3, 26);
             this.dockPanel2_Container.Name = "dockPanel2_Container";
-            this.dockPanel2_Container.Size = new System.Drawing.Size(476, 712);
+            this.dockPanel2_Container.Size = new System.Drawing.Size(476, 739);
             this.dockPanel2_Container.TabIndex = 0;
             // 
             // layoutControl2
@@ -266,15 +269,15 @@
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
             this.layoutControl2.Root = this.layoutControlGroup1;
-            this.layoutControl2.Size = new System.Drawing.Size(476, 712);
+            this.layoutControl2.Size = new System.Drawing.Size(476, 739);
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
             // 
             // ucStockInMaster1
             // 
-            this.ucStockInMaster1.Location = new System.Drawing.Point(16, 16);
+            this.ucStockInMaster1.Location = new System.Drawing.Point(12, 12);
             this.ucStockInMaster1.Name = "ucStockInMaster1";
-            this.ucStockInMaster1.Size = new System.Drawing.Size(444, 680);
+            this.ucStockInMaster1.Size = new System.Drawing.Size(452, 715);
             this.ucStockInMaster1.TabIndex = 4;
             // 
             // layoutControlGroup1
@@ -284,7 +287,7 @@
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem2});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(476, 712);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
             // 
             // layoutControlItem2
@@ -292,8 +295,15 @@
             this.layoutControlItem2.Control = this.ucStockInMaster1;
             this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(450, 686);
+            this.layoutControlItem2.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem2.TextVisible = false;
+            // 
+            // IdentifiterBarButtonItem
+            // 
+            this.IdentifiterBarButtonItem.Caption = "Định danh";
+            this.IdentifiterBarButtonItem.Id = 8;
+            this.IdentifiterBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.tag_16x16;
+            this.IdentifiterBarButtonItem.Name = "IdentifiterBarButtonItem";
             // 
             // FrmNhapKhoThuongMai
             // 
@@ -350,5 +360,6 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem IdentifiterBarButtonItem;
     }
 }

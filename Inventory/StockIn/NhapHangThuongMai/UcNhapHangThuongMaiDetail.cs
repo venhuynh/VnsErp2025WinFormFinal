@@ -1088,6 +1088,16 @@ public partial class UcNhapHangThuongMaiDetail : DevExpress.XtraEditors.XtraUser
 
     #endregion
 
+    #region ========== PUBLIC PROPERTIES ==========
+
+    /// <summary>
+    /// GridView để hiển thị danh sách chi tiết nhập kho
+    /// Expose để form cha có thể truy cập
+    /// </summary>
+    public DevExpress.XtraGrid.Views.Grid.GridView DetailGridView => StockInDetailDtoGridView;
+
+    #endregion
+
     #region ========== HELPER METHODS ==========
 
     /// <summary>

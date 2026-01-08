@@ -1,7 +1,9 @@
 using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
+using DTO.Inventory.InventoryManagement;
 using Inventory.OverlayForm;
+using Inventory.Query;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -127,6 +129,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 ReloadDataSourceBarButtonItem.ItemClick += ReloadDataSourceBarButtonItem_ItemClick;
                 LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
                 ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
+                IdentifiterBarButtonItem.ItemClick += IdentifiterBarButtonItem_ItemClick;
                 CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
                 // Form events
@@ -421,6 +424,155 @@ namespace Inventory.StockIn.NhapHangThuongMai
             {
                 _logger.Error("ThemHinhAnhBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi thêm hình ảnh: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler cho nút Định danh
+        /// Mở form quản lý định danh sản phẩm cho dòng được chọn trong detail grid
+        /// Yêu cầu: Phiếu phải được lưu trước
+        /// </summary>
+        private void IdentifiterBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Kiểm tra phiếu đã được lưu chưa
+                if (_currentStockInOutMaster == Guid.Empty)
+                {
+                    // Phiếu chưa được lưu - kiểm tra có thay đổi chưa lưu không
+                    if (_hasUnsavedChanges)
+                    {
+                        // Hỏi người dùng có muốn lưu trước không
+                        if (MsgBox.ShowYesNo(
+                                "Phiếu nhập kho chưa được lưu. Bạn có muốn lưu trước khi quản lý định danh không?",
+                                "Xác nhận",
+                                this))
+                        {
+                            // Gọi nút Lưu để lưu phiếu
+                            LuuPhieuBarButtonItem_ItemClick(null, null);
+                            
+                            // Kiểm tra lại sau khi lưu
+                            if (_currentStockInOutMaster == Guid.Empty)
+                            {
+                                MsgBox.ShowWarning(
+                                    "Không thể lấy ID phiếu nhập kho sau khi lưu. Vui lòng thử lại.",
+                                    "Cảnh báo",
+                                    this);
+                                _logger.Warning("IdentifiterBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
+                        MsgBox.ShowError(
+                            "Vui lòng nhập và lưu phiếu nhập kho trước khi quản lý định danh.",
+                            "Lỗi",
+                            this);
+                        _logger.Warning("IdentifiterBarButtonItem_ItemClick: Cannot manage identifiers - Form not saved and no unsaved changes");
+                        return;
+                    }
+                }
+
+                // Kiểm tra số lượng dòng được chọn - chỉ cho phép 1 dòng
+                var selectedCount = ucStockInDetail1.DetailGridView.SelectedRowsCount;
+                if (selectedCount == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn một sản phẩm để quản lý định danh.");
+                    return;
+                }
+
+                if (selectedCount > 1)
+                {
+                    MsgBox.ShowWarning("Chỉ cho phép quản lý định danh cho 1 sản phẩm. Vui lòng bỏ chọn bớt.");
+                    return;
+                }
+
+                // Lấy dòng được chọn từ detail grid (chỉ có 1 dòng được chọn)
+                var selectedRowHandles = ucStockInDetail1.DetailGridView.GetSelectedRows();
+                if (selectedRowHandles == null || selectedRowHandles.Length == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn một sản phẩm để quản lý định danh.");
+                    return;
+                }
+
+                var selectedRowHandle = selectedRowHandles[0];
+                if (selectedRowHandle < 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn một sản phẩm để quản lý định danh.");
+                    return;
+                }
+
+                var selectedDetail = ucStockInDetail1.DetailGridView.GetRow(selectedRowHandle) as DTO.Inventory.StockInOutDetailForUIDto;
+                if (selectedDetail == null)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin sản phẩm được chọn.");
+                    return;
+                }
+
+                // Kiểm tra ProductVariantId
+                if (selectedDetail.ProductVariantId == Guid.Empty)
+                {
+                    MsgBox.ShowWarning("Sản phẩm được chọn không có ProductVariantId hợp lệ.");
+                    return;
+                }
+
+                // Kiểm tra Id (StockInOutDetailId) - phải đã được lưu
+                if (selectedDetail.Id == Guid.Empty)
+                {
+                    MsgBox.ShowWarning("Dòng sản phẩm này chưa được lưu. Vui lòng lưu phiếu trước.");
+                    return;
+                }
+
+                // Lấy thông tin master để tạo DTO đầy đủ
+                var masterDto = ucStockInMaster1.GetDto();
+                if (masterDto == null)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin phiếu nhập kho.");
+                    return;
+                }
+
+                // Tạo StockInOutProductHistoryDto từ dữ liệu hiện tại
+                var historyDto = new StockInOutProductHistoryDto
+                {
+                    Id = selectedDetail.Id,
+                    StockInOutMasterId = _currentStockInOutMaster,
+                    VocherNumber = masterDto.VoucherNumber,
+                    StockInOutDate = masterDto.StockOutDate,
+                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapHangThuongMai,
+                    LoaiNhapXuatKhoName = "Nhập hàng thương mại",
+                    ProductVariantId = selectedDetail.ProductVariantId,
+                    ProductVariantCode = selectedDetail.ProductVariantCode,
+                    ProductVariantFullName = selectedDetail.ProductVariantName,
+                    UnitOfMeasureName = selectedDetail.UnitOfMeasureName,
+                    StockInQty = selectedDetail.StockInQty,
+                    StockOutQty = selectedDetail.StockOutQty,
+                    UnitPrice = selectedDetail.UnitPrice,
+                    Vat = selectedDetail.Vat,
+                    VatAmount = selectedDetail.VatAmount,
+                    TotalAmount = selectedDetail.TotalAmount,
+                    TotalAmountIncludedVat = selectedDetail.TotalAmountIncludedVat,
+                    WarehouseId = masterDto.WarehouseId,
+                    WarehouseName = masterDto.WarehouseName,
+                    CustomerName = masterDto.CustomerName
+                };
+
+                // Mở form quản lý định danh với OverlayManager
+                using (OverlayManager.ShowScope(this))
+                {
+                    using var form = new FrmProductVariantIdentifierAddEditFromStockInOut(historyDto);
+                    form.ShowDialog(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("IdentifiterBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi mở form quản lý định danh: {ex.Message}");
             }
         }
 
