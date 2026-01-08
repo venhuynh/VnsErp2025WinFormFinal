@@ -607,7 +607,7 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
             // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using var frmAddImages = new FrmStockInOutAddImages(stockInOutMasterId);
+                using var frmAddImages = new FrmStockInOutAddImagesFromFile(stockInOutMasterId);
                 frmAddImages.StartPosition = FormStartPosition.CenterParent;
                 frmAddImages.ShowDialog(this);
             }

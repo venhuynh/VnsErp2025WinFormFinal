@@ -498,6 +498,10 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
             _logger.Error($"SaveOrUpdate: Lỗi lưu định danh sản phẩm: {ex.Message}", ex);
             throw;
         }
+        finally
+        {
+            context.Dispose();
+        }
     }
 
 
@@ -507,17 +511,18 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
 
     /// <summary>
     /// Xóa ProductVariantIdentifier theo ID
+    /// Thực hiện soft delete bằng cách set IsActive = false
     /// </summary>
     /// <param name="id">ID của ProductVariantIdentifier cần xóa</param>
     /// <returns>True nếu xóa thành công, False nếu không tìm thấy</returns>
     public bool Delete(Guid id)
     {
         using var context = CreateNewContext();
-        var entity = context.ProductVariantIdentifiers.FirstOrDefault(pvi => pvi.Id == id);
-
         try
         {
             _logger.Debug("Delete: Xóa định danh sản phẩm, Id={0}", id);
+
+            var entity = context.ProductVariantIdentifiers.FirstOrDefault(pvi => pvi.Id == id);
 
             if (entity == null)
             {
@@ -525,20 +530,19 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
                 return false;
             }
 
-            context.ProductVariantIdentifiers.DeleteOnSubmit(entity);
-        }
-        catch (Exception ex)
-        {
             // Soft delete: Set IsActive = false thay vì xóa thực sự
             entity.IsActive = false;
             entity.UpdatedDate = DateTime.Now;
 
+            context.SubmitChanges();
+            _logger.Info("Delete: Xóa định danh sản phẩm thành công (soft delete), Id={0}", id);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Delete: Lỗi xóa định danh sản phẩm: {ex.Message}", ex);
             throw;
         }
-
-        context.SubmitChanges();
-        _logger.Info("Delete: Xóa định danh sản phẩm thành công (soft delete), Id={0}", id);
-        return true;
     }
 
     #endregion

@@ -85,6 +85,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OverlayForm\FrmStockInOutAddImagesFromWebcam.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OverlayForm\FrmStockInOutAddImagesFromWebcam.Designer.cs">
+      <DependentUpon>FrmStockInOutAddImagesFromWebcam.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierQrCode.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,11 +147,11 @@
       <DependentUpon>NOT_USE_FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
     </Compile>
     <Compile Include="ProductVariantIdentifier\ProductVariantIdentifierItem.cs" />
-    <Compile Include="OverlayForm\FrmStockInOutAddImages.cs">
+    <Compile Include="OverlayForm\FrmStockInOutAddImagesFromFile.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OverlayForm\FrmStockInOutAddImages.Designer.cs">
-      <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
+    <Compile Include="OverlayForm\FrmStockInOutAddImagesFromFile.Designer.cs">
+      <DependentUpon>FrmStockInOutAddImagesFromFile.cs</DependentUpon>
     </Compile>
     <Compile Include="OverlayForm\FrmAddStockInOutDocumentDto.cs">
       <SubType>Form</SubType>
@@ -430,6 +436,9 @@
     <Compile Include="XtraForm1.Designer.cs">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImagesFromWebcam.resx">
+      <DependentUpon>FrmStockInOutAddImagesFromWebcam.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierQrCode.resx">
       <DependentUpon>NOT_USE_FrmProductVariantIdentifierQrCode.cs</DependentUpon>
     </EmbeddedResource>
@@ -457,8 +466,8 @@
     <EmbeddedResource Include="ProductVariantIdentifier\NOT_USE_FrmProductVariantIdentifierCreateQrCode.resx">
       <DependentUpon>NOT_USE_FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImages.resx">
-      <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
+    <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImagesFromFile.resx">
+      <DependentUpon>FrmStockInOutAddImagesFromFile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OverlayForm\FrmAddStockInOutDocumentDto.resx">
       <DependentUpon>FrmAddStockInOutDocumentDto.cs</DependentUpon>
@@ -880,6 +889,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\historyitem_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Webcam2.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

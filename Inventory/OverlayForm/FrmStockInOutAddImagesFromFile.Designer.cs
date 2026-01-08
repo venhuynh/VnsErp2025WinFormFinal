@@ -7,7 +7,7 @@ using DTO.MasterData.ProductService;
 
 namespace Inventory.OverlayForm
 {
-    partial class FrmStockInOutAddImages
+    partial class FrmStockInOutAddImagesFromFile
     {
         /// <summary>
         /// Required designer variable.

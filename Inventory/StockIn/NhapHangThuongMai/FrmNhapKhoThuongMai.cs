@@ -128,7 +128,8 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 NhapLaiBarButtonItem.ItemClick += NhapLaiBarButtonItem_ItemClick;
                 ReloadDataSourceBarButtonItem.ItemClick += ReloadDataSourceBarButtonItem_ItemClick;
                 LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
-                ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
+                ThemHinhAnhTuFileBarButtonItem.ItemClick += ThemHinhAnhTuFileBarButtonItem_ItemClick;
+                ThemHinhAnhTuWebCamBarButtonItem.ItemClick += ThemHinhAnhTuWebCamBarButtonItem_ItemClick;
                 IdentifiterBarButtonItem.ItemClick += IdentifiterBarButtonItem_ItemClick;
                 CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
@@ -353,9 +354,9 @@ namespace Inventory.StockIn.NhapHangThuongMai
         }
 
         /// <summary>
-        /// Event handler cho nút Thêm hình ảnh
+        /// Event handler cho nút Thêm hình ảnh từ file
         /// </summary>
-        private void ThemHinhAnhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ThemHinhAnhTuFileBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
@@ -394,7 +395,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                             "Vui lòng nhập và lưu phiếu nhập kho trước khi thêm hình ảnh.",
                             "Lỗi",
                             this);
-                        _logger.Warning("ThemHinhAnhBarButtonItem_ItemClick: Cannot add images - Form not saved and no unsaved changes");
+                        _logger.Warning("ThemHinhAnhTuFileBarButtonItem_ItemClick: Cannot add images - Form not saved and no unsaved changes");
                         return;
                     }
                 }
@@ -406,14 +407,14 @@ namespace Inventory.StockIn.NhapHangThuongMai
                         "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
                         "Cảnh báo",
                         this);
-                    _logger.Warning("ThemHinhAnhBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
+                    _logger.Warning("ThemHinhAnhTuFileBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
                     return;
                 }
 
                 // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var frmAddImages = new FrmStockInOutAddImages(stockInOutMasterId))
+                    using (var frmAddImages = new FrmStockInOutAddImagesFromFile(stockInOutMasterId))
                     {
                         frmAddImages.StartPosition = FormStartPosition.CenterParent;
                         frmAddImages.ShowDialog(this);
@@ -422,8 +423,83 @@ namespace Inventory.StockIn.NhapHangThuongMai
             }
             catch (Exception ex)
             {
-                _logger.Error("ThemHinhAnhBarButtonItem_ItemClick: Exception occurred", ex);
+                _logger.Error("ThemHinhAnhTuFileBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi thêm hình ảnh: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler cho nút Thêm hình ảnh từ webcam
+        /// </summary>
+        private void ThemHinhAnhTuWebCamBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Lấy StockInOutMasterId từ _currentStockInOutMaster (phải đã được lưu)
+                Guid stockInOutMasterId = Guid.Empty;
+
+                // Kiểm tra phiếu đã được lưu chưa
+                if (_currentStockInOutMaster != Guid.Empty)
+                {
+                    stockInOutMasterId = _currentStockInOutMaster;
+                }
+                else
+                {
+                    // Phiếu chưa được lưu - kiểm tra có thay đổi chưa lưu không
+                    if (_hasUnsavedChanges)
+                    {
+                        // Hỏi người dùng có muốn lưu trước không
+                        if (MsgBox.ShowYesNo(
+                                "Phiếu nhập kho chưa được lưu. Bạn có muốn lưu trước khi thêm hình ảnh không?",
+                                "Xác nhận",
+                                this))
+                        {
+                            // Gọi nút Lưu để lưu phiếu
+                            LuuPhieuBarButtonItem_ItemClick(null, null);
+                            
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
+                        MsgBox.ShowError(
+                            "Vui lòng nhập và lưu phiếu nhập kho trước khi thêm hình ảnh.",
+                            "Lỗi",
+                            this);
+                        _logger.Warning("ThemHinhAnhTuWebCamBarButtonItem_ItemClick: Cannot add images - Form not saved and no unsaved changes");
+                        return;
+                    }
+                }
+
+                // Kiểm tra lại StockInOutMasterId sau khi lưu (nếu có)
+                if (stockInOutMasterId == Guid.Empty)
+                {
+                    MsgBox.ShowWarning(
+                        "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
+                        "Cảnh báo",
+                        this);
+                    _logger.Warning("ThemHinhAnhTuWebCamBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
+                    return;
+                }
+
+                // Mở form thêm hình ảnh từ webcam với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var frmAddImages = new FrmStockInOutAddImagesFromWebcam(stockInOutMasterId))
+                    {
+                        frmAddImages.StartPosition = FormStartPosition.CenterParent;
+                        frmAddImages.ShowDialog(this);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ThemHinhAnhTuWebCamBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi thêm hình ảnh từ webcam: {ex.Message}");
             }
         }
 
@@ -621,7 +697,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     case Keys.F5:
                         // F5: Thêm hình ảnh
                         e.Handled = true;
-                        ThemHinhAnhBarButtonItem_ItemClick(null, null);
+                        ThemHinhAnhTuFileBarButtonItem_ItemClick(null, null);
                         break;
 
                     case Keys.Escape:

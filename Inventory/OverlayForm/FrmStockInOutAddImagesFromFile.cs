@@ -15,7 +15,7 @@ namespace Inventory.OverlayForm
     /// Form thêm hình ảnh cho phiếu nhập/xuất kho.
     /// Cung cấp chức năng chọn và upload nhiều hình ảnh cho phiếu nhập/xuất kho.
     /// </summary>
-    public partial class FrmStockInOutAddImages : XtraForm
+    public partial class FrmStockInOutAddImagesFromFile : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -37,7 +37,7 @@ namespace Inventory.OverlayForm
         /// Constructor với StockInOutMasterId
         /// </summary>
         /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
-        public FrmStockInOutAddImages(Guid stockInOutMasterId)
+        public FrmStockInOutAddImagesFromFile(Guid stockInOutMasterId)
         {
             InitializeComponent();
             StockInOutMasterId = stockInOutMasterId;

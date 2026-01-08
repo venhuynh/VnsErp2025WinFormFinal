@@ -39,7 +39,10 @@
             this.NhapLaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ReloadDataSourceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.LuuPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.IdentifiterBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.AddImagesBarSubItem = new DevExpress.XtraBars.BarSubItem();
+            this.ThemHinhAnhTuFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ThemHinhAnhTuWebCamBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
@@ -52,7 +55,6 @@
             this.ucStockInMaster1 = new Inventory.StockIn.NhapHangThuongMai.UcNhapThuongMaiMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.IdentifiterBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -137,12 +139,14 @@
             this.NhapLaiBarButtonItem,
             this.LuuPhieuBarButtonItem,
             this.CloseBarButtonItem,
-            this.ThemHinhAnhBarButtonItem,
+            this.ThemHinhAnhTuFileBarButtonItem,
             this.HotKeyBarStaticItem,
             this.ReloadDataSourceBarButtonItem,
-            this.IdentifiterBarButtonItem});
+            this.IdentifiterBarButtonItem,
+            this.AddImagesBarSubItem,
+            this.ThemHinhAnhTuWebCamBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 9;
+            this.barManager1.MaxItemId = 11;
             // 
             // bar2
             // 
@@ -156,7 +160,7 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ReloadDataSourceBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LuuPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.IdentifiterBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddImagesBarSubItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.HotKeyBarStaticItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
@@ -186,13 +190,37 @@
             this.LuuPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.save_16x16;
             this.LuuPhieuBarButtonItem.Name = "LuuPhieuBarButtonItem";
             // 
-            // ThemHinhAnhBarButtonItem
+            // IdentifiterBarButtonItem
             // 
-            this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
-            this.ThemHinhAnhBarButtonItem.Id = 5;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
-            this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
+            this.IdentifiterBarButtonItem.Caption = "Định danh";
+            this.IdentifiterBarButtonItem.Id = 8;
+            this.IdentifiterBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.tag_16x16;
+            this.IdentifiterBarButtonItem.Name = "IdentifiterBarButtonItem";
+            // 
+            // AddImagesBarSubItem
+            // 
+            this.AddImagesBarSubItem.Caption = "Thêm hình ảnh";
+            this.AddImagesBarSubItem.Id = 9;
+            this.AddImagesBarSubItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
+            this.AddImagesBarSubItem.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhTuFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.ThemHinhAnhTuWebCamBarButtonItem)});
+            this.AddImagesBarSubItem.Name = "AddImagesBarSubItem";
+            // 
+            // ThemHinhAnhTuFileBarButtonItem
+            // 
+            this.ThemHinhAnhTuFileBarButtonItem.Caption = "Từ file";
+            this.ThemHinhAnhTuFileBarButtonItem.Id = 5;
+            this.ThemHinhAnhTuFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.attachment_16x16;
+            this.ThemHinhAnhTuFileBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
+            this.ThemHinhAnhTuFileBarButtonItem.Name = "ThemHinhAnhTuFileBarButtonItem";
+            // 
+            // ThemHinhAnhTuWebCamBarButtonItem
+            // 
+            this.ThemHinhAnhTuWebCamBarButtonItem.Caption = "Từ Webcam";
+            this.ThemHinhAnhTuWebCamBarButtonItem.Id = 10;
+            this.ThemHinhAnhTuWebCamBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.Webcam2;
+            this.ThemHinhAnhTuWebCamBarButtonItem.Name = "ThemHinhAnhTuWebCamBarButtonItem";
             // 
             // CloseBarButtonItem
             // 
@@ -298,13 +326,6 @@
             this.layoutControlItem2.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem2.TextVisible = false;
             // 
-            // IdentifiterBarButtonItem
-            // 
-            this.IdentifiterBarButtonItem.Caption = "Định danh";
-            this.IdentifiterBarButtonItem.Id = 8;
-            this.IdentifiterBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.tag_16x16;
-            this.IdentifiterBarButtonItem.Name = "IdentifiterBarButtonItem";
-            // 
             // FrmNhapKhoThuongMai
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -355,11 +376,13 @@
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem ThemHinhAnhTuFileBarButtonItem;
         private UcNhapHangThuongMaiDetail ucStockInDetail1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem IdentifiterBarButtonItem;
+        private DevExpress.XtraBars.BarSubItem AddImagesBarSubItem;
+        private DevExpress.XtraBars.BarButtonItem ThemHinhAnhTuWebCamBarButtonItem;
     }
 }

@@ -637,7 +637,7 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
             // Mở form thêm hình ảnh với OverlayManager
             using (OverlayManager.ShowScope(this))
             {
-                using var form = new FrmStockInOutAddImages(_selectedStockInOutMasterId.Value);
+                using var form = new FrmStockInOutAddImagesFromFile(_selectedStockInOutMasterId.Value);
                 form.StartPosition = FormStartPosition.CenterParent;
                 form.ShowDialog(this);
             }
