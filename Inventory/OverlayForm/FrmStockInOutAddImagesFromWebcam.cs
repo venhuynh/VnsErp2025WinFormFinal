@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DTO.Inventory.Query;
 
 namespace Inventory.OverlayForm
 {
@@ -42,24 +43,16 @@ namespace Inventory.OverlayForm
         /// </summary>
         private readonly ILogger _logger = LoggerFactory.CreateLogger(LogCategory.UI);
 
-        /// <summary>
-        /// Danh sách ảnh đã chụp (chưa lưu)
-        /// </summary>
-        private List<CapturedImage> _capturedImages = new List<CapturedImage>();
-
-        #endregion
-
-        #region ========== NESTED CLASS ==========
 
         /// <summary>
-        /// Class lưu thông tin ảnh đã chụp
+        /// Ảnh hiện tại đã chụp (chưa thêm vào danh sách)
         /// </summary>
-        private class CapturedImage
-        {
-            public byte[] ImageData { get; set; }
-            public DateTime CaptureTime { get; set; }
-            public string FileName { get; set; }
-        }
+        private StockInOutImageDto _currentImageDto;
+
+        /// <summary>
+        /// Bitmap snapshot hiện tại để hiển thị preview (dùng cho xoay ảnh)
+        /// </summary>
+        private Bitmap _currentSnapshot;
 
         #endregion
 
@@ -106,15 +99,11 @@ namespace Inventory.OverlayForm
         {
             try
             {
-                // CameraControl events - Double click để chụp ảnh
-                if (cameraControl1 != null)
-                {
-                    cameraControl1.DoubleClick += CameraControl1_DoubleClick;
-                }
-
+                CaptureBarButtonItem.ItemClick += CaptureBarButtonItem_Click;
+                
+                
                 // Bar button events
                 SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
-                CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
                 // Form events
                 FormClosing += FrmStockInOutAddImagesFromWebcam_FormClosing;
@@ -124,6 +113,7 @@ namespace Inventory.OverlayForm
                 _logger.Error($"Lỗi khởi tạo events: {ex.Message}", ex);
             }
         }
+
 
         /// <summary>
         /// Event handler khi form được load
@@ -159,14 +149,14 @@ namespace Inventory.OverlayForm
         /// <summary>
         /// Load và hiển thị thông tin phiếu nhập/xuất
         /// </summary>
-        private async Task LoadStockInOutInfoAsync()
+        private Task LoadStockInOutInfoAsync()
         {
             try
             {
                 if (_stockInOutBll == null || StockInOutMasterId == Guid.Empty)
                 {
                     StockInOutInfoSimpleLabelItem.Text = @"<color='Gray'><i>Không có thông tin phiếu nhập/xuất</i></color>";
-                    return;
+                    return Task.CompletedTask;
                 }
 
                 // Lấy thông tin phiếu từ BLL
@@ -174,7 +164,7 @@ namespace Inventory.OverlayForm
                 if (masterDto == null)
                 {
                     StockInOutInfoSimpleLabelItem.Text = @"<color='Gray'><i>Không tìm thấy thông tin phiếu nhập/xuất</i></color>";
-                    return;
+                    return Task.CompletedTask;
                 }
 
                 // Format thông tin phiếu dưới dạng HTML
@@ -185,6 +175,8 @@ namespace Inventory.OverlayForm
             {
                 StockInOutInfoSimpleLabelItem.Text = $@"<color='Red'>Lỗi: {ex.Message}</color>";
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -270,22 +262,12 @@ namespace Inventory.OverlayForm
 
         #region ========== CAMERA EVENTS ==========
 
-        /// <summary>
-        /// Event handler khi double click trên CameraControl để chụp ảnh
-        /// </summary>
-        private void CameraControl1_DoubleClick(object sender, EventArgs e)
-        {
-            CaptureImageFromCamera();
-        }
-
-        #endregion
-
-        #region ========== CAMERA METHODS ==========
 
         /// <summary>
-        /// Chụp ảnh từ camera và thêm vào danh sách
+        /// Event handler khi click vào CaptureHyperlinkLabelControl để chụp ảnh
+        /// Chỉ chụp và hiển thị trên camera control, không thêm vào danh sách
         /// </summary>
-        private void CaptureImageFromCamera()
+        private void CaptureBarButtonItem_Click(object sender, EventArgs e)
         {
             try
             {
@@ -296,7 +278,7 @@ namespace Inventory.OverlayForm
                 }
 
                 // Chụp ảnh từ camera sử dụng TakeSnapshot method
-                Bitmap snapshot = null;
+                Bitmap snapshot;
                 try
                 {
                     snapshot = cameraControl1.TakeSnapshot();
@@ -314,51 +296,142 @@ namespace Inventory.OverlayForm
                     return;
                 }
 
+                // Lưu snapshot để có thể xoay sau này
+                if (_currentSnapshot != null)
+                {
+                    _currentSnapshot.Dispose();
+                }
+                _currentSnapshot = new Bitmap(snapshot); // Clone snapshot để giữ lại
+
+
                 // Chuyển đổi Image sang byte array
                 byte[] imageBytes;
-                using (snapshot)
                 using (var ms = new MemoryStream())
                 {
                     // Lưu dưới dạng JPEG với chất lượng 90%
                     var jpegCodec = ImageCodecInfo.GetImageEncoders().FirstOrDefault(c => c.FormatID == ImageFormat.Jpeg.Guid);
-                    var encoderParams = new EncoderParameters(1);
-                    // Sử dụng System.Drawing.Imaging.Encoder để tránh ambiguous
-                    encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 90);
 
                     if (jpegCodec != null)
                     {
-                        snapshot.Save(ms, jpegCodec, encoderParams);
+                        using var encoderParams = new EncoderParameters(1);
+                        encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 90L);
+                        _currentSnapshot.Save(ms, jpegCodec, encoderParams);
                     }
                     else
                     {
-                        snapshot.Save(ms, ImageFormat.Jpeg);
+                        _currentSnapshot.Save(ms, ImageFormat.Jpeg);
                     }
 
                     imageBytes = ms.ToArray();
                 }
 
-                // Thêm vào danh sách ảnh đã chụp
-                var capturedImage = new CapturedImage
+                // Tạo StockInOutImageDto từ ảnh đã chụp (chưa thêm vào danh sách)
+                var captureTime = DateTime.Now;
+                _currentImageDto = new StockInOutImageDto
                 {
+                    Id = Guid.NewGuid(),
+                    StockInOutMasterId = StockInOutMasterId,
                     ImageData = imageBytes,
-                    CaptureTime = DateTime.Now,
-                    FileName = $"Webcam_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}.jpg"
+                    FileName = $"Webcam_{captureTime:yyyyMMddHHmmss}_{Guid.NewGuid():N}.jpg",
+                    FileSize = imageBytes.Length,
+                    CreateDate = captureTime,
+                    FileExtension = ".jpg",
+                    MimeType = "image/jpeg"
                 };
 
-                _capturedImages.Add(capturedImage);
+                // Thêm vào datasource và hiển thị trên gridview
+                if (stockInOutImageDtoBindingSource != null)
+                {
+                    // Lấy danh sách hiện tại từ BindingSource
+                    if (stockInOutImageDtoBindingSource.DataSource is not List<StockInOutImageDto> currentList)
+                    {
+                        // Nếu chưa có danh sách, tạo mới
+                        currentList = new List<StockInOutImageDto>();
+                        stockInOutImageDtoBindingSource.DataSource = currentList;
+                    }
 
-                // Cập nhật grid hiển thị
-                RefreshCapturedImagesGrid();
+                    // Thêm ảnh mới vào danh sách
+                    currentList.Add(_currentImageDto);
+                    stockInOutImageDtoBindingSource.ResetBindings(false);
+
+                    // Refresh grid để hiển thị
+                    StockInOutImageGridView.RefreshData();
+
+                    // Cập nhật thống kê
+                    var totalCount = currentList.Count;
+
+                    _logger.Info($"Đã thêm ảnh vào datasource và hiển thị trên gridview, TotalCount={totalCount}");
+                }
+                else
+                {
+                    _logger.Warning("stockInOutImageDtoBindingSource chưa được khởi tạo, không thể thêm vào gridview.");
+                }
 
                 // Hiển thị thông báo
-                MsgBox.ShowSuccess($"Đã chụp ảnh thành công! (Tổng: {_capturedImages.Count} ảnh)");
+                MsgBox.ShowSuccess("Đã chụp ảnh thành công! Bạn có thể xoay ảnh nếu cần, sau đó nhấn 'Thêm vào' để thêm vào danh sách.");
 
-                _logger.Info($"Đã chụp ảnh từ webcam, Size={imageBytes.Length} bytes, TotalCaptured={_capturedImages.Count}");
+                _logger.Info($"Đã chụp ảnh từ webcam để preview, Size={imageBytes.Length} bytes");
             }
             catch (Exception ex)
             {
                 _logger.Error($"Lỗi khi chụp ảnh từ camera: {ex.Message}", ex);
                 MsgBox.ShowError($"Lỗi chụp ảnh: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi click vào AddToGridViewHyperlinkLabelControl để thêm ảnh vào danh sách
+        /// </summary>
+        private void AddToGridViewHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_currentImageDto == null)
+                {
+                    MsgBox.ShowWarning("Chưa có ảnh nào được chụp. Vui lòng chụp ảnh trước khi thêm vào danh sách.");
+                    return;
+                }
+
+                // Thêm vào stockInOutImageDtoBindingSource
+                if (stockInOutImageDtoBindingSource == null)
+                {
+                    _logger.Error("stockInOutImageDtoBindingSource chưa được khởi tạo.");
+                    MsgBox.ShowError("Lỗi: BindingSource chưa được khởi tạo.");
+                    return;
+                }
+
+                // Lấy danh sách hiện tại từ BindingSource
+                if (stockInOutImageDtoBindingSource.DataSource is not List<StockInOutImageDto> currentList)
+                {
+                    // Nếu chưa có danh sách, tạo mới
+                    currentList = new List<StockInOutImageDto>();
+                    stockInOutImageDtoBindingSource.DataSource = currentList;
+                }
+
+                // Thêm ảnh mới vào danh sách
+                currentList.Add(_currentImageDto);
+                stockInOutImageDtoBindingSource.ResetBindings(false);
+
+                // Clear ảnh hiện tại
+                _currentImageDto = null;
+                if (_currentSnapshot != null)
+                {
+                    _currentSnapshot.Dispose();
+                    _currentSnapshot = null;
+                }
+
+                // Cập nhật thống kê
+                var totalCount = currentList.Count;
+
+                // Hiển thị thông báo
+                MsgBox.ShowSuccess($"Đã thêm ảnh vào danh sách! (Tổng: {totalCount} ảnh)");
+
+                _logger.Info($"Đã thêm ảnh vào danh sách, TotalCaptured={totalCount}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi thêm ảnh vào danh sách: {ex.Message}", ex);
+                MsgBox.ShowError($"Lỗi thêm ảnh: {ex.Message}");
             }
         }
 
@@ -375,33 +448,20 @@ namespace Inventory.OverlayForm
         }
 
         /// <summary>
-        /// Event handler cho nút Đóng
-        /// </summary>
-        private void CloseBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            try
-            {
-                Close();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("CloseBarButtonItem_ItemClick: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi đóng form: {ex.Message}");
-            }
-        }
-
-        /// <summary>
         /// Event handler khi form đang đóng
         /// </summary>
         private void FrmStockInOutAddImagesFromWebcam_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
-                // Kiểm tra có ảnh chưa lưu không
-                if (_capturedImages.Count > 0)
+                // Kiểm tra nếu có ảnh chưa lưu trong BindingSource
+                var currentList = stockInOutImageDtoBindingSource?.DataSource as List<StockInOutImageDto>;
+                var unsavedCount = currentList?.Count ?? 0;
+                
+                if (unsavedCount > 0)
                 {
                     var result = MsgBox.ShowYesNo(
-                        $"Bạn có {_capturedImages.Count} ảnh chưa lưu. Bạn có muốn đóng form không?",
+                        $"Bạn có {unsavedCount} ảnh chưa lưu. Bạn có muốn đóng form không?",
                         "Xác nhận đóng",
                         this);
 
@@ -425,12 +485,24 @@ namespace Inventory.OverlayForm
                         _logger.Warning($"Lỗi khi dừng camera: {stopEx.Message}");
                     }
                 }
+
+                // Dispose snapshot nếu có
+                if (_currentSnapshot != null)
+                {
+                    _currentSnapshot.Dispose();
+                    _currentSnapshot = null;
+                }
+
             }
             catch (Exception ex)
             {
                 _logger.Error("FrmStockInOutAddImagesFromWebcam_FormClosing: Exception occurred", ex);
             }
         }
+
+        #endregion
+
+        #region ========== GRID EVENTS ==========
 
         #endregion
 
@@ -460,14 +532,16 @@ namespace Inventory.OverlayForm
                         
                         BeginInvoke(new Action(() =>
                         {
-                            // Hiển thị danh sách rỗng tạm thời
-                            var imageList = new List<object>();
+                            // Hiển thị danh sách rỗng tạm thời (sử dụng stockInOutImageDtoBindingSource)
+                            var imageList = new List<StockInOutImageDto>();
 
-                            StockInOutImageGridControl.DataSource = imageList;
-                            StockInOutImageGridControl.RefreshDataSource();
+                            if (stockInOutImageDtoBindingSource != null)
+                            {
+                                stockInOutImageDtoBindingSource.DataSource = imageList;
+                                stockInOutImageDtoBindingSource.ResetBindings(false);
+                            }
 
-                            // Cập nhật thống kê
-                            SoLuongTaoQrCodeBarStaticItem.Caption = $"Số lượng ảnh đã lưu: <b><color='Blue'>0</color></b>";
+                            
                         }));
                     }
                     catch (Exception ex)
@@ -482,6 +556,7 @@ namespace Inventory.OverlayForm
             }
         }
 
+
         /// <summary>
         /// Refresh grid hiển thị danh sách ảnh đã chụp
         /// </summary>
@@ -489,21 +564,15 @@ namespace Inventory.OverlayForm
         {
             try
             {
-                // Tạo danh sách DTO từ captured images để hiển thị trong grid
-                var imageList = _capturedImages.Select((img, index) => new
-                {
-                    Index = index + 1,
-                    FileName = img.FileName,
-                    CaptureTime = img.CaptureTime,
-                    Size = img.ImageData.Length,
-                    ImageData = img.ImageData
-                }).ToList();
+                if (stockInOutImageDtoBindingSource == null) return;
 
-                StockInOutImageGridControl.DataSource = imageList;
-                StockInOutImageGridControl.RefreshDataSource();
+                // Reset bindings để cập nhật grid
+                stockInOutImageDtoBindingSource.ResetBindings(false);
+                StockInOutImageGridView.RefreshData();
 
                 // Cập nhật thống kê
-                SoLuongNhapXuatBarStaticItem.Caption = $"Số lượng ảnh đã chụp: <b><color='Blue'>{_capturedImages.Count}</color></b>";
+                var currentList = stockInOutImageDtoBindingSource.DataSource as List<StockInOutImageDto>;
+                var totalCount = currentList?.Count ?? 0;
             }
             catch (Exception ex)
             {

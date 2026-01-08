@@ -1,4 +1,4 @@
-﻿using DevExpress.XtraBars;
+using DevExpress.XtraBars;
 using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
@@ -37,64 +37,45 @@ namespace Inventory.OverlayForm
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition5 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition6 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition3 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition4 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition1 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition2 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition3 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition4 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition1 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition2 = new DevExpress.XtraLayout.RowDefinition();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
+            this.CaptureBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XoaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.SaveBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
-            this.SoLuongNhapXuatBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
-            this.SoLuongTaoQrCodeBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
             this.cameraControl1 = new DevExpress.XtraEditors.Camera.CameraControl();
             this.StockInOutImageGridControl = new DevExpress.XtraGrid.GridControl();
+            this.stockInOutImageDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.StockInOutImageGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colCaptureTime = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colSize = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colImageData = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.StockInOutInfoSimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
-            this.productVariantIdentifierItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.CaptureHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.hyperlinkLabelControl11 = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.hyperlinkLabelControl12 = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.hyperlinkLabelControl13 = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem6 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutImageGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutImageDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutImageGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutInfoSimpleLabelItem)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierItemBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -108,12 +89,10 @@ namespace Inventory.OverlayForm
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.SaveBarButtonItem,
-            this.CloseBarButtonItem,
-            this.barHeaderItem1,
-            this.SoLuongNhapXuatBarStaticItem,
-            this.SoLuongTaoQrCodeBarStaticItem});
+            this.CaptureBarButtonItem,
+            this.XoaBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 8;
+            this.barManager1.MaxItemId = 10;
             // 
             // bar2
             // 
@@ -123,11 +102,25 @@ namespace Inventory.OverlayForm
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SaveBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CaptureBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.XoaBarButtonItem),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SaveBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
+            // 
+            // CaptureBarButtonItem
+            // 
+            this.CaptureBarButtonItem.Caption = "Chụp";
+            this.CaptureBarButtonItem.Id = 8;
+            this.CaptureBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.Webcam2;
+            this.CaptureBarButtonItem.Name = "CaptureBarButtonItem";
+            // 
+            // XoaBarButtonItem
+            // 
+            this.XoaBarButtonItem.Caption = "Xóa";
+            this.XoaBarButtonItem.Id = 9;
+            this.XoaBarButtonItem.Name = "XoaBarButtonItem";
             // 
             // SaveBarButtonItem
             // 
@@ -135,13 +128,6 @@ namespace Inventory.OverlayForm
             this.SaveBarButtonItem.Id = 0;
             this.SaveBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.save_16x16;
             this.SaveBarButtonItem.Name = "SaveBarButtonItem";
-            // 
-            // CloseBarButtonItem
-            // 
-            this.CloseBarButtonItem.Caption = "Đóng";
-            this.CloseBarButtonItem.Id = 1;
-            this.CloseBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.cancel_16x16;
-            this.CloseBarButtonItem.Name = "CloseBarButtonItem";
             // 
             // barDockControlTop
             // 
@@ -175,25 +161,6 @@ namespace Inventory.OverlayForm
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 644);
             // 
-            // barHeaderItem1
-            // 
-            this.barHeaderItem1.Caption = "Tổng kết";
-            this.barHeaderItem1.Id = 5;
-            this.barHeaderItem1.Name = "barHeaderItem1";
-            // 
-            // SoLuongNhapXuatBarStaticItem
-            // 
-            this.SoLuongNhapXuatBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.SoLuongNhapXuatBarStaticItem.Caption = "Số lượng nhập xuất";
-            this.SoLuongNhapXuatBarStaticItem.Id = 6;
-            this.SoLuongNhapXuatBarStaticItem.Name = "SoLuongNhapXuatBarStaticItem";
-            // 
-            // SoLuongTaoQrCodeBarStaticItem
-            // 
-            this.SoLuongTaoQrCodeBarStaticItem.Caption = "Số lượng đã tạo QR Code";
-            this.SoLuongTaoQrCodeBarStaticItem.Id = 7;
-            this.SoLuongTaoQrCodeBarStaticItem.Name = "SoLuongTaoQrCodeBarStaticItem";
-            // 
             // dxErrorProvider1
             // 
             this.dxErrorProvider1.ContainerControl = this;
@@ -216,12 +183,8 @@ namespace Inventory.OverlayForm
             // 
             // dataLayoutControl1
             // 
-            this.dataLayoutControl1.Controls.Add(this.CaptureHyperlinkLabelControl);
             this.dataLayoutControl1.Controls.Add(this.cameraControl1);
             this.dataLayoutControl1.Controls.Add(this.StockInOutImageGridControl);
-            this.dataLayoutControl1.Controls.Add(this.hyperlinkLabelControl11);
-            this.dataLayoutControl1.Controls.Add(this.hyperlinkLabelControl12);
-            this.dataLayoutControl1.Controls.Add(this.hyperlinkLabelControl13);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
@@ -232,15 +195,16 @@ namespace Inventory.OverlayForm
             // 
             // cameraControl1
             // 
-            this.cameraControl1.Location = new System.Drawing.Point(24, 99);
+            this.cameraControl1.Location = new System.Drawing.Point(12, 29);
             this.cameraControl1.Name = "cameraControl1";
-            this.cameraControl1.Size = new System.Drawing.Size(520, 521);
+            this.cameraControl1.Size = new System.Drawing.Size(544, 603);
             this.cameraControl1.StyleController = this.dataLayoutControl1;
             this.cameraControl1.TabIndex = 41;
             this.cameraControl1.Text = "cameraControl1";
             // 
             // StockInOutImageGridControl
             // 
+            this.StockInOutImageGridControl.DataSource = this.stockInOutImageDtoBindingSource;
             this.StockInOutImageGridControl.Location = new System.Drawing.Point(560, 12);
             this.StockInOutImageGridControl.MainView = this.StockInOutImageGridView;
             this.StockInOutImageGridControl.MenuManager = this.barManager1;
@@ -250,10 +214,90 @@ namespace Inventory.OverlayForm
             this.StockInOutImageGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.StockInOutImageGridView});
             // 
+            // stockInOutImageDtoBindingSource
+            // 
+            this.stockInOutImageDtoBindingSource.DataSource = typeof(DTO.Inventory.Query.StockInOutImageDto);
+            // 
             // StockInOutImageGridView
             // 
+            this.StockInOutImageGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colCaptureTime,
+            this.colSize,
+            this.colImageData});
             this.StockInOutImageGridView.GridControl = this.StockInOutImageGridControl;
             this.StockInOutImageGridView.Name = "StockInOutImageGridView";
+            this.StockInOutImageGridView.OptionsSelection.MultiSelect = true;
+            this.StockInOutImageGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.StockInOutImageGridView.OptionsView.ShowGroupPanel = false;
+            this.StockInOutImageGridView.RowHeight = 85;
+            // 
+            // colCaptureTime
+            // 
+            this.colCaptureTime.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colCaptureTime.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colCaptureTime.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colCaptureTime.AppearanceHeader.Options.UseBackColor = true;
+            this.colCaptureTime.AppearanceHeader.Options.UseFont = true;
+            this.colCaptureTime.AppearanceHeader.Options.UseForeColor = true;
+            this.colCaptureTime.AppearanceHeader.Options.UseTextOptions = true;
+            this.colCaptureTime.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colCaptureTime.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCaptureTime.Caption = "Thời gian chụp";
+            this.colCaptureTime.DisplayFormat.FormatString = "dd/MM/yyyy HH:mm:ss";
+            this.colCaptureTime.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.colCaptureTime.FieldName = "CreateDate";
+            this.colCaptureTime.Name = "colCaptureTime";
+            this.colCaptureTime.OptionsColumn.AllowEdit = false;
+            this.colCaptureTime.OptionsColumn.ReadOnly = true;
+            this.colCaptureTime.Visible = true;
+            this.colCaptureTime.VisibleIndex = 3;
+            this.colCaptureTime.Width = 150;
+            // 
+            // colSize
+            // 
+            this.colSize.AppearanceCell.Options.UseTextOptions = true;
+            this.colSize.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colSize.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colSize.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colSize.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colSize.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colSize.AppearanceHeader.Options.UseBackColor = true;
+            this.colSize.AppearanceHeader.Options.UseFont = true;
+            this.colSize.AppearanceHeader.Options.UseForeColor = true;
+            this.colSize.AppearanceHeader.Options.UseTextOptions = true;
+            this.colSize.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colSize.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colSize.Caption = "Kích thước (bytes)";
+            this.colSize.DisplayFormat.FormatString = "N0";
+            this.colSize.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colSize.FieldName = "FileSizeDisplay";
+            this.colSize.Name = "colSize";
+            this.colSize.OptionsColumn.AllowEdit = false;
+            this.colSize.OptionsColumn.ReadOnly = true;
+            this.colSize.Visible = true;
+            this.colSize.VisibleIndex = 2;
+            this.colSize.Width = 120;
+            // 
+            // colImageData
+            // 
+            this.colImageData.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colImageData.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colImageData.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colImageData.AppearanceHeader.Options.UseBackColor = true;
+            this.colImageData.AppearanceHeader.Options.UseFont = true;
+            this.colImageData.AppearanceHeader.Options.UseForeColor = true;
+            this.colImageData.AppearanceHeader.Options.UseTextOptions = true;
+            this.colImageData.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colImageData.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colImageData.Caption = "Hình ảnh";
+            this.colImageData.FieldName = "ImageData";
+            this.colImageData.ImageOptions.SvgImageSize = new System.Drawing.Size(0, 60);
+            this.colImageData.Name = "colImageData";
+            this.colImageData.OptionsColumn.AllowEdit = false;
+            this.colImageData.OptionsColumn.ReadOnly = true;
+            this.colImageData.Visible = true;
+            this.colImageData.VisibleIndex = 1;
+            this.colImageData.Width = 200;
             // 
             // Root
             // 
@@ -262,35 +306,25 @@ namespace Inventory.OverlayForm
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.StockInOutInfoSimpleLabelItem,
             this.layoutControlItem2,
-            this.layoutControlGroup1});
+            this.layoutControlItem1});
             this.Root.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             this.Root.Name = "Root";
-            columnDefinition5.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition5.Width = 100D;
-            columnDefinition6.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition6.Width = 100D;
+            columnDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition1.Width = 100D;
+            columnDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition2.Width = 100D;
             this.Root.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] {
-            columnDefinition5,
-            columnDefinition6});
-            rowDefinition3.Height = 17D;
-            rowDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition4.Height = 607D;
-            rowDefinition4.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            columnDefinition1,
+            columnDefinition2});
+            rowDefinition1.Height = 17D;
+            rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            rowDefinition2.Height = 607D;
+            rowDefinition2.SizeType = System.Windows.Forms.SizeType.AutoSize;
             this.Root.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
-            rowDefinition3,
-            rowDefinition4});
+            rowDefinition1,
+            rowDefinition2});
             this.Root.Size = new System.Drawing.Size(1116, 644);
             this.Root.TextVisible = false;
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.StockInOutImageGridControl;
-            this.layoutControlItem2.Location = new System.Drawing.Point(548, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.OptionsTableLayoutItem.ColumnIndex = 1;
-            this.layoutControlItem2.OptionsTableLayoutItem.RowSpan = 2;
-            this.layoutControlItem2.Size = new System.Drawing.Size(548, 624);
-            this.layoutControlItem2.TextVisible = false;
             // 
             // StockInOutInfoSimpleLabelItem
             // 
@@ -310,150 +344,24 @@ namespace Inventory.OverlayForm
             this.StockInOutInfoSimpleLabelItem.Text = "Thông tin sản phẩm ";
             this.StockInOutInfoSimpleLabelItem.TextSize = new System.Drawing.Size(97, 13);
             // 
-            // productVariantIdentifierItemBindingSource
+            // layoutControlItem2
             // 
-            this.productVariantIdentifierItemBindingSource.DataSource = typeof(Inventory.ProductVariantIdentifier.ProductVariantIdentifierItem);
-            // 
-            // CaptureHyperlinkLabelControl
-            // 
-            this.CaptureHyperlinkLabelControl.Location = new System.Drawing.Point(65, 62);
-            this.CaptureHyperlinkLabelControl.Name = "CaptureHyperlinkLabelControl";
-            this.CaptureHyperlinkLabelControl.Padding = new System.Windows.Forms.Padding(10);
-            this.CaptureHyperlinkLabelControl.Size = new System.Drawing.Size(45, 33);
-            this.CaptureHyperlinkLabelControl.StyleController = this.dataLayoutControl1;
-            this.CaptureHyperlinkLabelControl.TabIndex = 42;
-            this.CaptureHyperlinkLabelControl.Text = "Chụp";
-            // 
-            // hyperlinkLabelControl11
-            // 
-            this.hyperlinkLabelControl11.Location = new System.Drawing.Point(196, 62);
-            this.hyperlinkLabelControl11.Name = "hyperlinkLabelControl11";
-            this.hyperlinkLabelControl11.Padding = new System.Windows.Forms.Padding(10);
-            this.hyperlinkLabelControl11.Size = new System.Drawing.Size(44, 33);
-            this.hyperlinkLabelControl11.StyleController = this.dataLayoutControl1;
-            this.hyperlinkLabelControl11.TabIndex = 42;
-            this.hyperlinkLabelControl11.Text = "Xoay";
-            // 
-            // hyperlinkLabelControl12
-            // 
-            this.hyperlinkLabelControl12.Location = new System.Drawing.Point(316, 62);
-            this.hyperlinkLabelControl12.Name = "hyperlinkLabelControl12";
-            this.hyperlinkLabelControl12.Padding = new System.Windows.Forms.Padding(10);
-            this.hyperlinkLabelControl12.Size = new System.Drawing.Size(67, 33);
-            this.hyperlinkLabelControl12.StyleController = this.dataLayoutControl1;
-            this.hyperlinkLabelControl12.TabIndex = 42;
-            this.hyperlinkLabelControl12.Text = "Thêm vào";
-            // 
-            // hyperlinkLabelControl13
-            // 
-            this.hyperlinkLabelControl13.Location = new System.Drawing.Point(461, 62);
-            this.hyperlinkLabelControl13.Name = "hyperlinkLabelControl13";
-            this.hyperlinkLabelControl13.Padding = new System.Windows.Forms.Padding(10);
-            this.hyperlinkLabelControl13.Size = new System.Drawing.Size(38, 33);
-            this.hyperlinkLabelControl13.StyleController = this.dataLayoutControl1;
-            this.hyperlinkLabelControl13.TabIndex = 42;
-            this.hyperlinkLabelControl13.Text = "Xóa";
-            // 
-            // layoutControlGroup1
-            // 
-            this.layoutControlGroup1.AppearanceGroup.Options.UseTextOptions = true;
-            this.layoutControlGroup1.AppearanceGroup.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlGroup1.AppearanceGroup.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlGroup1.GroupStyle = DevExpress.Utils.GroupStyle.Light;
-            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem3,
-            this.layoutControlItem4,
-            this.layoutControlItem5,
-            this.layoutControlItem6,
-            this.layoutControlItem1});
-            this.layoutControlGroup1.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
-            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 17);
-            this.layoutControlGroup1.Name = "layoutControlGroup1";
-            columnDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition1.Width = 25D;
-            columnDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition2.Width = 25D;
-            columnDefinition3.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition3.Width = 25D;
-            columnDefinition4.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition4.Width = 25D;
-            this.layoutControlGroup1.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] {
-            columnDefinition1,
-            columnDefinition2,
-            columnDefinition3,
-            columnDefinition4});
-            rowDefinition1.Height = 37D;
-            rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition2.Height = 100D;
-            rowDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
-            this.layoutControlGroup1.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
-            rowDefinition1,
-            rowDefinition2});
-            this.layoutControlGroup1.OptionsTableLayoutItem.RowIndex = 1;
-            this.layoutControlGroup1.Size = new System.Drawing.Size(548, 607);
-            this.layoutControlGroup1.Text = "Điều khiển webcam";
+            this.layoutControlItem2.Control = this.StockInOutImageGridControl;
+            this.layoutControlItem2.Location = new System.Drawing.Point(548, 0);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.OptionsTableLayoutItem.ColumnIndex = 1;
+            this.layoutControlItem2.OptionsTableLayoutItem.RowSpan = 2;
+            this.layoutControlItem2.Size = new System.Drawing.Size(548, 624);
+            this.layoutControlItem2.TextVisible = false;
             // 
             // layoutControlItem1
             // 
             this.layoutControlItem1.Control = this.cameraControl1;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 37);
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 17);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.OptionsTableLayoutItem.ColumnSpan = 4;
             this.layoutControlItem1.OptionsTableLayoutItem.RowIndex = 1;
-            this.layoutControlItem1.Size = new System.Drawing.Size(524, 525);
+            this.layoutControlItem1.Size = new System.Drawing.Size(548, 607);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // layoutControlItem3
-            // 
-            this.layoutControlItem3.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem3.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem3.Control = this.CaptureHyperlinkLabelControl;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(131, 37);
-            this.layoutControlItem3.TextVisible = false;
-            // 
-            // layoutControlItem4
-            // 
-            this.layoutControlItem4.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem4.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem4.Control = this.hyperlinkLabelControl11;
-            this.layoutControlItem4.ControlAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.layoutControlItem4.CustomizationFormText = "layoutControlItem3";
-            this.layoutControlItem4.Location = new System.Drawing.Point(131, 0);
-            this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.OptionsTableLayoutItem.ColumnIndex = 1;
-            this.layoutControlItem4.Size = new System.Drawing.Size(131, 37);
-            this.layoutControlItem4.Text = "layoutControlItem3";
-            this.layoutControlItem4.TextVisible = false;
-            // 
-            // layoutControlItem5
-            // 
-            this.layoutControlItem5.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem5.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem5.Control = this.hyperlinkLabelControl12;
-            this.layoutControlItem5.ControlAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.layoutControlItem5.CustomizationFormText = "layoutControlItem3";
-            this.layoutControlItem5.Location = new System.Drawing.Point(262, 0);
-            this.layoutControlItem5.Name = "layoutControlItem5";
-            this.layoutControlItem5.OptionsTableLayoutItem.ColumnIndex = 2;
-            this.layoutControlItem5.Size = new System.Drawing.Size(131, 37);
-            this.layoutControlItem5.Text = "layoutControlItem3";
-            this.layoutControlItem5.TextVisible = false;
-            // 
-            // layoutControlItem6
-            // 
-            this.layoutControlItem6.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem6.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem6.Control = this.hyperlinkLabelControl13;
-            this.layoutControlItem6.ControlAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.layoutControlItem6.CustomizationFormText = "layoutControlItem3";
-            this.layoutControlItem6.Location = new System.Drawing.Point(393, 0);
-            this.layoutControlItem6.Name = "layoutControlItem6";
-            this.layoutControlItem6.OptionsTableLayoutItem.ColumnIndex = 3;
-            this.layoutControlItem6.Size = new System.Drawing.Size(131, 37);
-            this.layoutControlItem6.Text = "Xóa";
-            this.layoutControlItem6.TextVisible = false;
             // 
             // FrmStockInOutAddImagesFromWebcam
             // 
@@ -474,17 +382,12 @@ namespace Inventory.OverlayForm
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutImageGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutImageDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutImageGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutInfoSimpleLabelItem)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierItemBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -494,7 +397,6 @@ namespace Inventory.OverlayForm
         private BarManager barManager1;
         private Bar bar2;
         private BarButtonItem SaveBarButtonItem;
-        private BarButtonItem CloseBarButtonItem;
         private BarDockControl barDockControlTop;
         private BarDockControl barDockControlBottom;
         private BarDockControl barDockControlLeft;
@@ -504,24 +406,17 @@ namespace Inventory.OverlayForm
         private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentName;
         private DataLayoutControl dataLayoutControl1;
         private LayoutControlGroup Root;
-        private System.Windows.Forms.BindingSource productVariantIdentifierItemBindingSource;
-        private BarHeaderItem barHeaderItem1;
-        private BarStaticItem SoLuongNhapXuatBarStaticItem;
-        private BarStaticItem SoLuongTaoQrCodeBarStaticItem;
         private DevExpress.XtraGrid.GridControl StockInOutImageGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView StockInOutImageGridView;
         private LayoutControlItem layoutControlItem2;
         private DevExpress.XtraEditors.Camera.CameraControl cameraControl1;
         private SimpleLabelItem StockInOutInfoSimpleLabelItem;
-        private HyperlinkLabelControl CaptureHyperlinkLabelControl;
-        private HyperlinkLabelControl hyperlinkLabelControl11;
-        private HyperlinkLabelControl hyperlinkLabelControl12;
-        private HyperlinkLabelControl hyperlinkLabelControl13;
-        private LayoutControlGroup layoutControlGroup1;
-        private LayoutControlItem layoutControlItem3;
-        private LayoutControlItem layoutControlItem4;
-        private LayoutControlItem layoutControlItem5;
-        private LayoutControlItem layoutControlItem6;
+        private System.Windows.Forms.BindingSource stockInOutImageDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colCaptureTime;
+        private DevExpress.XtraGrid.Columns.GridColumn colSize;
+        private DevExpress.XtraGrid.Columns.GridColumn colImageData;
+        private BarButtonItem CaptureBarButtonItem;
+        private BarButtonItem XoaBarButtonItem;
         private LayoutControlItem layoutControlItem1;
     }
 }
