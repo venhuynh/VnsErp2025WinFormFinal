@@ -8,6 +8,7 @@ using Inventory.OverlayForm;
 using Inventory.ProductVariantIdentifier;
 using Inventory.Query;
 using Inventory.StockIn.NhapBaoHanh;
+using Inventory.StockOut.XuatHangThuongMai;
 using MasterData.Customer;
 using Microsoft.Win32;
 using System;
@@ -186,7 +187,7 @@ namespace VnsErp2025
 
 
 
-            Application.Run(new FrmGetIdentifierForStockOut());
+            Application.Run(new FrmXuatKhoThuongMai());
 
             #endregion
 

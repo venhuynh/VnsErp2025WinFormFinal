@@ -39,6 +39,16 @@ namespace Inventory.OverlayForm
         /// </summary>
         private readonly Dictionary<Guid, List<ProductVariantIdentifierDto>> _variantIdentifierMap = new Dictionary<Guid, List<ProductVariantIdentifierDto>>();
 
+        /// <summary>
+        /// Danh sách StockInOutDetailForUIDto đã xử lý (trả về cho form cha)
+        /// </summary>
+        public List<StockInOutDetailForUIDto> ResultStockInOutDetailList { get; private set; }
+
+        /// <summary>
+        /// Danh sách ProductVariantIdentifierDto đã xử lý (trả về cho form cha)
+        /// </summary>
+        public List<ProductVariantIdentifierDto> ResultIdentifierValues { get; private set; }
+
         #endregion
 
         #region ========== CONSTRUCTOR ==========
@@ -76,9 +86,18 @@ namespace Inventory.OverlayForm
             // Event khi giá trị IdentifierValueTextEdit thay đổi (để xử lý paste text có TAB/ENTER)
             IdentifierValueTextEdit.EditValueChanged += IdentifierValueTextEdit_EditValueChanged;
             IdentifierValueTextEdit.KeyDown += IdentifierValueTextEdit_KeyDown;
+
+            //Event nút thêm vào
+            AddHyperlinkLabelControl.Click += AddHyperlinkLabelControl_Click;
             
             // Event cho nút xóa
             RemoveHyperlinkLabelControl.Click += RemoveHyperlinkLabelControl_Click;
+            
+            // Event cho nút kết thúc
+            FinishedHyperlinkLabelControl.Click += FinishedHyperlinkLabelControl_Click;
+            
+            // Event khi form đóng
+            FormClosing += FrmGetIdentifierForStockOut_FormClosing;
         }
 
         #endregion
@@ -235,6 +254,27 @@ namespace Inventory.OverlayForm
         }
 
         /// <summary>
+        /// Handles the click event for the "Add" hyperlink label control.
+        /// </summary>
+        /// <param name="sender">The source of the event, typically the control that was clicked.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
+
+        private void AddHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            var identifierValue = IdentifierValueTextEdit.Text?.Trim();
+            if (!string.IsNullOrWhiteSpace(identifierValue))
+            {
+                // Xử lý identifier hiện tại
+                ProcessIdentifier(identifierValue);
+
+                // Xóa text và focus lại
+                IdentifierValueTextEdit.Text = string.Empty;
+                IdentifierValueTextEdit.Focus();
+            }
+        }
+
+
+        /// <summary>
         /// Xử lý khi click nút xóa (RemoveHyperlinkLabelControl)
         /// </summary>
         private void RemoveHyperlinkLabelControl_Click(object sender, EventArgs e)
@@ -304,6 +344,63 @@ namespace Inventory.OverlayForm
             catch (Exception ex)
             {
                 MsgBox.ShowError($"Lỗi khi xóa dòng: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý khi click nút kết thúc (FinishedHyperlinkLabelControl)
+        /// </summary>
+        private void FinishedHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            HandleFormClosing();
+        }
+
+        /// <summary>
+        /// Xử lý khi form đóng (FormClosing event)
+        /// </summary>
+        private void FrmGetIdentifierForStockOut_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Chỉ xử lý nếu chưa set DialogResult (tức là không phải từ nút Finished)
+            if (DialogResult == DialogResult.None)
+            {
+                e.Cancel = !HandleFormClosing();
+            }
+        }
+
+        /// <summary>
+        /// Xử lý logic đóng form (dùng chung cho cả nút Finished và FormClosing)
+        /// </summary>
+        /// <returns>True nếu cho phép đóng form, False nếu hủy đóng</returns>
+        private bool HandleFormClosing()
+        {
+            try
+            {
+                // Kiểm tra nếu cả 2 danh sách đều rỗng
+                bool isEmpty = (_stockInOutDetailList == null || _stockInOutDetailList.Count == 0) &&
+                               (_identifierValues == null || _identifierValues.Count == 0);
+
+                if (isEmpty)
+                {
+                    // Xác nhận lại trước khi đóng
+                    var confirmMessage = "Bạn chưa thêm bất kỳ sản phẩm nào. Bạn có chắc chắn muốn đóng màn hình?";
+                    if (MsgBox.ShowYesNoCancel(confirmMessage) != DialogResult.Yes)
+                    {
+                        return false;
+                    }
+                }
+
+                // Gán kết quả vào properties để trả về cho form cha
+                ResultStockInOutDetailList = _stockInOutDetailList.ToList();
+                ResultIdentifierValues = _identifierValues.ToList();
+
+                // Đóng form với DialogResult.OK
+                DialogResult = DialogResult.OK;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowError($"Lỗi khi kết thúc: {ex.Message}");
+                return false;
             }
         }
 
@@ -431,7 +528,7 @@ namespace Inventory.OverlayForm
                 return $"{kvp.Key}: {values}";
             });
 
-            return $"Định danh: {string.Join("; ", resultParts)}";
+            return $"{string.Join("; ", resultParts)}";
         }
 
         #endregion

@@ -30,6 +30,7 @@ namespace Inventory.OverlayForm
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.FinishedHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.AddHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.RemoveHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.StockInOutDetailForUIDtoGridControl = new DevExpress.XtraGrid.GridControl();
@@ -48,7 +49,6 @@ namespace Inventory.OverlayForm
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.FinishedHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -82,6 +82,18 @@ namespace Inventory.OverlayForm
             this.layoutControl1.Size = new System.Drawing.Size(860, 513);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
+            // 
+            // FinishedHyperlinkLabelControl
+            // 
+            this.FinishedHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
+            this.FinishedHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.apply_16x16;
+            this.FinishedHyperlinkLabelControl.Location = new System.Drawing.Point(767, 71);
+            this.FinishedHyperlinkLabelControl.Name = "FinishedHyperlinkLabelControl";
+            this.FinishedHyperlinkLabelControl.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.FinishedHyperlinkLabelControl.Size = new System.Drawing.Size(81, 20);
+            this.FinishedHyperlinkLabelControl.StyleController = this.layoutControl1;
+            this.FinishedHyperlinkLabelControl.TabIndex = 8;
+            this.FinishedHyperlinkLabelControl.Text = "Kết thúc";
             // 
             // AddHyperlinkLabelControl
             // 
@@ -315,20 +327,10 @@ namespace Inventory.OverlayForm
             this.layoutControlItem4.Size = new System.Drawing.Size(92, 24);
             this.layoutControlItem4.TextVisible = false;
             // 
-            // FinishedHyperlinkLabelControl
-            // 
-            this.FinishedHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
-            this.FinishedHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.apply_16x16;
-            this.FinishedHyperlinkLabelControl.Location = new System.Drawing.Point(767, 71);
-            this.FinishedHyperlinkLabelControl.Name = "FinishedHyperlinkLabelControl";
-            this.FinishedHyperlinkLabelControl.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.FinishedHyperlinkLabelControl.Size = new System.Drawing.Size(81, 20);
-            this.FinishedHyperlinkLabelControl.StyleController = this.layoutControl1;
-            this.FinishedHyperlinkLabelControl.TabIndex = 8;
-            this.FinishedHyperlinkLabelControl.Text = "Kết thúc";
-            // 
             // layoutControlItem5
             // 
+            this.layoutControlItem5.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.layoutControlItem5.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
             this.layoutControlItem5.Control = this.FinishedHyperlinkLabelControl;
             this.layoutControlItem5.Location = new System.Drawing.Point(755, 59);
             this.layoutControlItem5.Name = "layoutControlItem5";

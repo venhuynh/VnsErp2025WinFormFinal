@@ -1,12 +1,17 @@
-﻿using Bll.Inventory.StockInOut;
+using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
 using DevExpress.XtraEditors;
+using DTO.Inventory;
+using DTO.Inventory.InventoryManagement;
 using Inventory.OverlayForm;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -20,6 +25,11 @@ public partial class FrmXuatKhoThuongMai : XtraForm
     /// Business Logic Layer cho StockIn (dùng chung cho cả nhập và xuất kho)
     /// </summary>
     private readonly StockInOutBll _stockInBll = new StockInOutBll();
+
+    /// <summary>
+    /// Business Logic Layer cho ProductVariantIdentifierHistory
+    /// </summary>
+    private readonly ProductVariantIdentifierHistoryBll _productVariantIdentifierHistoryBll = new ProductVariantIdentifierHistoryBll();
 
     /// <summary>
     /// Logger để ghi log các sự kiện
@@ -41,6 +51,11 @@ public partial class FrmXuatKhoThuongMai : XtraForm
     /// Dùng để tránh hỏi lại khi Close() được gọi từ BeginInvoke
     /// </summary>
     private bool _isClosingAfterSave;
+
+    /// <summary>
+    /// Danh sách ProductVariantIdentifierDto từ form đọc QR code
+    /// </summary>
+    private List<ProductVariantIdentifierDto> _productVariantIdentifierDtos = new List<ProductVariantIdentifierDto>();
 
     #endregion
 
@@ -123,9 +138,9 @@ public partial class FrmXuatKhoThuongMai : XtraForm
             // Bar button events
             NhapLaiBarButtonItem.ItemClick += NhapLaiBarButtonItem_ItemClick;
             ReloadDataSourceBarButtonItem.ItemClick += ReloadDataSourceBarButtonItem_ItemClick;
+            ReadQrCodeBarButtonItem.ItemClick += ReadQrCodeBarButtonItem_ItemClick;
             LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
             InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
-            NhapBaoHanhBarButtonItem.ItemClick += NhapBaoHanhBarButtonItem_ItemClick;
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
             CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
@@ -180,7 +195,7 @@ public partial class FrmXuatKhoThuongMai : XtraForm
             // F1: Nhập lại
             // F2: Lưu phiếu
             // F3: In phiếu
-            // F4: Nhập bảo hành
+            // F4: Đọc QR Code
             // F5: Thêm hình ảnh
             // ESC: Đóng form
 
@@ -208,7 +223,7 @@ public partial class FrmXuatKhoThuongMai : XtraForm
                 @"<b><color=Blue>F1</color></b> Nhập lại | " +
                 @"<b><color=Blue>F2</color></b> Lưu phiếu | " +
                 @"<b><color=Blue>F3</color></b> In phiếu | " +
-                @"<b><color=Blue>F4</color></b> Nhập bảo hành | " +
+                @"<b><color=Blue>F4</color></b> Đọc QR Code | " +
                 @"<b><color=Blue>F5</color></b> Thêm hình ảnh | " +
                 @"<b><color=Blue>ESC</color></b> Đóng | " +
                 @"<b><color=Blue>Insert</color></b> Thêm dòng | " +
@@ -439,98 +454,52 @@ public partial class FrmXuatKhoThuongMai : XtraForm
     }
 
     /// <summary>
-    /// Event handler cho nút Nhập bảo hành
+    /// Event handler cho nút Đọc QR Code
     /// </summary>
-    private async void NhapBaoHanhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    private async void ReadQrCodeBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
-
-            // Lấy StockInOutMasterId từ _currentStockInOutMaster (phải đã được lưu)
-            Guid stockInOutMasterId;
-
-            // Kiểm tra phiếu đã được lưu chưa
-            if (_currentStockInOutMaster != Guid.Empty)
+            // Mở form đọc QR code (không cần lưu phiếu trước)
+            using (OverlayManager.ShowScope(this))
             {
-                stockInOutMasterId = _currentStockInOutMaster;
-            }
-            else
-            {
-                // Phiếu chưa được lưu - kiểm tra có thay đổi chưa lưu không
-                if (_hasUnsavedChanges)
+                using (var frmGetIdentifier = new FrmGetIdentifierForStockOut())
                 {
-                    // Hỏi người dùng có muốn lưu trước không
-                    if (MsgBox.ShowYesNo(
-                            "Phiếu xuất kho chưa được lưu. Bạn có muốn lưu trước khi nhập bảo hành không?",
-                            "Xác nhận",
-                            this))
+                    frmGetIdentifier.StartPosition = FormStartPosition.CenterParent;
+                    
+                    if (frmGetIdentifier.ShowDialog(this) == DialogResult.OK)
                     {
-                        // Gọi nút Lưu để lưu phiếu
-                        LuuPhieuBarButtonItem_ItemClick(null, null);
+                        // Lấy danh sách chi tiết từ form đọc QR code
+                        var newDetails = frmGetIdentifier.GetStockInOutDetailList();
 
-                        // Đợi cho đến khi lưu hoàn tất (tối đa 10 giây)
-                        var timeout = TimeSpan.FromSeconds(10);
-                        var startTime = DateTime.Now;
-                        while (_currentStockInOutMaster == Guid.Empty && (DateTime.Now - startTime) < timeout)
+                        // Lấy danh sách identifier values từ form đọc QR code
+                        if (frmGetIdentifier.ResultIdentifierValues != null)
                         {
-                            await Task.Delay(100);
+                            _productVariantIdentifierDtos = frmGetIdentifier.ResultIdentifierValues;
                         }
 
-                        // Kiểm tra lại sau khi lưu
-                        if (_currentStockInOutMaster != Guid.Empty)
+                        if (newDetails != null && newDetails.Count > 0)
                         {
-                            stockInOutMasterId = _currentStockInOutMaster;
+                            // Thêm hoặc merge vào grid hiện tại
+                            await ucXuatHangThuongMaiDetailDto1.AddOrMergeDetailsAsync(newDetails);
+                            
+                            // Đánh dấu có thay đổi
+                            MarkAsChanged();
+                            
+                            AlertHelper.ShowSuccess($"Đã thêm {newDetails.Count} sản phẩm từ QR code vào phiếu xuất kho.", "Thành công", this);
                         }
                         else
                         {
-                            // Lưu thất bại hoặc timeout, không mở form nhập bảo hành
-                            _logger.Warning("NhapBaoHanhBarButtonItem_ItemClick: Save failed, timeout, or cancelled, cannot open warranty form");
-                            return;
+                            AlertHelper.ShowInfo("Không có sản phẩm nào được thêm vào.", "Thông tin", this);
                         }
                     }
-                    else
-                    {
-                        // Người dùng chọn không lưu
-                        return;
-                    }
                 }
-                else
-                {
-                    // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
-                    MsgBox.ShowError(
-                        "Vui lòng nhập và lưu phiếu xuất kho trước khi nhập bảo hành.",
-                        "Lỗi",
-                        this);
-                    _logger.Warning("NhapBaoHanhBarButtonItem_ItemClick: Cannot add warranty - Form not saved and no unsaved changes");
-                    return;
-                }
-            }
-
-            // Kiểm tra lại StockInOutMasterId sau khi lưu (nếu có)
-            if (stockInOutMasterId == Guid.Empty)
-            {
-                MsgBox.ShowWarning(
-                    "Không thể lấy ID phiếu xuất kho. Vui lòng thử lại.",
-                    "Cảnh báo",
-                    this);
-                _logger.Warning("NhapBaoHanhBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
-                return;
-            }
-
-            // Mở form nhập bảo hành với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
-            using (OverlayManager.ShowScope(this))
-            {
-                //using (var frmWarranty = new FrmWarranty(stockInOutMasterId))
-                //{
-                //    frmWarranty.StartPosition = FormStartPosition.CenterParent;
-                //    frmWarranty.ShowDialog(this);
-                //}
             }
         }
         catch (Exception ex)
         {
-            _logger.Error("NhapBaoHanhBarButtonItem_ItemClick: Exception occurred", ex);
-            MsgBox.ShowError($"Lỗi nhập bảo hành: {ex.Message}");
+            _logger.Error("ReadQrCodeBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi đọc QR code: {ex.Message}");
         }
     }
 
@@ -658,9 +627,9 @@ public partial class FrmXuatKhoThuongMai : XtraForm
                     break;
 
                 case Keys.F4:
-                    // F4: Nhập bảo hành
+                    // F4: Đọc QR Code
                     e.Handled = true;
-                    NhapBaoHanhBarButtonItem_ItemClick(null, null);
+                    ReadQrCodeBarButtonItem_ItemClick(null, null);
                     break;
 
                 case Keys.F5:
@@ -909,9 +878,16 @@ public partial class FrmXuatKhoThuongMai : XtraForm
             masterDto.Id = savedMasterId;
             _currentStockInOutMaster = savedMasterId;
 
-
             // Set master ID cho detail control để đồng bộ
             ucXuatHangThuongMaiDetailDto1.SetStockOutMasterId(savedMasterId);
+
+            // ========== BƯỚC 5: CẬP NHẬT PRODUCTVARIANTIDENTIFIERHISTORY ==========
+            // Cập nhật lịch sử thay đổi cho các identifier đã quét từ QR code
+            if (_productVariantIdentifierDtos != null && _productVariantIdentifierDtos.Count > 0)
+            {
+                await UpdateProductVariantIdentifierHistoryAsync(masterDto);
+            }
+
             return true;
         }
         catch (ArgumentException argEx)
@@ -926,6 +902,118 @@ public partial class FrmXuatKhoThuongMai : XtraForm
             _logger.Error("SaveDataAsync: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật ProductVariantIdentifierHistory cho các identifier đã quét từ QR code
+    /// </summary>
+    /// <param name="masterDto">Thông tin phiếu xuất kho</param>
+    private async Task UpdateProductVariantIdentifierHistoryAsync(StockInOutMasterForUIDto masterDto)
+    {
+        try
+        {
+            if (masterDto == null || _productVariantIdentifierDtos == null || _productVariantIdentifierDtos.Count == 0)
+            {
+                return;
+            }
+
+            _logger.Info("UpdateProductVariantIdentifierHistoryAsync: Bắt đầu cập nhật lịch sử cho {0} identifier", _productVariantIdentifierDtos.Count);
+
+            // Tạo Value string chứa thông tin phiếu xuất kho
+            var valueParts = new List<string>();
+
+            // Thông tin khách hàng
+            if (!string.IsNullOrWhiteSpace(masterDto.CustomerName))
+            {
+                valueParts.Add($"Khách hàng: {masterDto.CustomerName}");
+            }
+
+            // Thông tin kho xuất
+            if (!string.IsNullOrWhiteSpace(masterDto.WarehouseName))
+            {
+                valueParts.Add($"Kho: {masterDto.WarehouseName}");
+            }
+
+            // Thông tin số phiếu
+            if (!string.IsNullOrWhiteSpace(masterDto.VoucherNumber))
+            {
+                valueParts.Add($"Số phiếu: {masterDto.VoucherNumber}");
+            }
+
+            // Thông tin loại xuất kho (lấy từ enum bằng ApplicationEnumUtils)
+            var loaiNhapXuatKhoName = ApplicationEnumUtils.GetDescription(masterDto.LoaiNhapXuatKho);
+            if (!string.IsNullOrWhiteSpace(loaiNhapXuatKhoName))
+            {
+                valueParts.Add($"Loại: {loaiNhapXuatKhoName}");
+            }
+
+            // Gộp tất cả thành một chuỗi (chỉ khi có ít nhất một phần tử)
+            var value = valueParts.Count > 0 
+                ? string.Join(" | ", valueParts) 
+                : string.Empty;
+
+            // Lấy ChangedBy từ ApplicationUser hiện tại (nếu có)
+            Guid? changedBy = null;
+            try
+            {
+                // Có thể lấy từ ApplicationUserManager hoặc tương tự
+                // Tạm thời để null, có thể mở rộng sau
+            }
+            catch
+            {
+                // Ignore nếu không lấy được
+            }
+
+            // Lặp qua từng identifier và tạo history
+            var successCount = 0;
+            var errorCount = 0;
+
+            foreach (var identifierDto in _productVariantIdentifierDtos)
+            {
+                try
+                {
+                    // Tạo DTO lịch sử với ChangeTypeEnum là Xuat (xuất kho)
+                    // Tham khảo logic từ UcProductVariantIdentifierTransactionHistory
+                    var historyDto = new ProductVariantIdentifierHistoryDto
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductVariantIdentifierId = identifierDto.Id,
+                        ProductVariantId = identifierDto.ProductVariantId,
+                        ProductVariantFullName = identifierDto.ProductVariantFullName, // Thêm ProductVariantFullName như trong UcProductVariantIdentifierTransactionHistory
+                        ChangeTypeEnum = ProductVariantIdentifierHistoryChangeTypeEnum.Xuat,
+                        ChangeDate = masterDto.StockOutDate != default(DateTime)
+                            ? masterDto.StockOutDate
+                            : DateTime.Now,
+                        Value = value,
+                        Notes = $"Xuất kho từ phiếu: {masterDto.VoucherNumber ?? "N/A"}",
+                        ChangedBy = changedBy
+                    };
+
+                    // Lưu bản ghi lịch sử
+                    _productVariantIdentifierHistoryBll.SaveOrUpdate(historyDto);
+                    successCount++;
+
+                    _logger.Debug("UpdateProductVariantIdentifierHistoryAsync: Đã lưu lịch sử cho identifier Id={0}", identifierDto.Id);
+                }
+                catch (Exception ex)
+                {
+                    errorCount++;
+                    _logger.Error($"UpdateProductVariantIdentifierHistoryAsync: Lỗi khi lưu lịch sử cho identifier Id={identifierDto.Id}: {ex.Message}", ex);
+                    // Tiếp tục với identifier tiếp theo, không throw exception
+                }
+            }
+
+            _logger.Info("UpdateProductVariantIdentifierHistoryAsync: Hoàn thành - Thành công: {0}, Lỗi: {1}", successCount, errorCount);
+
+            // Clear danh sách identifier sau khi đã cập nhật xong
+            _productVariantIdentifierDtos.Clear();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("UpdateProductVariantIdentifierHistoryAsync: Exception occurred", ex);
+            // Không throw exception để không block việc lưu phiếu
+            // Chỉ log lỗi
         }
     }
 
