@@ -61,7 +61,6 @@ namespace VnsErp2025.Form
             this.StockInOutProductHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutImagesBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutDocumentBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
             this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             this.NhapLapRapBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -77,6 +76,7 @@ namespace VnsErp2025.Form
             this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem6 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
+            this.DinhDanhSpHhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPageCategory1 = new DevExpress.XtraBars.Ribbon.RibbonPageCategory();
             this.VersionAndUserManagementRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.VersionAndUserManagementRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -138,7 +138,6 @@ namespace VnsErp2025.Form
             this.StockInOutProductHistoryBarButtonItem,
             this.StockInOutImagesBarButtonItem,
             this.StockInOutDocumentBarButtonItem,
-            this.barSubItem1,
             this.barButtonItem1,
             this.barButtonItem2,
             this.NhapLapRapBarButtonItem,
@@ -153,9 +152,10 @@ namespace VnsErp2025.Form
             this.DeviceDtoMangementBarButtonItem,
             this.barButtonItem4,
             this.barButtonItem6,
-            this.barButtonItem3});
+            this.barButtonItem3,
+            this.DinhDanhSpHhBarButtonItem});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.MaxItemId = 51;
+            this.ribbon.MaxItemId = 52;
             this.ribbon.Name = "ribbon";
             this.ribbon.PageCategories.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageCategory[] {
             this.ribbonPageCategory1});
@@ -164,7 +164,7 @@ namespace VnsErp2025.Form
             this.XuatNhapTonKhoRibbonPage,
             this.ribbonPage2});
             this.ribbon.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office365;
-            this.ribbon.Size = new System.Drawing.Size(1150, 161);
+            this.ribbon.Size = new System.Drawing.Size(1369, 161);
             this.ribbon.StatusBar = this.ribbonStatusBar;
             // 
             // DBInfoBarStaticItem
@@ -427,7 +427,7 @@ namespace VnsErp2025.Form
             // 
             this.StockInOutImagesBarButtonItem.Caption = "Hình ảnh";
             this.StockInOutImagesBarButtonItem.Id = 32;
-            this.StockInOutImagesBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.brand_image;
+            this.StockInOutImagesBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insertimage;
             this.StockInOutImagesBarButtonItem.Name = "StockInOutImagesBarButtonItem";
             this.StockInOutImagesBarButtonItem.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText;
             this.StockInOutImagesBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutImagesBarButtonItem_ItemClick);
@@ -441,17 +441,6 @@ namespace VnsErp2025.Form
             this.StockInOutDocumentBarButtonItem.Name = "StockInOutDocumentBarButtonItem";
             this.StockInOutDocumentBarButtonItem.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText;
             this.StockInOutDocumentBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutDocumentBarButtonItem_ItemClick);
-            // 
-            // barSubItem1
-            // 
-            this.barSubItem1.Caption = "Báo cáo";
-            this.barSubItem1.Id = 34;
-            this.barSubItem1.ImageOptions.Image = global::VnsErp2025.Properties.Resources.productsalesreport_16x16;
-            this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.InventoryBalanceBarButtonItem)});
-            this.barSubItem1.Name = "barSubItem1";
-            this.barSubItem1.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
-            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             // 
             // barButtonItem1
             // 
@@ -559,6 +548,13 @@ namespace VnsErp2025.Form
             this.barButtonItem3.Id = 50;
             this.barButtonItem3.Name = "barButtonItem3";
             // 
+            // DinhDanhSpHhBarButtonItem
+            // 
+            this.DinhDanhSpHhBarButtonItem.Caption = "Định danh SPHH";
+            this.DinhDanhSpHhBarButtonItem.Id = 51;
+            this.DinhDanhSpHhBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.brand_image;
+            this.DinhDanhSpHhBarButtonItem.Name = "DinhDanhSpHhBarButtonItem";
+            // 
             // ribbonPageCategory1
             // 
             this.ribbonPageCategory1.Name = "ribbonPageCategory1";
@@ -664,8 +660,9 @@ namespace VnsErp2025.Form
             // 
             // QuanLyKhoRibbonPageGroup
             // 
-            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.barSubItem1);
             this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.barButtonItem1);
+            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.InventoryBalanceBarButtonItem);
+            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.DinhDanhSpHhBarButtonItem);
             this.QuanLyKhoRibbonPageGroup.Name = "QuanLyKhoRibbonPageGroup";
             this.QuanLyKhoRibbonPageGroup.Text = "Quản lý kho";
             // 
@@ -700,7 +697,7 @@ namespace VnsErp2025.Form
             this.ribbonStatusBar.Location = new System.Drawing.Point(0, 687);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbon;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(1150, 24);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(1369, 24);
             // 
             // documentManager1
             // 
@@ -714,7 +711,7 @@ namespace VnsErp2025.Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1150, 711);
+            this.ClientSize = new System.Drawing.Size(1369, 711);
             this.Controls.Add(this.ribbon);
             this.Controls.Add(this.ribbonStatusBar);
             this.IsMdiContainer = true;
@@ -776,7 +773,6 @@ namespace VnsErp2025.Form
         private DevExpress.XtraBars.BarButtonItem StockInOutProductHistoryBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutImagesBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutDocumentBarButtonItem;
-        private DevExpress.XtraBars.BarSubItem barSubItem1;
         private DevExpress.XtraBars.BarButtonItem barButtonItem1;
         private DevExpress.XtraBars.BarButtonItem barButtonItem2;
         private DevExpress.XtraBars.BarButtonItem NhapLapRapBarButtonItem;
@@ -798,5 +794,6 @@ namespace VnsErp2025.Form
         private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage2;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup2;
         private DevExpress.XtraBars.BarButtonItem barButtonItem3;
+        private DevExpress.XtraBars.BarButtonItem DinhDanhSpHhBarButtonItem;
     }
 }

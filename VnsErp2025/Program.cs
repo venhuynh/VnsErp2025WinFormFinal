@@ -191,7 +191,7 @@ namespace VnsErp2025
 
 
 
-            Application.Run(new FrmXuatLuuChuyenKho());
+            Application.Run(new FormMain());
 
             #endregion
 

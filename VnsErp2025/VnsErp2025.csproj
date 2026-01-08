@@ -205,6 +205,7 @@
     <None Include="Resources\data-classification.svg" />
     <Content Include="Docs\Script tạo data mặc định\Insert_New_ApplicationVersion.sql" />
     <Content Include="Docs\Script tạo data mặc định\Insert_Attribute_Default_Data.sql" />
+    <None Include="Resources\insertimage.svg" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -253,7 +254,7 @@
   </Target>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties Reactor_Output="&lt;AssemblyLocation&gt;\&lt;AssemblyFileName&gt;" Reactor_Configuration="Release" Reactor_Project="" Reactor_Commands="" Reactor_Deploy="0" Reactor_Enabled="1" />
+      <UserProperties Reactor_Enabled="1" Reactor_Deploy="0" Reactor_Commands="" Reactor_Project="" Reactor_Configuration="Release" Reactor_Output="&lt;AssemblyLocation&gt;\&lt;AssemblyFileName&gt;" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
