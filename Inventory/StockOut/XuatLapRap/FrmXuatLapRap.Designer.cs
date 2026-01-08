@@ -38,14 +38,13 @@ namespace Inventory.StockOut.XuatLapRap
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.XuatLaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             this.LuuPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.XuatQuanLyTaiSanBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.ReloadDataSourceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ReadQrCodeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -141,11 +140,10 @@ namespace Inventory.StockOut.XuatLapRap
             this.LuuPhieuBarButtonItem,
             this.InPhieuBarButtonItem,
             this.CloseBarButtonItem,
-            this.XuatQuanLyTaiSanBarButtonItem,
             this.ThemHinhAnhBarButtonItem,
             this.HotKeyBarStaticItem,
-            this.barButtonItem1,
-            this.ReloadDataSourceBarButtonItem});
+            this.ReloadDataSourceBarButtonItem,
+            this.ReadQrCodeBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
             this.barManager1.MaxItemId = 9;
             // 
@@ -159,10 +157,9 @@ namespace Inventory.StockOut.XuatLapRap
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XuatLaiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ReloadDataSourceBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ReadQrCodeBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LuuPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XuatQuanLyTaiSanBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.HotKeyBarStaticItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
@@ -178,14 +175,6 @@ namespace Inventory.StockOut.XuatLapRap
             this.XuatLaiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.reset2_32x32;
             this.XuatLaiBarButtonItem.Name = "XuatLaiBarButtonItem";
             // 
-            // barButtonItem1
-            // 
-            this.barButtonItem1.Caption = "Đăng ký thiết bị";
-            this.barButtonItem1.Id = 7;
-            this.barButtonItem1.ImageOptions.Image = global::Inventory.Properties.Resources.additem_16x16;
-            this.barButtonItem1.ImageOptions.LargeImage = global::Inventory.Properties.Resources.additem_32x32;
-            this.barButtonItem1.Name = "barButtonItem1";
-            // 
             // LuuPhieuBarButtonItem
             // 
             this.LuuPhieuBarButtonItem.Caption = "Lưu phiếu";
@@ -200,14 +189,6 @@ namespace Inventory.StockOut.XuatLapRap
             this.InPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.print_16x16;
             this.InPhieuBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
             this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
-            // 
-            // XuatQuanLyTaiSanBarButtonItem
-            // 
-            this.XuatQuanLyTaiSanBarButtonItem.Caption = "Xuất quản lý tài sản";
-            this.XuatQuanLyTaiSanBarButtonItem.Id = 4;
-            this.XuatQuanLyTaiSanBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
-            this.XuatQuanLyTaiSanBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.barcode_32x32;
-            this.XuatQuanLyTaiSanBarButtonItem.Name = "XuatQuanLyTaiSanBarButtonItem";
             // 
             // ThemHinhAnhBarButtonItem
             // 
@@ -240,6 +221,13 @@ namespace Inventory.StockOut.XuatLapRap
             this.ReloadDataSourceBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.refreshpivottable_16x16;
             this.ReloadDataSourceBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.refreshpivottable_32x32;
             this.ReloadDataSourceBarButtonItem.Name = "ReloadDataSourceBarButtonItem";
+            // 
+            // ReadQrCodeBarButtonItem
+            // 
+            this.ReadQrCodeBarButtonItem.Caption = "Đọc QC Code";
+            this.ReadQrCodeBarButtonItem.Id = 8;
+            this.ReadQrCodeBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
+            this.ReadQrCodeBarButtonItem.Name = "ReadQrCodeBarButtonItem";
             // 
             // barDockControlTop
             // 
@@ -378,7 +366,6 @@ namespace Inventory.StockOut.XuatLapRap
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarButtonItem XuatQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
@@ -386,6 +373,6 @@ namespace Inventory.StockOut.XuatLapRap
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private UcXuatLapRapDetail ucXuatLapRapDetailDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private DevExpress.XtraBars.BarButtonItem ReadQrCodeBarButtonItem;
     }
 }

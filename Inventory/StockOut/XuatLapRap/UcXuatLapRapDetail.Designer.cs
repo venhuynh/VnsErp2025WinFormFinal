@@ -33,6 +33,7 @@ namespace Inventory.StockOut.XuatLapRap
         {
             this.components = new System.ComponentModel.Container();
             this.XuatLapRapDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
+            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.XuatLapRapDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
@@ -49,19 +50,8 @@ namespace Inventory.StockOut.XuatLapRap
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
-            this.dockPanel = new DevExpress.XtraBars.Docking.DockPanel();
-            this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
-            this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.LogTextBox = new System.Windows.Forms.TextBox();
-            this.AddBarCodeHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.BarCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
@@ -72,17 +62,6 @@ namespace Inventory.StockOut.XuatLapRap
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
-            this.dockPanel.SuspendLayout();
-            this.dockPanel1_Container.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-            this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BarCodeTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // XuatLapRapDetailDtoGridControl
@@ -99,11 +78,15 @@ namespace Inventory.StockOut.XuatLapRap
             this.UnitPriceTextEdit,
             this.VatTextEdit,
             this.GhiChuMemoEdit});
-            this.XuatLapRapDetailDtoGridControl.Size = new System.Drawing.Size(736, 704);
+            this.XuatLapRapDetailDtoGridControl.Size = new System.Drawing.Size(1079, 704);
             this.XuatLapRapDetailDtoGridControl.TabIndex = 0;
             this.XuatLapRapDetailDtoGridControl.UseEmbeddedNavigator = true;
             this.XuatLapRapDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.XuatLapRapDetailDtoGridView});
+            // 
+            // stockInOutDetailForUIDtoBindingSource
+            // 
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
             // 
             // XuatLapRapDetailDtoGridView
             // 
@@ -333,142 +316,15 @@ namespace Inventory.StockOut.XuatLapRap
             this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.VatTextEdit.Name = "VatTextEdit";
             // 
-            // dockManager1
-            // 
-            this.dockManager1.Form = this;
-            this.dockManager1.RootPanels.AddRange(new DevExpress.XtraBars.Docking.DockPanel[] {
-            this.dockPanel});
-            this.dockManager1.TopZIndexControls.AddRange(new string[] {
-            "DevExpress.XtraBars.BarDockControl",
-            "DevExpress.XtraBars.StandaloneBarDockControl",
-            "System.Windows.Forms.MenuStrip",
-            "System.Windows.Forms.StatusStrip",
-            "System.Windows.Forms.StatusBar",
-            "DevExpress.XtraBars.Ribbon.RibbonStatusBar",
-            "DevExpress.XtraBars.Ribbon.RibbonControl",
-            "DevExpress.XtraBars.Navigation.OfficeNavigationBar",
-            "DevExpress.XtraBars.Navigation.TileNavPane",
-            "DevExpress.XtraBars.TabFormControl",
-            "DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl",
-            "DevExpress.XtraBars.ToolbarForm.ToolbarFormControl"});
-            // 
-            // dockPanel
-            // 
-            this.dockPanel.Controls.Add(this.dockPanel1_Container);
-            this.dockPanel.Dock = DevExpress.XtraBars.Docking.DockingStyle.Right;
-            this.dockPanel.ID = new System.Guid("1f3a1d7d-b224-4f92-b79b-c738e3e1dc42");
-            this.dockPanel.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
-            this.dockPanel.Location = new System.Drawing.Point(736, 0);
-            this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Options.ShowCloseButton = false;
-            this.dockPanel.OriginalSize = new System.Drawing.Size(343, 200);
-            this.dockPanel.Size = new System.Drawing.Size(343, 704);
-            this.dockPanel.Text = "Đọc PartNumber";
-            // 
-            // dockPanel1_Container
-            // 
-            this.dockPanel1_Container.Controls.Add(this.layoutControl1);
-            this.dockPanel1_Container.Location = new System.Drawing.Point(4, 26);
-            this.dockPanel1_Container.Name = "dockPanel1_Container";
-            this.dockPanel1_Container.Size = new System.Drawing.Size(336, 675);
-            this.dockPanel1_Container.TabIndex = 0;
-            // 
-            // layoutControl1
-            // 
-            this.layoutControl1.Controls.Add(this.LogTextBox);
-            this.layoutControl1.Controls.Add(this.AddBarCodeHyperlinkLabelControl);
-            this.layoutControl1.Controls.Add(this.BarCodeTextEdit);
-            this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControl1.Name = "layoutControl1";
-            this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(336, 675);
-            this.layoutControl1.TabIndex = 0;
-            this.layoutControl1.Text = "layoutControl1";
-            // 
-            // LogTextBox
-            // 
-            this.LogTextBox.Location = new System.Drawing.Point(12, 36);
-            this.LogTextBox.Multiline = true;
-            this.LogTextBox.Name = "LogTextBox";
-            this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.LogTextBox.Size = new System.Drawing.Size(312, 627);
-            this.LogTextBox.TabIndex = 6;
-            // 
-            // AddBarCodeHyperlinkLabelControl
-            // 
-            this.AddBarCodeHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
-            this.AddBarCodeHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
-            this.AddBarCodeHyperlinkLabelControl.Location = new System.Drawing.Point(248, 12);
-            this.AddBarCodeHyperlinkLabelControl.Name = "AddBarCodeHyperlinkLabelControl";
-            this.AddBarCodeHyperlinkLabelControl.Size = new System.Drawing.Size(68, 20);
-            this.AddBarCodeHyperlinkLabelControl.StyleController = this.layoutControl1;
-            this.AddBarCodeHyperlinkLabelControl.TabIndex = 5;
-            this.AddBarCodeHyperlinkLabelControl.Text = "Thêm vào";
-            // 
-            // BarCodeTextEdit
-            // 
-            this.BarCodeTextEdit.Location = new System.Drawing.Point(64, 12);
-            this.BarCodeTextEdit.Name = "BarCodeTextEdit";
-            this.BarCodeTextEdit.Size = new System.Drawing.Size(172, 20);
-            this.BarCodeTextEdit.StyleController = this.layoutControl1;
-            this.BarCodeTextEdit.TabIndex = 4;
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
-            this.layoutControlItem2,
-            this.layoutControlItem3});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(336, 675);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.BarCodeTextEdit;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(228, 24);
-            this.layoutControlItem1.Text = "Mã vạch";
-            this.layoutControlItem1.TextSize = new System.Drawing.Size(40, 13);
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem2.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem2.Control = this.AddBarCodeHyperlinkLabelControl;
-            this.layoutControlItem2.Location = new System.Drawing.Point(228, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 2, 2);
-            this.layoutControlItem2.Size = new System.Drawing.Size(88, 24);
-            this.layoutControlItem2.TextVisible = false;
-            // 
-            // layoutControlItem3
-            // 
-            this.layoutControlItem3.Control = this.LogTextBox;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 24);
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(316, 631);
-            this.layoutControlItem3.Text = "Xử lý";
-            this.layoutControlItem3.TextLocation = DevExpress.Utils.Locations.Top;
-            this.layoutControlItem3.TextVisible = false;
-            // 
-            // stockInOutDetailForUIDtoBindingSource
-            // 
-            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
-            // 
-            // UcXuatLapRapDetailDto
+            // UcXuatLapRapDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.XuatLapRapDetailDtoGridControl);
-            this.Controls.Add(this.dockPanel);
-            this.Name = "UcXuatLapRapDetailDto";
+            this.Name = "UcXuatLapRapDetail";
             this.Size = new System.Drawing.Size(1079, 704);
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
@@ -479,17 +335,6 @@ namespace Inventory.StockOut.XuatLapRap
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
-            this.dockPanel.ResumeLayout(false);
-            this.dockPanel1_Container.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-            this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.BarCodeTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -513,17 +358,6 @@ namespace Inventory.StockOut.XuatLapRap
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
-        private DevExpress.XtraBars.Docking.DockManager dockManager1;
-        private DevExpress.XtraBars.Docking.DockPanel dockPanel;
-        private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        protected System.Windows.Forms.TextBox LogTextBox;
-        private DevExpress.XtraEditors.HyperlinkLabelControl AddBarCodeHyperlinkLabelControl;
-        private DevExpress.XtraEditors.TextEdit BarCodeTextEdit;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
         private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
         private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
     }

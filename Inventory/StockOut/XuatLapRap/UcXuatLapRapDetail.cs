@@ -71,7 +71,7 @@ namespace Inventory.StockOut.XuatLapRap
         public UcXuatLapRapDetail()
         {
             InitializeComponent();
-            
+
             // Chỉ khởi tạo control khi không ở design mode
             if (!DesignMode)
             {
@@ -101,10 +101,6 @@ namespace Inventory.StockOut.XuatLapRap
                 // Setup events
                 InitializeEvents();
 
-                // Setup BarCode scanning events
-                SetupBarCodeEvents();
-
-                // Không load dữ liệu ProductVariant ở đây, sẽ được gọi từ form khi FormLoad
             }
             catch (Exception ex)
             {
@@ -142,25 +138,6 @@ namespace Inventory.StockOut.XuatLapRap
             ProductVariantSearchLookUpEdit.Popup += ProductVariantSearchLookUpEdit_Popup;
         }
 
-        /// <summary>
-        /// Setup các event handlers cho BarCode scanning
-        /// </summary>
-        private void SetupBarCodeEvents()
-        {
-            try
-            {
-                // Event KeyDown cho BarCodeTextEdit (Enter để thêm vào grid)
-                BarCodeTextEdit.KeyDown += BarCodeTextEdit_KeyDown;
-
-                // Event Click cho AddBarCodeHyperlinkLabelControl
-                AddBarCodeHyperlinkLabelControl.Click += AddBarCodeHyperlinkLabelControl_Click;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("SetupBarCodeEvents: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi setup BarCode events: {ex.Message}");
-            }
-        }
 
         #endregion
 
@@ -422,12 +399,12 @@ namespace Inventory.StockOut.XuatLapRap
                         return;
                     }
 
-                // Cập nhật các thông tin liên quan
-                rowData.ProductVariantId = selectedVariant.Id;
-                rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
-                rowData.UnitOfMeasureName = selectedVariant.UnitName;
-            }
+                    // Cập nhật các thông tin liên quan
+                    rowData.ProductVariantId = selectedVariant.Id;
+                    rowData.ProductVariantCode = selectedVariant.VariantCode;
+                    rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
+                    rowData.UnitOfMeasureName = selectedVariant.UnitName;
+                }
 
                 // Xử lý tính toán tự động khi thay đổi số lượng
                 if (fieldName == "StockOutQty")
@@ -700,6 +677,7 @@ namespace Inventory.StockOut.XuatLapRap
                                 }
                             }
                         }
+
                         break;
                 }
             }
@@ -741,7 +719,8 @@ namespace Inventory.StockOut.XuatLapRap
 
                 try
                 {
-                    productVariantListDtoBindingSource.DataSource = await _productVariantBll.GetAllInUseWithDetailsAsync();
+                    productVariantListDtoBindingSource.DataSource =
+                        await _productVariantBll.GetAllInUseWithDetailsAsync();
                     productVariantListDtoBindingSource.ResetBindings(false);
 
                     _isProductVariantDataSourceLoaded = true;
@@ -852,6 +831,79 @@ namespace Inventory.StockOut.XuatLapRap
             }
         }
 
+        /// <summary>
+        /// Thêm hoặc merge danh sách chi tiết mới vào grid hiện tại
+        /// Nếu đã có ProductVariantId thì cộng số lượng, nếu chưa có thì thêm mới
+        /// </summary>
+        /// <param name="newDetails">Danh sách chi tiết mới cần thêm/merge</param>
+        public async Task AddOrMergeDetailsAsync(List<StockInOutDetailForUIDto> newDetails)
+        {
+            try
+            {
+                if (newDetails == null || newDetails.Count == 0)
+                {
+                    return;
+                }
+
+                // Lấy danh sách hiện tại từ binding source
+                var currentDetails = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
+
+                // Gán StockInOutMasterId cho các dòng mới chưa có
+                foreach (var detail in newDetails)
+                {
+                    if (detail.StockInOutMasterId == Guid.Empty && _stockOutMasterId != Guid.Empty)
+                    {
+                        detail.StockInOutMasterId = _stockOutMasterId;
+                    }
+                }
+
+                // Merge dữ liệu: nếu đã có ProductVariantId thì cộng số lượng, nếu chưa có thì thêm mới
+                foreach (var newDetail in newDetails)
+                {
+                    var existingDetail =
+                        currentDetails.FirstOrDefault(d => d.ProductVariantId == newDetail.ProductVariantId);
+
+                    if (existingDetail != null)
+                    {
+                        // Đã tồn tại: cộng số lượng và merge ghi chú
+                        existingDetail.StockOutQty += newDetail.StockOutQty;
+
+                        // Merge ghi chú nếu có
+                        if (!string.IsNullOrWhiteSpace(newDetail.GhiChu))
+                        {
+                            if (string.IsNullOrWhiteSpace(existingDetail.GhiChu))
+                            {
+                                existingDetail.GhiChu = newDetail.GhiChu;
+                            }
+                            else
+                            {
+                                existingDetail.GhiChu = $"{existingDetail.GhiChu}; {newDetail.GhiChu}";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Chưa tồn tại: thêm mới
+                        currentDetails.Add(newDetail);
+                    }
+                }
+
+                // Cập nhật lại binding source
+                stockInOutDetailForUIDtoBindingSource.DataSource = currentDetails;
+                stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
+
+                // Load ProductVariant datasource cho các ProductVariantId mới
+                await LoadProductVariantsByIdsAsync(newDetails);
+
+                // Tính toán lại tất cả
+                RecalculateAll();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("AddOrMergeDetailsAsync: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi thêm/merge chi tiết: {ex.Message}");
+            }
+        }
 
         #endregion
 
@@ -896,59 +948,60 @@ namespace Inventory.StockOut.XuatLapRap
 
         #endregion
 
-    #region ========== CALCULATION ==========
+        #region ========== CALCULATION ==========
 
-    /// <summary>
-    /// Tính toán lại tất cả các dòng
-    /// </summary>
-    private void RecalculateAll()
-    {
-        try
+        /// <summary>
+        /// Tính toán lại tất cả các dòng
+        /// </summary>
+        private void RecalculateAll()
         {
-            if (_isCalculating) return;
-            _isCalculating = true;
+            try
+            {
+                if (_isCalculating) return;
+                _isCalculating = true;
 
-            XuatLapRapDetailDtoGridView.RefreshData();
+                XuatLapRapDetailDtoGridView.RefreshData();
 
-            // Cập nhật tổng số lượng lên master
-            OnDetailDataChanged();
+                // Cập nhật tổng số lượng lên master
+                OnDetailDataChanged();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("RecalculateAll: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi tính toán lại: {ex.Message}");
+            }
+            finally
+            {
+                _isCalculating = false;
+            }
         }
-        catch (Exception ex)
+
+        /// <summary>
+        /// Tính tổng số lượng, tổng tiền từ danh sách chi tiết
+        /// </summary>
+        public (decimal TotalQuantity, decimal TotalAmount, decimal TotalVat, decimal TotalAmountIncludedVat)
+            CalculateTotals()
         {
-            _logger.Error("RecalculateAll: Exception occurred", ex);
-            MsgBox.ShowError($"Lỗi tính toán lại: {ex.Message}");
-        }
-        finally
-        {
-            _isCalculating = false;
-        }
-    }
+            try
+            {
+                var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
 
-    /// <summary>
-    /// Tính tổng số lượng, tổng tiền từ danh sách chi tiết
-    /// </summary>
-    public (decimal TotalQuantity, decimal TotalAmount, decimal TotalVat, decimal TotalAmountIncludedVat) CalculateTotals()
-    {
-        try
-        {
-            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
+                var totalQuantity = details.Sum(d => d.StockOutQty);
+                var totalAmount = details.Sum(d => d.TotalAmount);
+                var totalVat = details.Sum(d => d.VatAmount);
+                var totalAmountIncludedVat = details.Sum(d => d.TotalAmountIncludedVat);
 
-            var totalQuantity = details.Sum(d => d.StockOutQty);
-            var totalAmount = details.Sum(d => d.TotalAmount);
-            var totalVat = details.Sum(d => d.VatAmount);
-            var totalAmountIncludedVat = details.Sum(d => d.TotalAmountIncludedVat);
-
-            return (totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
+                return (totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("CalculateTotals: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi tính tổng: {ex.Message}");
+                return (0, 0, 0, 0);
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.Error("CalculateTotals: Exception occurred", ex);
-            MsgBox.ShowError($"Lỗi tính tổng: {ex.Message}");
-            return (0, 0, 0, 0);
-        }
-    }
 
-    #endregion
+        #endregion
 
         #region ========== VALIDATION ==========
 
@@ -1051,130 +1104,6 @@ namespace Inventory.StockOut.XuatLapRap
             }
 
             e.Valid = true;
-        }
-
-        #endregion
-
-        #region ========== BARCODE SCANNING ==========
-
-        /// <summary>
-        /// Event handler khi nhấn phím trong BarCodeTextEdit
-        /// </summary>
-        private async void BarCodeTextEdit_KeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                // Khi nhấn Enter, thêm vào grid
-                if (e.KeyCode == Keys.Enter)
-                {
-                    e.Handled = true;
-                    e.SuppressKeyPress = true; // Ngăn tiếng beep
-                    await ProcessBarCodeAndAddToGrid();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("BarCodeTextEdit_KeyDown: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi xử lý mã vạch: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Event handler khi click vào nút "Thêm vào"
-        /// </summary>
-        private async void AddBarCodeHyperlinkLabelControl_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await ProcessBarCodeAndAddToGrid();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("AddBarCodeHyperlinkLabelControl_Click: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi thêm mã vạch: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Xử lý mã BarCode và thêm vào grid
-        /// Tìm trong bảng Device hoặc Warranty để lấy thông tin linh kiện
-        /// </summary>
-        private Task ProcessBarCodeAndAddToGrid()
-        {
-            return Task.CompletedTask;
-            //try
-            //{
-            //    // Lấy mã BarCode từ BarCodeTextEdit
-            //    var barCode = BarCodeTextEdit.Text?.Trim();
-            //    if (string.IsNullOrWhiteSpace(barCode))
-            //    {
-            //        MsgBox.ShowWarning("Vui lòng nhập mã vạch");
-            //        BarCodeTextEdit.Focus();
-            //        return;
-            //    }
-
-            //    _logger.Debug("ProcessBarCodeAndAddToGrid: Bắt đầu xử lý mã vạch, BarCode={0}", barCode);
-
-            //    // Ghi log vào LogTextBox
-            //    AppendLog($"Đang tìm kiếm mã vạch: {barCode}");
-
-            //    // Bước 1: Tìm trong bảng Device trước
-            //    var device = _deviceBll.FindByBarCode(barCode);
-            //    if (device != null)
-            //    {
-            //        _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Device, DeviceId={0}, ProductVariantId={1}", 
-            //            device.Id, device.ProductVariantId);
-            //        AppendLog($"✓ Tìm thấy thiết bị: {device.ProductVariant?.ProductService?.Name ?? "N/A"}");
-
-            //        // Thêm vào grid với ProductVariantId từ Device
-            //        await AddDetailFromDeviceOrWarranty(device.ProductVariantId, device);
-
-            //        // Clear BarCode text
-            //        BarCodeTextEdit.Text = string.Empty;
-            //        BarCodeTextEdit.Focus();
-            //        return;
-            //    }
-
-            //    // Bước 2: Nếu không tìm thấy trong Device, tìm trong Warranty
-            //    var warranty = _warrantyBll.FindByDeviceInfo(barCode);
-            //    if (warranty != null)
-            //    {
-            //        _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, DeviceId={1}", 
-            //            warranty.Id, warranty.DeviceId);
-                    
-            //        // Lấy ProductVariantId từ Device của Warranty
-            //        if (warranty.DeviceId.HasValue && warranty.Device?.ProductVariantId != null)
-            //        {
-            //            var productVariantId = warranty.Device.ProductVariantId;
-            //            AppendLog($"✓ Tìm thấy bảo hành: {warranty.Device.ProductVariant?.ProductService?.Name ?? "N/A"}");
-
-            //            // Thêm vào grid với ProductVariantId từ Warranty
-            //            await AddDetailFromDeviceOrWarranty(productVariantId, null, warranty);
-
-            //            // Clear BarCode text
-            //            BarCodeTextEdit.Text = string.Empty;
-            //            BarCodeTextEdit.Focus();
-            //            return;
-            //        }
-            //        else
-            //        {
-            //            AppendLog("⚠ Bảo hành không có thông tin sản phẩm");
-            //            MsgBox.ShowWarning("Bảo hành không có thông tin sản phẩm. Vui lòng kiểm tra lại.");
-            //            return;
-            //        }
-            //    }
-
-            //    // Không tìm thấy trong cả Device và Warranty
-            //    _logger.Warning("ProcessBarCodeAndAddToGrid: Không tìm thấy thiết bị hoặc bảo hành với mã vạch, BarCode={0}", barCode);
-            //    AppendLog($"✗ Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
-            //    MsgBox.ShowWarning($"Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.Error("ProcessBarCodeAndAddToGrid: Exception occurred", ex);
-            //    AppendLog($"✗ Lỗi: {ex.Message}");
-            //    MsgBox.ShowError($"Lỗi xử lý mã vạch: {ex.Message}");
-            //}
         }
 
         #endregion

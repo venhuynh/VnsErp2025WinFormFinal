@@ -11,6 +11,7 @@ using Inventory.StockIn.NhapBaoHanh;
 using Inventory.StockOut.XuatBaoHanh;
 using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.StockOut.XuatHangThuongMai;
+using Inventory.StockOut.XuatLapRap;
 using MasterData.Customer;
 using Microsoft.Win32;
 using System;
@@ -189,7 +190,7 @@ namespace VnsErp2025
 
 
 
-            Application.Run(new FrmXuatBaoHanh());
+            Application.Run(new FrmXuatLapRap());
 
             #endregion
 
