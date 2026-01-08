@@ -43,7 +43,7 @@ namespace Inventory.ProductVariantIdentifier
             this.ChangeDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.stockInOutMasterHistoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.PRoductVariantSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.ProductVariantSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colFullContentHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.ProductVariantIdentifierHistoryGridControl = new DevExpress.XtraGrid.GridControl();
@@ -75,7 +75,7 @@ namespace Inventory.ProductVariantIdentifier
             ((System.ComponentModel.ISupportInitialize)(this.ChangeDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInOutMasterHistoryDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PRoductVariantSearchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierHistoryGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierHistoryDtoBindingSource)).BeginInit();
@@ -168,7 +168,7 @@ namespace Inventory.ProductVariantIdentifier
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ProductVariantSearchLookUpEdit.Properties.DataSource = this.stockInOutMasterHistoryDtoBindingSource;
             this.ProductVariantSearchLookUpEdit.Properties.DisplayMember = "FullContentHtml";
-            this.ProductVariantSearchLookUpEdit.Properties.PopupView = this.PRoductVariantSearchLookUpEdit1View;
+            this.ProductVariantSearchLookUpEdit.Properties.PopupView = this.ProductVariantSearchLookUpEdit1View;
             this.ProductVariantSearchLookUpEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemHypertextLabel1});
             this.ProductVariantSearchLookUpEdit.Properties.ValueMember = "Id";
@@ -180,22 +180,40 @@ namespace Inventory.ProductVariantIdentifier
             // 
             this.stockInOutMasterHistoryDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.StockInOutMasterHistoryDto);
             // 
-            // PRoductVariantSearchLookUpEdit1View
+            // ProductVariantSearchLookUpEdit1View
             // 
-            this.PRoductVariantSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.ProductVariantSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colFullContentHtml});
-            this.PRoductVariantSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.PRoductVariantSearchLookUpEdit1View.Name = "PRoductVariantSearchLookUpEdit1View";
-            this.PRoductVariantSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.PRoductVariantSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.ProductVariantSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.ProductVariantSearchLookUpEdit1View.Name = "ProductVariantSearchLookUpEdit1View";
+            this.ProductVariantSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.ProductVariantSearchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductVariantSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
+            this.ProductVariantSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
             // colFullContentHtml
             // 
+            this.colFullContentHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colFullContentHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFullContentHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colFullContentHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colFullContentHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colFullContentHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colFullContentHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colFullContentHtml.AppearanceHeader.Options.UseFont = true;
+            this.colFullContentHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colFullContentHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colFullContentHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colFullContentHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFullContentHtml.Caption = "Phiếu nhập/xuất";
             this.colFullContentHtml.ColumnEdit = this.repositoryItemHypertextLabel1;
             this.colFullContentHtml.FieldName = "FullContentHtml";
             this.colFullContentHtml.Name = "colFullContentHtml";
+            this.colFullContentHtml.OptionsColumn.AllowEdit = false;
+            this.colFullContentHtml.OptionsColumn.ReadOnly = true;
             this.colFullContentHtml.Visible = true;
             this.colFullContentHtml.VisibleIndex = 0;
+            this.colFullContentHtml.Width = 600;
             // 
             // repositoryItemHypertextLabel1
             // 
@@ -513,7 +531,7 @@ namespace Inventory.ProductVariantIdentifier
             ((System.ComponentModel.ISupportInitialize)(this.ChangeDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInOutMasterHistoryDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PRoductVariantSearchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierHistoryGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierHistoryDtoBindingSource)).EndInit();
@@ -545,7 +563,7 @@ namespace Inventory.ProductVariantIdentifier
         
         private LayoutControlItem layoutControlItem2;
         private DevExpress.XtraEditors.SearchLookUpEdit ProductVariantSearchLookUpEdit;
-        private DevExpress.XtraGrid.Views.Grid.GridView PRoductVariantSearchLookUpEdit1View;
+        private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantSearchLookUpEdit1View;
         private LayoutControlItem LichSuNhapXuatLayoutControlItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
         private System.Windows.Forms.BindingSource stockInOutMasterHistoryDtoBindingSource;

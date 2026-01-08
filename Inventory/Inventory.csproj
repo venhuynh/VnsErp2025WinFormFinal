@@ -85,6 +85,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierQrCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierQrCode.Designer.cs">
+      <DependentUpon>FrmProductVariantIdentifierQrCode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Query\FrmCreateNewSerialNumberFromStockInOut.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -417,6 +423,9 @@
     <Compile Include="XtraForm1.Designer.cs">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ProductVariantIdentifier\FrmProductVariantIdentifierQrCode.resx">
+      <DependentUpon>FrmProductVariantIdentifierQrCode.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Query\FrmCreateNewSerialNumberFromStockInOut.resx">
       <DependentUpon>FrmCreateNewSerialNumberFromStockInOut.cs</DependentUpon>
     </EmbeddedResource>

@@ -56,10 +56,10 @@
             this.FilterByIdentifierValueBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.AddNewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
+            this.PrintQrCodeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.LichSuThayDoiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -292,7 +292,7 @@
             this.colUpdatedDate.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colUpdatedDate.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colUpdatedDate.Caption = "Ngày cập nhật";
-            this.colUpdatedDate.DisplayFormat.FormatString = "dd/MM/yyyy HH:mm";
+            this.colUpdatedDate.DisplayFormat.FormatString = "d";
             this.colUpdatedDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
             this.colUpdatedDate.FieldName = "UpdatedDate";
             this.colUpdatedDate.Name = "colUpdatedDate";
@@ -375,7 +375,7 @@
             this.AddNewBarButtonItem,
             this.EditBarButtonItem,
             this.barButtonItem4,
-            this.barButtonItem5,
+            this.PrintQrCodeBarButtonItem,
             this.FilterDataBarSubItem,
             this.FilterByStatusBarButtonItem,
             this.FilterByUpdateDateBarButtonItem,
@@ -399,10 +399,10 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.FilterDataBarSubItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddNewBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem4, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.PrintQrCodeBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LichSuThayDoiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem4),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem5)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -465,6 +465,20 @@
             this.EditBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.edit_16x16;
             this.EditBarButtonItem.Name = "EditBarButtonItem";
             // 
+            // barButtonItem4
+            // 
+            this.barButtonItem4.Caption = "Xóa";
+            this.barButtonItem4.Id = 25;
+            this.barButtonItem4.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
+            this.barButtonItem4.Name = "barButtonItem4";
+            // 
+            // PrintQrCodeBarButtonItem
+            // 
+            this.PrintQrCodeBarButtonItem.Caption = "In tem";
+            this.PrintQrCodeBarButtonItem.Id = 26;
+            this.PrintQrCodeBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
+            this.PrintQrCodeBarButtonItem.Name = "PrintQrCodeBarButtonItem";
+            // 
             // LichSuThayDoiBarButtonItem
             // 
             this.LichSuThayDoiBarButtonItem.Caption = "LS thay đổi";
@@ -479,18 +493,6 @@
             this.ExportFileBarButtonItem.Id = 18;
             this.ExportFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.exporttoxps_16x16;
             this.ExportFileBarButtonItem.Name = "ExportFileBarButtonItem";
-            // 
-            // barButtonItem4
-            // 
-            this.barButtonItem4.Caption = "Xóa";
-            this.barButtonItem4.Id = 25;
-            this.barButtonItem4.Name = "barButtonItem4";
-            // 
-            // barButtonItem5
-            // 
-            this.barButtonItem5.Caption = "In tem";
-            this.barButtonItem5.Id = 26;
-            this.barButtonItem5.Name = "barButtonItem5";
             // 
             // bar1
             // 
@@ -724,7 +726,7 @@
         private DevExpress.XtraBars.BarButtonItem AddNewBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem barButtonItem4;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem5;
+        private DevExpress.XtraBars.BarButtonItem PrintQrCodeBarButtonItem;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantFullName;
         private DevExpress.XtraGrid.Columns.GridColumn colIdentifiersHtml;
         private DevExpress.XtraGrid.Columns.GridColumn colStatus;

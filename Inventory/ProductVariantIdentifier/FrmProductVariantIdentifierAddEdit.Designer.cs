@@ -241,6 +241,8 @@ namespace Inventory.ProductVariantIdentifier
             this.PRoductVariantSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.PRoductVariantSearchLookUpEdit1View.Name = "PRoductVariantSearchLookUpEdit1View";
             this.PRoductVariantSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.PRoductVariantSearchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.PRoductVariantSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.PRoductVariantSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
             // colVariantFullName

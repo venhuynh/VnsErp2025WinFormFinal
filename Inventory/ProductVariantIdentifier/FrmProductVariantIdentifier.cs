@@ -2,7 +2,6 @@ using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
-using DevExpress.XtraBars.Docking;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Grid;
@@ -153,10 +152,10 @@ namespace Inventory.ProductVariantIdentifier
                 }
 
                 // SuperTip cho nút In tem
-                if (barButtonItem5 != null)
+                if (PrintQrCodeBarButtonItem != null)
                 {
                     SuperToolTipHelper.SetBarButtonSuperTip(
-                        barButtonItem5,
+                        PrintQrCodeBarButtonItem,
                         title: @"<b><color=Purple>🏷️ In tem</color></b>",
                         content: @"In tem/label cho các định danh sản phẩm được chọn.<br/><br/><b>Chức năng:</b><br/>• Tạo và in tem/label cho định danh<br/>• Hỗ trợ in nhiều định danh cùng lúc<br/>• Có thể in QR code, barcode, hoặc thông tin định danh<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn ít nhất một định danh<br/><br/><color=Gray>Lưu ý:</color> Chức năng này đang được phát triển."
                     );
@@ -187,7 +186,7 @@ namespace Inventory.ProductVariantIdentifier
                 AddNewBarButtonItem.ItemClick += BarButtonItem2_ItemClick;
                 EditBarButtonItem.ItemClick += BarButtonItem3_ItemClick;
                 barButtonItem4.ItemClick += BarButtonItem4_ItemClick;
-                barButtonItem5.ItemClick += BarButtonItem5_ItemClick;
+                PrintQrCodeBarButtonItem.ItemClick += PrintQrCodeBarButtonItem_ItemClick;
 
                 // GridView events
                 ProductVariantIdentifierDtoGridView.DoubleClick += ProductVariantIdentifierDtoGridView_DoubleClick;
@@ -403,14 +402,14 @@ namespace Inventory.ProductVariantIdentifier
 
                     // Set độ rộng bằng 2/3 màn hình hiện tại
                     int screenWidth = Screen.PrimaryScreen.WorkingArea.Width;
-                    int panelWidth = (int)(screenWidth * 2.0 / 3.0);
+                    int panelWidth = (int)(screenWidth * 0.5);
                     dockPanel1.Width = panelWidth;
                     //dockPanel1.OriginalSize = new System.Drawing.Size(panelWidth, 200);
                     //dockPanel1.Size = new System.Drawing.Size(panelWidth, dockPanel1.Size.Height);
                     
                     // Hiển thị DockPanel
                     dockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.Visible;
-                    dockPanel1.Show();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -565,24 +564,41 @@ namespace Inventory.ProductVariantIdentifier
         /// <summary>
         /// Event handler cho nút In tem
         /// </summary>
-        private void BarButtonItem5_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void PrintQrCodeBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
-                var selectedCount = ProductVariantIdentifierDtoGridView.SelectedRowsCount;
-                if (selectedCount == 0)
+                var focusedRowHandle = ProductVariantIdentifierDtoGridView.FocusedRowHandle;
+                if (focusedRowHandle < 0)
                 {
-                    MsgBox.ShowWarning("Vui lòng chọn ít nhất một định danh để in tem.");
+                    MsgBox.ShowWarning("Vui lòng chọn một định danh để in tem.");
                     return;
                 }
 
-                // TODO: Implement print label functionality
-                MsgBox.ShowWarning("Chức năng in tem đang được phát triển.");
+                if (ProductVariantIdentifierDtoGridView.GetRow(focusedRowHandle) is not ProductVariantIdentifierDto selectedDto)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin định danh được chọn.");
+                    return;
+                }
+
+                if (selectedDto.Id == Guid.Empty)
+                {
+                    MsgBox.ShowWarning("Định danh được chọn không có Id hợp lệ.");
+                    return;
+                }
+
+                // Mở form in QR Code với định danh được chọn
+                using (var form = new FrmProductVariantIdentifierQrCode(selectedDto))
+                {
+                    // Nhận callback khi QR được cập nhật
+                    form.IdentifierUpdated += dto => UpdateIdentifierInBindingSource(dto);
+                    form.ShowDialog(this);
+                }
             }
             catch (Exception ex)
             {
-                _logger.Error("BarButtonItem5_ItemClick: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi: {ex.Message}");
+                _logger.Error("PrintQrCodeBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi mở form in tem: {ex.Message}");
             }
         }
 
@@ -1018,7 +1034,7 @@ namespace Inventory.ProductVariantIdentifier
 
                 // Các nút cho phép nhiều dòng: Xóa, In tem
                 barButtonItem4.Enabled = selectedCount > 0;
-                barButtonItem5.Enabled = selectedCount > 0;
+                PrintQrCodeBarButtonItem.Enabled = selectedCount > 0;
             }
             catch (Exception ex)
             {
@@ -1154,6 +1170,43 @@ namespace Inventory.ProductVariantIdentifier
         {
             _filterCriteria.Reset();
             ApplyFilterAndBind();
+        }
+
+        /// <summary>
+        /// Cập nhật DTO trong BindingSource khi nhận callback từ form in QR
+        /// </summary>
+        /// <param name="dto">DTO đã được cập nhật</param>
+        private void UpdateIdentifierInBindingSource(ProductVariantIdentifierDto dto)
+        {
+            try
+            {
+                if (dto == null || dto.Id == Guid.Empty)
+                    return;
+
+                if (productVariantIdentifierDtoBindingSource.DataSource is List<ProductVariantIdentifierDto> list)
+                {
+                    var existing = list.FirstOrDefault(x => x.Id == dto.Id);
+                    if (existing != null)
+                    {
+                        // Cập nhật toàn bộ thuộc tính hình ảnh để hiển thị lại
+                        existing.QRCodeImage = dto.QRCodeImage;
+                        existing.QRCodeImagePath = dto.QRCodeImagePath;
+                        existing.QRCodeImageFullPath = dto.QRCodeImageFullPath;
+                        existing.QRCodeImageFileName = dto.QRCodeImageFileName;
+                        existing.QRCodeImageStorageType = dto.QRCodeImageStorageType;
+                        existing.QRCodeImageLocked = dto.QRCodeImageLocked;
+                        existing.QRCodeImageLockedBy = dto.QRCodeImageLockedBy;
+                        existing.QRCodeImageLockedDate = dto.QRCodeImageLockedDate;
+
+                        productVariantIdentifierDtoBindingSource.ResetBindings(false);
+                        ProductVariantIdentifierDtoGridView.RefreshData();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UpdateIdentifierInBindingSource: Exception occurred", ex);
+            }
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 using Bll.Inventory.InventoryManagement;
+using Common.Helpers;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using DTO.Inventory;
@@ -40,6 +41,27 @@ namespace Inventory.ProductVariantIdentifier
         {
             InitializeComponent();
             InitializeChangeTypeComboBox();
+            InitializeEventHandlers();
+        }
+
+        /// <summary>
+        /// Khởi tạo các event handlers
+        /// </summary>
+        private void InitializeEventHandlers()
+        {
+            try
+            {
+                // Đăng ký event Click cho Save và Delete
+                SaveHyperlinkLabelControl.Click += SaveHyperlinkLabelControl_Click;
+                DeleteHyperlinkLabelControl.Click += DeleteHyperlinkLabelControl_Click;
+
+                // Đăng ký event EditValueChanged cho ProductVariantSearchLookUpEdit để tự động lấy ngày nhập/xuất
+                ProductVariantSearchLookUpEdit.EditValueChanged += ProductVariantSearchLookUpEdit_EditValueChanged;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeEventHandlers: Exception occurred - {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -275,8 +297,8 @@ namespace Inventory.ProductVariantIdentifier
                     LichSuNhapXuatLayoutControlItem.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
                     NotStockInOutChangeLayoutControlGroup.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
 
-                    // Load datasource cho stockInOutMasterHistoryDtoBindingSource dựa vào _currentDto
-                    LoadStockInOutMasterHistory();
+                    // Load datasource cho stockInOutMasterHistoryDtoBindingSource dựa vào _currentDto và changeTypeEnum
+                    LoadStockInOutMasterHistory(changeTypeEnum.Value);
                 }
                 else
                 {
@@ -341,9 +363,10 @@ namespace Inventory.ProductVariantIdentifier
         }
 
         /// <summary>
-        /// Load danh sách StockInOutMasterHistoryDto dựa trên ProductVariantId của _currentDto
+        /// Load danh sách StockInOutMasterHistoryDto dựa trên ProductVariantId của _currentDto và loại thay đổi
         /// </summary>
-        private void LoadStockInOutMasterHistory()
+        /// <param name="changeTypeEnum">Loại thay đổi (Nhap hoặc Xuat) để filter dữ liệu</param>
+        private void LoadStockInOutMasterHistory(ProductVariantIdentifierHistoryChangeTypeEnum changeTypeEnum)
         {
             try
             {
@@ -393,8 +416,24 @@ namespace Inventory.ProductVariantIdentifier
                     return;
                 }
 
-                // 4. Convert StockInOutMasterForUIDto sang StockInOutMasterHistoryDto
-                var historyDtos = masters.Select(m =>
+                // 4. Filter theo loại nhập/xuất dựa trên changeTypeEnum
+                // Logic: LoaiNhapXuatKhoEnum < 10 = Nhập kho, >= 10 = Xuất kho
+                IEnumerable<StockInOutMasterForUIDto> filteredMasters = masters;
+                if (changeTypeEnum == ProductVariantIdentifierHistoryChangeTypeEnum.Nhap)
+                {
+                    // Chỉ lấy các phiếu nhập kho (LoaiNhapXuatKho < 10)
+                    filteredMasters = masters.Where(m => (int)m.LoaiNhapXuatKho < 10);
+                    System.Diagnostics.Debug.WriteLine($"LoadStockInOutMasterHistory: Filter theo Nhập kho (LoaiNhapXuatKho < 10)");
+                }
+                else if (changeTypeEnum == ProductVariantIdentifierHistoryChangeTypeEnum.Xuat)
+                {
+                    // Chỉ lấy các phiếu xuất kho (LoaiNhapXuatKho >= 10)
+                    filteredMasters = masters.Where(m => (int)m.LoaiNhapXuatKho >= 10);
+                    System.Diagnostics.Debug.WriteLine($"LoadStockInOutMasterHistory: Filter theo Xuất kho (LoaiNhapXuatKho >= 10)");
+                }
+
+                // 5. Convert StockInOutMasterForUIDto sang StockInOutMasterHistoryDto
+                var historyDtos = filteredMasters.Select(m =>
                 {
                     // Lấy tên loại nhập xuất từ enum
                     string loaiNhapXuatKhoName = ApplicationEnumUtils.GetDescription(m.LoaiNhapXuatKho);
@@ -430,11 +469,11 @@ namespace Inventory.ProductVariantIdentifier
                     };
                 }).ToList();
 
-                // 5. Bind vào binding source
+                // 6. Bind vào binding source
                 stockInOutMasterHistoryDtoBindingSource.DataSource = historyDtos;
                 stockInOutMasterHistoryDtoBindingSource.ResetBindings(false);
 
-                System.Diagnostics.Debug.WriteLine($"LoadStockInOutMasterHistory: Đã load {historyDtos.Count} phiếu nhập/xuất cho ProductVariantId={_currentDto.ProductVariantId}");
+                System.Diagnostics.Debug.WriteLine($"LoadStockInOutMasterHistory: Đã load {historyDtos.Count} phiếu {changeTypeEnum} cho ProductVariantId={_currentDto.ProductVariantId}");
             }
             catch (Exception ex)
             {
@@ -443,5 +482,262 @@ namespace Inventory.ProductVariantIdentifier
                 stockInOutMasterHistoryDtoBindingSource.ResetBindings(false);
             }
         }
+
+        #region ========== SAVE & DELETE OPERATIONS ==========
+
+        /// <summary>
+        /// Event handler cho nút Lưu
+        /// </summary>
+        private void SaveHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Kiểm tra _currentDto
+                if (_currentDto == null || _currentDto.Id == Guid.Empty)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn một định danh sản phẩm để lưu lịch sử thay đổi.");
+                    return;
+                }
+
+                // Validate ChangeTypeComboBoxEdit
+                if (ProductVariantIdentifierHistoryChangeTypeComboBoxEdit.EditValue == null)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn loại thay đổi.");
+                    return;
+                }
+
+                // Lấy ChangeTypeEnum từ ComboBox
+                var changeTypeEnum = GetChangeTypeEnumFromComboBox();
+                if (!changeTypeEnum.HasValue)
+                {
+                    MsgBox.ShowWarning("Không thể xác định loại thay đổi. Vui lòng chọn lại.");
+                    return;
+                }
+
+                // Validate ChangeDate
+                if (ChangeDateEdit.EditValue == null || !(ChangeDateEdit.EditValue is DateTime changeDate))
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn ngày thay đổi.");
+                    return;
+                }
+
+                // Lấy Value từ ValueMemoEdit
+                string value = ValueMemoEdit.Text?.Trim() ?? string.Empty;
+
+                // Nếu là nhập/xuất, lấy thông tin từ ProductVariantSearchLookUpEdit
+                if (changeTypeEnum.Value == ProductVariantIdentifierHistoryChangeTypeEnum.Nhap || 
+                    changeTypeEnum.Value == ProductVariantIdentifierHistoryChangeTypeEnum.Xuat)
+                {
+                    if (ProductVariantSearchLookUpEdit.EditValue == null || 
+                        !(ProductVariantSearchLookUpEdit.EditValue is Guid stockInOutMasterId) ||
+                        stockInOutMasterId == Guid.Empty)
+                    {
+                        MsgBox.ShowWarning("Vui lòng chọn phiếu nhập/xuất.");
+                        return;
+                    }
+
+                    // Lấy thông tin từ StockInOutMasterHistoryDto đã chọn
+                    if (stockInOutMasterHistoryDtoBindingSource.Current is StockInOutMasterHistoryDto selectedStockInOut)
+                    {
+                        // Tạo Value string từ thông tin phiếu nhập/xuất
+                        var valueParts = new List<string>();
+                        if (!string.IsNullOrWhiteSpace(selectedStockInOut.CustomerName))
+                            valueParts.Add($"Khách hàng: {selectedStockInOut.CustomerName}");
+                        if (!string.IsNullOrWhiteSpace(selectedStockInOut.WarehouseName))
+                            valueParts.Add($"Kho: {selectedStockInOut.WarehouseName}");
+                        if (!string.IsNullOrWhiteSpace(selectedStockInOut.VocherNumber))
+                            valueParts.Add($"Số phiếu: {selectedStockInOut.VocherNumber}");
+                        if (!string.IsNullOrWhiteSpace(selectedStockInOut.LoaiNhapXuatKhoName))
+                            valueParts.Add($"Loại: {selectedStockInOut.LoaiNhapXuatKhoName}");
+
+                        if (valueParts.Count > 0)
+                        {
+                            value = string.Join(" | ", valueParts);
+                        }
+                    }
+                }
+
+                // Tạo DTO lịch sử
+                var historyDto = new ProductVariantIdentifierHistoryDto
+                {
+                    Id = Guid.NewGuid(), // Tạo mới
+                    ProductVariantIdentifierId = _currentDto.Id,
+                    ProductVariantId = _currentDto.ProductVariantId,
+                    ProductVariantFullName = _currentDto.ProductVariantFullName,
+                    ChangeTypeEnum = changeTypeEnum.Value,
+                    //FIXME: Nếu là nhập xuất thì lấy ngày nhập xuất
+                    ChangeDate = changeDate,
+                    Value = value,
+                    Notes = null, // Có thể thêm NotesMemoEdit sau nếu cần
+                    ChangedBy = null // Có thể lấy từ ApplicationUserManager sau
+                };
+
+                // Lưu bản ghi lịch sử
+                var savedDto = _productVariantIdentifierHistoryBll.SaveOrUpdate(historyDto);
+
+                // Reload dữ liệu
+                LoadHistory(_currentDto);
+
+                // Reset các controls
+                //ResetInputControls();
+
+                MsgBox.ShowSuccess("Lưu lịch sử thay đổi thành công.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SaveHyperlinkLabelControl_Click: Exception occurred - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"SaveHyperlinkLabelControl_Click: StackTrace - {ex.StackTrace}");
+                MsgBox.ShowError($"Lỗi khi lưu lịch sử thay đổi: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler cho nút Xóa
+        /// </summary>
+        private void DeleteHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Lấy dòng đã chọn trong grid
+                var focusedRowHandle = ProductVariantIdentifierHistoryGridView.FocusedRowHandle;
+                if (focusedRowHandle < 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn một bản ghi lịch sử để xóa.");
+                    return;
+                }
+
+                var selectedHistory = ProductVariantIdentifierHistoryGridView.GetRow(focusedRowHandle) as ProductVariantIdentifierHistoryDto;
+                if (selectedHistory == null || selectedHistory.Id == Guid.Empty)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin bản ghi được chọn.");
+                    return;
+                }
+
+                // Xác nhận xóa
+                var confirmResult = MsgBox.ShowYesNoCancel($"Bạn có chắc chắn muốn xóa bản ghi lịch sử này?\n\nLoại: {ApplicationEnumUtils.GetDescription(selectedHistory.ChangeTypeEnum)}\nNgày: {selectedHistory.ChangeDate:dd/MM/yyyy HH:mm}");
+                if (confirmResult != System.Windows.Forms.DialogResult.Yes)
+                {
+                    return;
+                }
+
+                // Xóa bản ghi
+                var deleted = _productVariantIdentifierHistoryBll.Delete(selectedHistory.Id);
+                if (deleted)
+                {
+                    // Reload dữ liệu
+                    if (_currentDto != null)
+                    {
+                        LoadHistory(_currentDto);
+                    }
+
+                    MsgBox.ShowSuccess("Xóa lịch sử thay đổi thành công.");
+                }
+                else
+                {
+                    MsgBox.ShowWarning("Không tìm thấy bản ghi để xóa.");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"DeleteHyperlinkLabelControl_Click: Exception occurred - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"DeleteHyperlinkLabelControl_Click: StackTrace - {ex.StackTrace}");
+                MsgBox.ShowError($"Lỗi khi xóa lịch sử thay đổi: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Lấy ChangeTypeEnum từ ComboBox
+        /// </summary>
+        private ProductVariantIdentifierHistoryChangeTypeEnum? GetChangeTypeEnumFromComboBox()
+        {
+            try
+            {
+                var editValue = ProductVariantIdentifierHistoryChangeTypeComboBoxEdit.EditValue;
+                if (editValue == null) return null;
+
+                if (editValue is string stringValue)
+                {
+                    return GetChangeTypeEnumFromDescription(stringValue);
+                }
+                else if (editValue is ProductVariantIdentifierHistoryChangeTypeEnum enumValue)
+                {
+                    return enumValue;
+                }
+                else if (editValue is int intValue && Enum.IsDefined(typeof(ProductVariantIdentifierHistoryChangeTypeEnum), intValue))
+                {
+                    return (ProductVariantIdentifierHistoryChangeTypeEnum)intValue;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GetChangeTypeEnumFromComboBox: Exception occurred - {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Reset các controls nhập liệu về trạng thái ban đầu
+        /// </summary>
+        private void ResetInputControls()
+        {
+            try
+            {
+                ProductVariantIdentifierHistoryChangeTypeComboBoxEdit.EditValue = null;
+                ChangeDateEdit.EditValue = null;
+                ValueMemoEdit.Text = string.Empty;
+                ProductVariantSearchLookUpEdit.EditValue = null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ResetInputControls: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi giá trị ProductVariantSearchLookUpEdit thay đổi
+        /// Tự động lấy ngày nhập/xuất từ phiếu đã chọn
+        /// </summary>
+        private void ProductVariantSearchLookUpEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Chỉ xử lý nếu là nhập/xuất
+                var changeTypeEnum = GetChangeTypeEnumFromComboBox();
+                if (!changeTypeEnum.HasValue || 
+                    (changeTypeEnum.Value != ProductVariantIdentifierHistoryChangeTypeEnum.Nhap && 
+                     changeTypeEnum.Value != ProductVariantIdentifierHistoryChangeTypeEnum.Xuat))
+                {
+                    return;
+                }
+
+                // Lấy giá trị đã chọn
+                if (ProductVariantSearchLookUpEdit.EditValue == null || 
+                    !(ProductVariantSearchLookUpEdit.EditValue is Guid stockInOutMasterId) ||
+                    stockInOutMasterId == Guid.Empty)
+                {
+                    return;
+                }
+
+                // Tìm StockInOutMasterHistoryDto trong binding source
+                var selectedStockInOut = stockInOutMasterHistoryDtoBindingSource
+                    .Cast<StockInOutMasterHistoryDto>()
+                    .FirstOrDefault(d => d.Id == stockInOutMasterId);
+
+                if (selectedStockInOut != null && selectedStockInOut.StockInOutDate != default(DateTime))
+                {
+                    // Set ngày nhập/xuất vào ChangeDateEdit
+                    ChangeDateEdit.EditValue = selectedStockInOut.StockInOutDate;
+                    System.Diagnostics.Debug.WriteLine($"ProductVariantSearchLookUpEdit_EditValueChanged: Đã set ngày nhập/xuất = {selectedStockInOut.StockInOutDate:dd/MM/yyyy HH:mm}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ProductVariantSearchLookUpEdit_EditValueChanged: Exception occurred - {ex.Message}");
+            }
+        }
+
+        #endregion
     }
 }
