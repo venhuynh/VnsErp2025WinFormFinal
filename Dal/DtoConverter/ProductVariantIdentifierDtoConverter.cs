@@ -1,4 +1,4 @@
-﻿using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +50,7 @@ namespace Dal.DtoConverter
                 LicenseKey = entity.LicenseKey,
                 UPC = entity.UPC,
                 EAN = entity.EAN,
-                ID = entity.Id.ToString(),
+                ID = entity.ISBN, // Map to ISBN column, not entity.Id
                 OtherIdentifier = entity.OtherIdentifier,
 
                 // Quản lý hình ảnh QR code
@@ -173,7 +173,7 @@ namespace Dal.DtoConverter
             entity.LicenseKey = dto.LicenseKey;
             entity.UPC = dto.UPC;
             entity.EAN = dto.EAN;
-            entity.Id = dto.Id;
+            entity.ISBN = dto.ID; // Map from DTO.ID to entity.ISBN (not entity.Id)
             entity.OtherIdentifier = dto.OtherIdentifier;
 
             // Map properties - Quản lý hình ảnh QR code

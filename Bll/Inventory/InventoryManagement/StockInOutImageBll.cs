@@ -160,7 +160,8 @@ namespace Bll.Inventory.InventoryManagement
                 FileName = storageResult.FileName,
                 RelativePath = storageResult.RelativePath,
                 FullPath = storageResult.FullPath,
-                StorageType = "NAS", // Hoặc từ config
+                // Lấy storage type từ config thay vì hardcode "NAS"
+                StorageType = GetStorageTypeFromConfig(),
                 FileSize = storageResult.FileSize,
                 FileExtension = fileExtension.TrimStart('.').ToLower(),
                 MimeType = GetMimeType(fileExtension),
@@ -192,6 +193,80 @@ namespace Bll.Inventory.InventoryManagement
     public Dal.DataContext.StockInOutImage SaveImageFromFile(Guid stockInOutMasterId, string imageFilePath)
     {
         return SaveImageFromFileAsync(stockInOutMasterId, imageFilePath).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Lưu hình ảnh từ byte array vào storage (NAS/Local) và metadata vào database
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+    /// <param name="imageData">Dữ liệu hình ảnh (byte array)</param>
+    /// <param name="fileExtension">Phần mở rộng file (ví dụ: "jpg", "png")</param>
+    /// <returns>StockInOutImage đã lưu</returns>
+    public async Task<Dal.DataContext.StockInOutImage> SaveImageFromBytesAsync(Guid stockInOutMasterId, byte[] imageData, string fileExtension = "jpg")
+    {
+        try
+        {
+            if (imageData == null || imageData.Length == 0)
+            {
+                throw new ArgumentException("Dữ liệu hình ảnh không được để trống", nameof(imageData));
+            }
+
+            // 1. Tạo tên file mới để tránh trùng lặp
+            var fileName = $"StockInOut_{stockInOutMasterId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}.{fileExtension.TrimStart('.')}";
+
+            // 2. Lưu vào storage (NAS/Local) thông qua ImageStorageService
+            var storageResult = await GetImageStorage().SaveImageAsync(
+                imageData: imageData,
+                fileName: fileName,
+                category: ImageCategory.StockInOut,
+                entityId: stockInOutMasterId,
+                generateThumbnail: false // StockInOut images thường không cần thumbnail
+            );
+
+            if (!storageResult.Success)
+            {
+                throw new InvalidOperationException(
+                    $"Không thể lưu hình ảnh vào storage: {storageResult.ErrorMessage}");
+            }
+
+            // 3. Lấy thông tin user hiện tại
+            var currentUser = Bll.Common.ApplicationSystemUtils.GetCurrentUser();
+            var createBy = currentUser?.Id ?? Guid.Empty;
+
+            // 4. Tạo StockInOutImage entity (KHÔNG lưu ImageData vào database)
+            var stockInOutImage = new Dal.DataContext.StockInOutImage
+            {
+                Id = Guid.NewGuid(),
+                StockInOutMasterId = stockInOutMasterId,
+                ImageData = null, // KHÔNG lưu ImageData vào database nữa
+                FileName = storageResult.FileName,
+                RelativePath = storageResult.RelativePath,
+                FullPath = storageResult.FullPath,
+                // Lấy storage type từ config thay vì hardcode "NAS"
+                StorageType = GetStorageTypeFromConfig(),
+                FileSize = storageResult.FileSize,
+                FileExtension = fileExtension.TrimStart('.').ToLower(),
+                MimeType = GetMimeType($".{fileExtension.TrimStart('.')}"),
+                Checksum = storageResult.Checksum,
+                FileExists = true,
+                CreateDate = DateTime.Now,
+                CreateBy = createBy,
+                ModifiedDate = null,
+                ModifiedBy = Guid.Empty
+            };
+
+            // 5. Lưu metadata vào database
+            GetDataAccess().SaveOrUpdate(stockInOutImage);
+
+            _logger.Info($"Đã lưu hình ảnh phiếu nhập/xuất từ byte array, StockInOutMasterId={stockInOutMasterId}, ImageId={stockInOutImage.Id}, RelativePath={storageResult.RelativePath}");
+
+            return stockInOutImage;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lưu hình ảnh từ byte array: {ex.Message}", ex);
+            throw;
+        }
     }
 
     /// <summary>
@@ -417,6 +492,22 @@ namespace Bll.Inventory.InventoryManagement
             "webp" => "image/webp",
             _ => "image/jpeg"
         };
+    }
+
+    /// <summary>
+    /// Lấy storage type từ config
+    /// </summary>
+    private string GetStorageTypeFromConfig()
+    {
+        try
+        {
+            var config = ImageStorageConfiguration.LoadFromConfig();
+            return config?.StorageType ?? "NAS";
+        }
+        catch
+        {
+            return "NAS"; // Fallback to NAS if config cannot be loaded
+        }
     }
 
     #endregion

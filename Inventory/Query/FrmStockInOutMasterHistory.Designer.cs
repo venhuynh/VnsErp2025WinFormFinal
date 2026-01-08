@@ -49,7 +49,7 @@
             this.InPhieuBarSubItem = new DevExpress.XtraBars.BarSubItem();
             this.InPhieuGiaoHangBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.InPhieuNhapXuatBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ThemHinhAnhTuFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.AttachFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XoaPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
@@ -62,6 +62,8 @@
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.AddImagesBarSubItem = new DevExpress.XtraBars.BarSubItem();
+            this.ThemHinhAnhTuWebCamBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutMasterHistoryDtoGridControl)).BeginInit();
@@ -245,7 +247,7 @@
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.InPhieuNhapXuatBarButtonItem,
-            this.ThemHinhAnhBarButtonItem,
+            this.ThemHinhAnhTuFileBarButtonItem,
             this.TuNgayBarEditItem,
             this.DenNgayBarEditItem,
             this.XemBaoCaoBarButtonItem,
@@ -256,9 +258,11 @@
             this.XoaPhieuBarButtonItem,
             this.AttachFileBarButtonItem,
             this.InPhieuGiaoHangBarButtonItem,
-            this.InPhieuBarSubItem});
+            this.InPhieuBarSubItem,
+            this.AddImagesBarSubItem,
+            this.ThemHinhAnhTuWebCamBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 18;
+            this.barManager1.MaxItemId = 20;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit1,
             this.repositoryItemDateEdit2});
@@ -277,8 +281,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBaoCaoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ChiTietPhieuNhapXuatBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarSubItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AttachFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddImagesBarSubItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
@@ -357,13 +361,13 @@
             this.InPhieuNhapXuatBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.Send;
             this.InPhieuNhapXuatBarButtonItem.Name = "InPhieuNhapXuatBarButtonItem";
             // 
-            // ThemHinhAnhBarButtonItem
+            // ThemHinhAnhTuFileBarButtonItem
             // 
-            this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
-            this.ThemHinhAnhBarButtonItem.Id = 5;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
-            this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
+            this.ThemHinhAnhTuFileBarButtonItem.Caption = "Từ file";
+            this.ThemHinhAnhTuFileBarButtonItem.Id = 5;
+            this.ThemHinhAnhTuFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.attachment_16x16;
+            this.ThemHinhAnhTuFileBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
+            this.ThemHinhAnhTuFileBarButtonItem.Name = "ThemHinhAnhTuFileBarButtonItem";
             // 
             // AttachFileBarButtonItem
             // 
@@ -466,6 +470,23 @@
             this.layoutControlItem1.Size = new System.Drawing.Size(1351, 726);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // AddImagesBarSubItem
+            // 
+            this.AddImagesBarSubItem.Caption = "Thêm hình ảnh";
+            this.AddImagesBarSubItem.Id = 18;
+            this.AddImagesBarSubItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
+            this.AddImagesBarSubItem.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhTuFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.ThemHinhAnhTuWebCamBarButtonItem)});
+            this.AddImagesBarSubItem.Name = "AddImagesBarSubItem";
+            // 
+            // ThemHinhAnhTuWebCamBarButtonItem
+            // 
+            this.ThemHinhAnhTuWebCamBarButtonItem.Caption = "Từ Webcam";
+            this.ThemHinhAnhTuWebCamBarButtonItem.Id = 19;
+            this.ThemHinhAnhTuWebCamBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.Webcam2;
+            this.ThemHinhAnhTuWebCamBarButtonItem.Name = "ThemHinhAnhTuWebCamBarButtonItem";
+            // 
             // FrmStockInOutMasterHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -507,7 +528,7 @@
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem ThemHinhAnhTuFileBarButtonItem;
         private DevExpress.XtraGrid.GridControl StockInOutMasterHistoryDtoGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView StockInOutMasterHistoryDtoGridView;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
@@ -532,5 +553,7 @@
         private DevExpress.XtraBars.BarButtonItem AttachFileBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem InPhieuGiaoHangBarButtonItem;
         private DevExpress.XtraBars.BarSubItem InPhieuBarSubItem;
+        private DevExpress.XtraBars.BarSubItem AddImagesBarSubItem;
+        private DevExpress.XtraBars.BarButtonItem ThemHinhAnhTuWebCamBarButtonItem;
     }
 }

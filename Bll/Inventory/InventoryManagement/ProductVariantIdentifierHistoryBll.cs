@@ -7,6 +7,7 @@ using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bll.Inventory.InventoryManagement
 {
@@ -322,9 +323,12 @@ namespace Bll.Inventory.InventoryManagement
             }
 
             // Kiểm tra ChangeType phải hợp lệ
-            if (!Enum.IsDefined(typeof(ProductVariantIdentifierHistoryChangeTypeEnum), dto.ChangeTypeEnum))
+            // Validate dto.ChangeType (raw int) thay vì dto.ChangeTypeEnum vì getter có default case
+            // Các giá trị hợp lệ: 1, 2, 3, 4, 5, 99
+            var validChangeTypes = new[] { 1, 2, 3, 4, 5, 99 };
+            if (!validChangeTypes.Contains(dto.ChangeType))
             {
-                throw new ArgumentException($"ChangeType không hợp lệ: {dto.ChangeType}", nameof(dto));
+                throw new ArgumentException($"ChangeType không hợp lệ: {dto.ChangeType}. Các giá trị hợp lệ: 1, 2, 3, 4, 5, 99", nameof(dto));
             }
         }
 

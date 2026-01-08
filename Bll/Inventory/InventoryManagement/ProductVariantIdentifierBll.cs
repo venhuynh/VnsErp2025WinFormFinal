@@ -546,7 +546,9 @@ namespace Bll.Inventory.InventoryManagement
                 identifier.QRCodeImagePath = storageResult.RelativePath;
                 identifier.QRCodeImageFullPath = storageResult.FullPath;
                 identifier.QRCodeImageFileName = storageResult.FileName;
-                identifier.QRCodeImageStorageType = "NAS";
+                // Lấy storage type từ config thay vì hardcode "NAS"
+                var config = ImageStorageConfiguration.LoadFromConfig();
+                identifier.QRCodeImageStorageType = config?.StorageType ?? "NAS";
 
                 // 4. Lưu vào database
                 SaveOrUpdate(identifier);

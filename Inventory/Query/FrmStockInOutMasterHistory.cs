@@ -115,7 +115,8 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             ChiTietPhieuNhapXuatBarButtonItem.ItemClick += ChiTietPhieuNhapXuatBarButtonItem_ItemClick;
             InPhieuNhapXuatBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
             InPhieuGiaoHangBarButtonItem.ItemClick += InPhieuGiaoHangBarButtonItem_ItemClick;
-            ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
+            ThemHinhAnhTuFileBarButtonItem.ItemClick += ThemHinhAnhTuFileBarButtonItem_ItemClick;
+            ThemHinhAnhTuWebCamBarButtonItem.ItemClick += ThemHinhAnhTuWebCamBarButtonItem_ItemClick;
             AttachFileBarButtonItem.ItemClick += AttachFileBarButtonItem_ItemClick;
             XoaPhieuBarButtonItem.ItemClick += XoaPhieuBarButtonItem_ItemClick;
 
@@ -384,10 +385,10 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
     }
 
     /// <summary>
-    /// Event handler cho nút Thêm hình ảnh
+    /// Event handler cho nút Thêm hình ảnh từ file
     /// Chỉ mở màn hình cho 1 phiếu được chọn, sử dụng OverlayManager
     /// </summary>
-    private void ThemHinhAnhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    private void ThemHinhAnhTuFileBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
@@ -423,8 +424,52 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
         }
         catch (Exception ex)
         {
-            _logger.Error("ThemHinhAnhBarButtonItem_ItemClick: Exception occurred", ex);
+            _logger.Error("ThemHinhAnhTuFileBarButtonItem_ItemClick: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi mở form thêm hình ảnh: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Event handler cho nút Thêm hình ảnh từ webcam
+    /// Chỉ mở màn hình cho 1 phiếu được chọn, sử dụng OverlayManager
+    /// </summary>
+    private void ThemHinhAnhTuWebCamBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
+            var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
+            switch (selectedCount)
+            {
+                case 0:
+                    MsgBox.ShowWarning("Vui lòng chọn một phiếu nhập xuất kho để thêm hình ảnh từ webcam.");
+                    return;
+                case > 1:
+                    MsgBox.ShowWarning("Chỉ cho phép thêm hình ảnh cho 1 phiếu. Vui lòng bỏ chọn bớt.");
+                    return;
+            }
+
+            // Kiểm tra ID phiếu được chọn
+            if (!_selectedStockInOutMasterId.HasValue || _selectedStockInOutMasterId.Value == Guid.Empty)
+            {
+                MsgBox.ShowWarning("Vui lòng chọn phiếu nhập xuất kho để thêm hình ảnh từ webcam.");
+                return;
+            }
+
+            // Mở form thêm hình ảnh từ webcam với OverlayManager
+            using (OverlayManager.ShowScope(this))
+            {
+                using var form = new FrmStockInOutAddImagesFromWebcam(_selectedStockInOutMasterId.Value);
+
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.ShowDialog(this);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("ThemHinhAnhTuWebCamBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi mở form thêm hình ảnh từ webcam: {ex.Message}");
         }
     }
 
@@ -788,7 +833,8 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             ChiTietPhieuNhapXuatBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             InPhieuNhapXuatBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             InPhieuGiaoHangBarButtonItem.Enabled = hasSelection && selectedCount == 1 && isStockOut;
-            ThemHinhAnhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+            ThemHinhAnhTuFileBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+            ThemHinhAnhTuWebCamBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             AttachFileBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             XoaPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
         }

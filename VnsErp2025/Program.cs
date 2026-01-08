@@ -4,13 +4,14 @@ using Common.Appconfig;
 using Common.Utils;
 using Dal.Connection;
 using Inventory.Management;
+using Inventory.OverlayForm;
+using Inventory.ProductVariantIdentifier;
 using Inventory.Query;
 using Inventory.StockIn.NhapBaoHanh;
 using MasterData.Customer;
 using Microsoft.Win32;
 using System;
 using System.Windows.Forms;
-using Inventory.ProductVariantIdentifier;
 using VnsErp2025.Form;
 
 
@@ -185,7 +186,7 @@ namespace VnsErp2025
 
 
 
-            Application.Run(new FrmStockInOutProductHistory());
+            Application.Run(new FrmStockInOutAddImagesFromWebcam(Guid.Parse("1c469d50-0b9e-4fb2-81b7-1aa64f5ee365")));
 
             #endregion
 
