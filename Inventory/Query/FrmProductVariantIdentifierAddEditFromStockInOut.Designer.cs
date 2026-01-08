@@ -212,7 +212,7 @@ namespace Inventory.Query
             // 
             this.InputTypeComboBoxEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
             this.InputTypeComboBoxEdit.EditValue = "<color=\'blue\'>Nhập 1 lượt nhiều định danh</color>";
-            this.InputTypeComboBoxEdit.Location = new System.Drawing.Point(121, 65);
+            this.InputTypeComboBoxEdit.Location = new System.Drawing.Point(64, 65);
             this.InputTypeComboBoxEdit.MenuManager = this.barManager1;
             this.InputTypeComboBoxEdit.Name = "InputTypeComboBoxEdit";
             this.InputTypeComboBoxEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
@@ -221,7 +221,7 @@ namespace Inventory.Query
             this.InputTypeComboBoxEdit.Properties.Items.AddRange(new object[] {
             "<color=\'blue\'>Nhập 1 lượt nhiều định danh</color>",
             "<color=\'red\'>Nhập từng định danh riêng lẻ</color>"});
-            this.InputTypeComboBoxEdit.Size = new System.Drawing.Size(558, 20);
+            this.InputTypeComboBoxEdit.Size = new System.Drawing.Size(615, 20);
             this.InputTypeComboBoxEdit.StyleController = this.dataLayoutControl1;
             this.InputTypeComboBoxEdit.TabIndex = 45;
             // 
@@ -360,7 +360,9 @@ namespace Inventory.Query
             this.layoutControlItem1.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
             this.layoutControlItem1.Size = new System.Drawing.Size(671, 24);
             this.layoutControlItem1.Text = "Kiểu nhập";
-            this.layoutControlItem1.TextSize = new System.Drawing.Size(97, 13);
+            this.layoutControlItem1.TextAlignMode = DevExpress.XtraLayout.TextAlignModeItem.AutoSize;
+            this.layoutControlItem1.TextSize = new System.Drawing.Size(47, 13);
+            this.layoutControlItem1.TextToControlDistance = 5;
             // 
             // FrmProductVariantIdentifierAddEditFromStockInOut
             // 

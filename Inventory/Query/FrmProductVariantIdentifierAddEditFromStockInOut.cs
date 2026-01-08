@@ -85,7 +85,7 @@ namespace Inventory.Query
                     SuperToolTipHelper.SetBarButtonSuperTip(
                         SaveBarButtonItem,
                         title: @"<b><color=Green>💾 Lưu</color></b>",
-                        content: @"Lưu định danh sản phẩm vào database theo chế độ đã chọn.<br/><br/><b>Chức năng:</b><br/>• Kiểm tra kiểu nhập từ InputTypeComboBoxEdit<br/>• Validate dữ liệu trước khi lưu<br/>• Kiểm tra trùng lặp với database và trong grid<br/>• Convert items từ grid sang DTO<br/>• Lưu vào bảng ProductVariantIdentifier<br/><br/><b>Hai chế độ lưu:</b><br/><br/><b><color=Blue>1. Nhập 1 lượt nhiều định danh (Index 0):</color></b><br/>• <b>Cách lưu:</b> Mỗi định danh được lưu thành một DTO riêng biệt<br/>• <b>Cho phép:</b> Nhiều định danh cùng loại (ví dụ: có thể có nhiều SerialNumber khác nhau)<br/>• <b>Validation:</b><br/>  - Không được trùng Value trong cùng grid (cùng IdentifierType + Value)<br/>  - Không được trùng với database<br/>  - Cho phép nhiều IdentifierType giống nhau (chỉ cần Value khác nhau)<br/>• <b>Kết quả:</b> Mỗi định danh tạo thành một bản ghi riêng trong database<br/>• <b>Thông báo:</b> Hiển thị số lượng thành công/thất bại cho từng định danh<br/><br/><b><color=Red>2. Nhập từng định danh riêng lẻ (Index 1):</color></b><br/>• <b>Cách lưu:</b> Gom tất cả định danh thành một DTO duy nhất<br/>• <b>Không cho phép:</b> Nhiều định danh cùng loại (mỗi IdentifierType chỉ được dùng một lần)<br/>• <b>Validation:</b><br/>  - Không được trùng IdentifierType trong cùng grid<br/>  - Không được trùng Value với database<br/>  - Mỗi loại định danh chỉ được sử dụng một lần<br/>• <b>Kết quả:</b> Tất cả định danh được lưu vào một bản ghi duy nhất trong database<br/>• <b>Thông báo:</b> Hiển thị thông báo lưu thành công hoặc lỗi validation<br/><br/><b>Quy trình chung:</b><br/>1. Lấy danh sách items từ grid<br/>2. Kiểm tra InputTypeComboBoxEdit.SelectedIndex<br/>3. Validate dữ liệu theo chế độ đã chọn<br/>4. Convert items sang DTO (một hoặc nhiều DTO tùy chế độ)<br/>5. Gọi BLL.SaveOrUpdate() để lưu<br/>6. Lưu lịch sử thay đổi (ProductVariantIdentifierHistory)<br/>7. Hiển thị thông báo kết quả<br/><br/><b>Validation chung:</b><br/>• Phải có ít nhất một định danh<br/>• Không được trùng lặp với database (theo ProductVariantId)<br/>• Phải có ProductVariantId hợp lệ<br/>• Mỗi item phải có IdentifierType và Value hợp lệ<br/><br/><b>Thông tin lưu:</b><br/>• ProductVariantId: Từ DTO đã chọn (_selectedDto.ProductVariantId)<br/>• Các loại định danh: SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ID, OtherIdentifier<br/><br/><color=Gray>Lưu ý:</color> Hệ thống sẽ kiểm tra trùng lặp và hiển thị cảnh báo chi tiết nếu có lỗi. Mỗi chế độ có quy tắc validation khác nhau."
+                        content: @"Lưu định danh sản phẩm vào database theo chế độ đã chọn và hỏi in tem QR Code sau khi lưu thành công.<br/><br/><b>Chức năng:</b><br/>• Kiểm tra kiểu nhập từ InputTypeComboBoxEdit<br/>• Validate dữ liệu trước khi lưu<br/>• Kiểm tra trùng lặp với database và trong grid<br/>• Convert items từ grid sang DTO<br/>• Lưu vào bảng ProductVariantIdentifier<br/>• Lưu lịch sử thay đổi (ProductVariantIdentifierHistory)<br/>• Hỏi người dùng có muốn in tem QR Code sau khi lưu thành công<br/><br/><b>Hai chế độ lưu:</b><br/><br/><b><color=Blue>1. Nhập 1 lượt nhiều định danh (Index 0):</color></b><br/>• <b>Cách lưu:</b> Mỗi định danh được lưu thành một DTO riêng biệt<br/>• <b>Cho phép:</b> Nhiều định danh cùng loại (ví dụ: có thể có nhiều SerialNumber khác nhau)<br/>• <b>Validation:</b><br/>  - Không được trùng Value trong cùng grid (cùng IdentifierType + Value)<br/>  - Không được trùng với database<br/>  - Cho phép nhiều IdentifierType giống nhau (chỉ cần Value khác nhau)<br/>• <b>Kết quả:</b> Mỗi định danh tạo thành một bản ghi riêng trong database<br/>• <b>Thông báo:</b> Hiển thị số lượng thành công/thất bại cho từng định danh<br/>• <b>In tem QR:</b> Sau khi lưu thành công, hỏi in tem cho tất cả định danh đã lưu. Nếu một phần thành công, chỉ hỏi in cho các định danh đã lưu thành công<br/><br/><b><color=Red>2. Nhập từng định danh riêng lẻ (Index 1):</color></b><br/>• <b>Cách lưu:</b> Gom tất cả định danh thành một DTO duy nhất<br/>• <b>Không cho phép:</b> Nhiều định danh cùng loại (mỗi IdentifierType chỉ được dùng một lần)<br/>• <b>Validation:</b><br/>  - Không được trùng IdentifierType trong cùng grid<br/>  - Không được trùng Value với database<br/>  - Mỗi loại định danh chỉ được sử dụng một lần<br/>• <b>Kết quả:</b> Tất cả định danh được lưu vào một bản ghi duy nhất trong database<br/>• <b>Thông báo:</b> Hiển thị thông báo lưu thành công hoặc lỗi validation<br/>• <b>In tem QR:</b> Sau khi lưu thành công, hỏi in tem QR Code cho định danh vừa lưu<br/><br/><b>Quy trình chung:</b><br/>1. Lấy danh sách items từ grid<br/>2. Kiểm tra InputTypeComboBoxEdit.SelectedIndex<br/>3. Validate dữ liệu theo chế độ đã chọn<br/>4. Convert items sang DTO (một hoặc nhiều DTO tùy chế độ)<br/>5. Gọi BLL.SaveOrUpdate() để lưu<br/>6. Lưu lịch sử thay đổi (ProductVariantIdentifierHistory)<br/>7. Hiển thị thông báo kết quả<br/>8. <b>Hỏi người dùng có muốn in tem QR Code không</b><br/>9. Nếu đồng ý, mở màn hình in tem QR Code (FrmQrCodePrintPreview) với các DTO đã lưu<br/><br/><b>Chức năng in tem QR Code:</b><br/>• Chỉ hỏi in khi có ít nhất một DTO đã lưu thành công<br/>• Hiển thị hộp thoại xác nhận với MsgBox.ShowYesNo<br/>• Mở màn hình in tem QR Code (FrmQrCodePrintPreview) với danh sách DTO đã lưu<br/>• Form in tem sẽ tự động dispose sau khi đóng<br/><br/><b>Validation chung:</b><br/>• Phải có ít nhất một định danh<br/>• Không được trùng lặp với database (theo ProductVariantId)<br/>• Phải có ProductVariantId hợp lệ<br/>• Mỗi item phải có IdentifierType và Value hợp lệ<br/><br/><b>Thông tin lưu:</b><br/>• ProductVariantId: Từ DTO đã chọn (_selectedDto.ProductVariantId)<br/>• Các loại định danh: SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ID, OtherIdentifier<br/><br/><color=Gray>Lưu ý:</color> Hệ thống sẽ kiểm tra trùng lặp và hiển thị cảnh báo chi tiết nếu có lỗi. Mỗi chế độ có quy tắc validation khác nhau. Sau khi lưu thành công, hệ thống sẽ tự động hỏi bạn có muốn in tem QR Code cho các định danh vừa lưu."
                     );
                 }
 
@@ -114,10 +114,103 @@ namespace Inventory.Query
             try
             {
                 Load += FrmProductVariantIdentifierAddEdit_Load;
+                
+                // Khởi tạo InputTypeComboBoxEdit để render HTML
+                InitializeInputTypeComboBoxEdit();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"InitializeFormEvents: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Khởi tạo InputTypeComboBoxEdit để render HTML đúng chuẩn DevExpress
+        /// </summary>
+        private void InitializeInputTypeComboBoxEdit()
+        {
+            try
+            {
+                // Đảm bảo AllowHtmlDraw được bật
+                InputTypeComboBoxEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+                
+                // Thiết lập TextEditStyle để không cho phép chỉnh sửa trực tiếp
+                InputTypeComboBoxEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+                
+                // Thiết lập ShowDropDown để dễ sử dụng
+                InputTypeComboBoxEdit.Properties.ShowDropDown = DevExpress.XtraEditors.Controls.ShowDropDown.SingleClick;
+                
+                // Set giá trị mặc định là index 0
+                InputTypeComboBoxEdit.SelectedIndex = 0;
+                
+                // Sử dụng CustomDisplayText để render HTML đúng chuẩn DevExpress
+                InputTypeComboBoxEdit.Properties.CustomDisplayText += InputTypeComboBoxEdit_CustomDisplayText;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeInputTypeComboBoxEdit: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler để render HTML đúng chuẩn DevExpress trong InputTypeComboBoxEdit
+        /// </summary>
+        private void InputTypeComboBoxEdit_CustomDisplayText(object sender, DevExpress.XtraEditors.Controls.CustomDisplayTextEventArgs e)
+        {
+            try
+            {
+                if (e.Value == null)
+                {
+                    e.DisplayText = string.Empty;
+                    return;
+                }
+
+                // Nếu giá trị là string chứa HTML
+                if (e.Value is string stringValue)
+                {
+                    // Kiểm tra xem string có chứa HTML tag không
+                    if (stringValue.Contains("<color=") || stringValue.Contains("</color>"))
+                    {
+                        // Đảm bảo format HTML đúng chuẩn DevExpress
+                        // DevExpress sử dụng format: <color='colorName'>text</color>
+                        e.DisplayText = stringValue;
+                    }
+                    else
+                    {
+                        // Nếu không có HTML, giữ nguyên
+                        e.DisplayText = stringValue;
+                    }
+                }
+                else if (e.Value is int intValue)
+                {
+                    // Nếu là index, lấy text từ items
+                    if (intValue >= 0 && intValue < InputTypeComboBoxEdit.Properties.Items.Count)
+                    {
+                        var item = InputTypeComboBoxEdit.Properties.Items[intValue];
+                        if (item is string itemString)
+                        {
+                            e.DisplayText = itemString;
+                        }
+                        else
+                        {
+                            e.DisplayText = item?.ToString() ?? string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        e.DisplayText = e.Value.ToString();
+                    }
+                }
+                else
+                {
+                    e.DisplayText = e.Value.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InputTypeComboBoxEdit_CustomDisplayText: Exception occurred - {ex.Message}");
+                // Nếu có lỗi, hiển thị giá trị mặc định
+                e.DisplayText = e.Value?.ToString() ?? string.Empty;
             }
         }
 
@@ -366,10 +459,25 @@ namespace Inventory.Query
                 if (savedDto != null)
                 {
                     SaveProductVariantIdentifierHistory(savedDto);
-                }
 
-                // Hiển thị thông báo thành công
-                MsgBox.ShowSuccess("Lưu dữ liệu thành công");
+                    // Hiển thị thông báo thành công
+                    MsgBox.ShowSuccess("Lưu dữ liệu thành công");
+
+                    // Hỏi người dùng có muốn in tem QR Code không
+                    if (MsgBox.ShowYesNo("Bạn có muốn in tem QR Code cho định danh vừa lưu không?", "In tem QR Code"))
+                    {
+                        // Tạo list chứa DTO vừa lưu
+                        var dtosToPrint = new List<ProductVariantIdentifierDto> { savedDto };
+
+                        // Mở màn hình in QR Code
+                        using var printForm = new FrmQrCodePrintPreview(dtosToPrint);
+                        printForm.ShowDialog(this);
+                    }
+                }
+                else
+                {
+                    MsgBox.ShowWarning("Lưu dữ liệu không thành công. Vui lòng thử lại.");
+                }
             }
             catch (Exception ex)
             {
@@ -484,6 +592,14 @@ namespace Inventory.Query
                 if (successCount > 0 && failCount == 0)
                 {
                     MsgBox.ShowSuccess($"Đã lưu thành công {successCount} định danh.");
+
+                    // Hỏi người dùng có muốn in tem QR Code không
+                    if (savedDtos.Count > 0 && MsgBox.ShowYesNo($"Bạn có muốn in tem QR Code cho {savedDtos.Count} định danh vừa lưu không?", "In tem QR Code"))
+                    {
+                        // Mở màn hình in QR Code
+                        using var printForm = new FrmQrCodePrintPreview(savedDtos);
+                        printForm.ShowDialog(this);
+                    }
                 }
                 else if (successCount > 0 && failCount > 0)
                 {
@@ -495,6 +611,16 @@ namespace Inventory.Query
                         message += $"\n... và {failedItems.Count - 10} định danh khác.";
                     }
                     MsgBox.ShowWarning(message);
+
+                    // Hỏi người dùng có muốn in tem QR Code không (chỉ in các định danh đã lưu thành công)
+                    if (savedDtos.Count > 0 && MsgBox.ShowYesNo($"Bạn có muốn in tem QR Code cho {savedDtos.Count} định danh đã lưu thành công không?", "In tem QR Code"))
+                    {
+                        // Mở màn hình in QR Code
+                        using (var printForm = new FrmQrCodePrintPreview(savedDtos))
+                        {
+                            printForm.ShowDialog(this);
+                        }
+                    }
                 }
                 else
                 {
