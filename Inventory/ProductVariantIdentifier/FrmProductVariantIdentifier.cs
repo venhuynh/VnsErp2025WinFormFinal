@@ -568,32 +568,29 @@ namespace Inventory.ProductVariantIdentifier
         {
             try
             {
-                var focusedRowHandle = ProductVariantIdentifierDtoGridView.FocusedRowHandle;
-                if (focusedRowHandle < 0)
+                var selectedCount = ProductVariantIdentifierDtoGridView.SelectedRowsCount;
+                if (selectedCount == 0)
                 {
-                    MsgBox.ShowWarning("Vui lòng chọn một định danh để in tem.");
+                    MsgBox.ShowWarning("Vui lòng chọn ít nhất một định danh để in tem.");
                     return;
                 }
 
-                if (ProductVariantIdentifierDtoGridView.GetRow(focusedRowHandle) is not ProductVariantIdentifierDto selectedDto)
+                // Lấy tất cả các dòng đã chọn
+                var selectedRowHandles = ProductVariantIdentifierDtoGridView.GetSelectedRows();
+                var selectedDtos = selectedRowHandles
+                    .Select(handle => ProductVariantIdentifierDtoGridView.GetRow(handle) as ProductVariantIdentifierDto)
+                    .Where(dto => dto != null && dto.Id != Guid.Empty)
+                    .ToList();
+
+                if (selectedDtos.Count == 0)
                 {
-                    MsgBox.ShowWarning("Không thể lấy thông tin định danh được chọn.");
+                    MsgBox.ShowWarning("Không có định danh hợp lệ để in tem.");
                     return;
                 }
 
-                if (selectedDto.Id == Guid.Empty)
-                {
-                    MsgBox.ShowWarning("Định danh được chọn không có Id hợp lệ.");
-                    return;
-                }
-
-                // Mở form in QR Code với định danh được chọn
-                using (var form = new FrmProductVariantIdentifierQrCode(selectedDto))
-                {
-                    // Nhận callback khi QR được cập nhật
-                    form.IdentifierUpdated += dto => UpdateIdentifierInBindingSource(dto);
-                    form.ShowDialog(this);
-                }
+                // Mở form in QR Code với danh sách định danh đã chọn
+                using var form = new FrmQrCodePrintPreview(selectedDtos);
+                form.ShowDialog(this);
             }
             catch (Exception ex)
             {

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Dal.Connection;
 using Dal.DataAccess.Implementations;
 using Dal.DataAccess.Interfaces;
@@ -8,6 +5,8 @@ using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace Bll.Common;
 
@@ -145,7 +144,7 @@ public class SettingBll
     /// <param name="category">Category của setting</param>
     /// <param name="isActiveOnly">Chỉ lấy settings đang active</param>
     /// <returns>Danh sách settings</returns>
-    public List<Setting> GetAllByCategory(string category, bool isActiveOnly = true)
+    private List<Setting> GetAllByCategory(string category, bool isActiveOnly = true)
     {
         try
         {
@@ -361,6 +360,32 @@ public class SettingBll
         {
             _logger?.Error($"Lỗi khi lấy ImageStorage settings: {ex.Message}", ex);
             throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy cấu hình máy in và khổ giấy cho QR Code
+    /// </summary>
+    /// <returns>Dictionary chứa các QR Code Printer settings (key: settingKey, value: settingValue)</returns>
+    public Dictionary<string, string> GetQrCodePrinterSettings()
+    {
+        try
+        {
+            _logger?.Debug("Lấy tất cả QR Code Printer settings");
+            var settings = GetAllByCategory("QRCodePrinter", true);
+            var result = new Dictionary<string, string>();
+
+            foreach (var setting in settings)
+            {
+                result[setting.SettingKey] = setting.SettingValue ?? "";
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lấy QR Code Printer settings: {ex.Message}", ex);
+            return new Dictionary<string, string>();
         }
     }
 

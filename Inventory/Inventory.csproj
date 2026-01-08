@@ -91,6 +91,13 @@
     <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierQrCode.Designer.cs">
       <DependentUpon>FrmProductVariantIdentifierQrCode.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProductVariantIdentifier\FrmQrCodePrintPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductVariantIdentifier\FrmQrCodePrintPreview.Designer.cs">
+      <DependentUpon>FrmQrCodePrintPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductVariantIdentifier\QrCodePrinterSetting.cs" />
     <Compile Include="Query\FrmCreateNewSerialNumberFromStockInOut.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -425,6 +432,9 @@
     </Compile>
     <EmbeddedResource Include="ProductVariantIdentifier\FrmProductVariantIdentifierQrCode.resx">
       <DependentUpon>FrmProductVariantIdentifierQrCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductVariantIdentifier\FrmQrCodePrintPreview.resx">
+      <DependentUpon>FrmQrCodePrintPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Query\FrmCreateNewSerialNumberFromStockInOut.resx">
       <DependentUpon>FrmCreateNewSerialNumberFromStockInOut.cs</DependentUpon>
