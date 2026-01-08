@@ -794,6 +794,78 @@ public partial class UcXuatThietBiChoThueMuonDetail : DevExpress.XtraEditors.Xtr
         }
     }
 
+    /// <summary>
+    /// Thêm hoặc merge danh sách chi tiết mới vào grid hiện tại
+    /// Nếu đã có ProductVariantId thì cộng số lượng, nếu chưa có thì thêm mới
+    /// </summary>
+    /// <param name="newDetails">Danh sách chi tiết mới cần thêm/merge</param>
+    public async Task AddOrMergeDetailsAsync(List<StockInOutDetailForUIDto> newDetails)
+    {
+        try
+        {
+            if (newDetails == null || newDetails.Count == 0)
+            {
+                return;
+            }
+
+            // Lấy danh sách hiện tại từ binding source
+            var currentDetails = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
+
+            // Gán StockInOutMasterId cho các dòng mới chưa có
+            foreach (var detail in newDetails)
+            {
+                if (detail.StockInOutMasterId == Guid.Empty && _stockOutMasterId != Guid.Empty)
+                {
+                    detail.StockInOutMasterId = _stockOutMasterId;
+                }
+            }
+
+            // Merge dữ liệu: nếu đã có ProductVariantId thì cộng số lượng, nếu chưa có thì thêm mới
+            foreach (var newDetail in newDetails)
+            {
+                var existingDetail = currentDetails.FirstOrDefault(d => d.ProductVariantId == newDetail.ProductVariantId);
+                
+                if (existingDetail != null)
+                {
+                    // Đã tồn tại: cộng số lượng và merge ghi chú
+                    existingDetail.StockOutQty += newDetail.StockOutQty;
+                    
+                    // Merge ghi chú nếu có
+                    if (!string.IsNullOrWhiteSpace(newDetail.GhiChu))
+                    {
+                        if (string.IsNullOrWhiteSpace(existingDetail.GhiChu))
+                        {
+                            existingDetail.GhiChu = newDetail.GhiChu;
+                        }
+                        else
+                        {
+                            existingDetail.GhiChu = $"{existingDetail.GhiChu}; {newDetail.GhiChu}";
+                        }
+                    }
+                }
+                else
+                {
+                    // Chưa tồn tại: thêm mới
+                    currentDetails.Add(newDetail);
+                }
+            }
+
+            // Cập nhật lại binding source
+            stockInOutDetailForUIDtoBindingSource.DataSource = currentDetails;
+            stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
+
+            // Load ProductVariant datasource cho các ProductVariantId mới
+            await LoadProductVariantsByIdsAsync(newDetails);
+
+            // Tính toán lại tất cả
+            RecalculateAll();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("AddOrMergeDetailsAsync: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi thêm/merge chi tiết: {ex.Message}");
+        }
+    }
 
     #endregion
 

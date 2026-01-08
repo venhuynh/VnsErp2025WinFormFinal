@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockOut.XuatChoThueMuon
+namespace Inventory.StockOut.XuatChoThueMuon
 {
     partial class FrmXuatThietBiChoThueMuon
     {
@@ -31,18 +31,18 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.ucXuatThietBiChoThueMuonDetailDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.NhapLaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ReloadDataSourceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.LuuPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.NhapQuanLyTaiSanBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
-            this.ReloadDataSourceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -50,14 +50,15 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ucXuatThietBiChoThueMuonMasterDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonMaster();
+            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ucXuatThietBiChoThueMuonDetailDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonDetail();
-            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
+            this.ReadQrCodeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
@@ -66,7 +67,6 @@
             this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -80,6 +80,13 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
+            // ucXuatThietBiChoThueMuonDetailDto1
+            // 
+            this.ucXuatThietBiChoThueMuonDetailDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucXuatThietBiChoThueMuonDetailDto1.Name = "ucXuatThietBiChoThueMuonDetailDto1";
+            this.ucXuatThietBiChoThueMuonDetailDto1.Size = new System.Drawing.Size(864, 744);
+            this.ucXuatThietBiChoThueMuonDetailDto1.TabIndex = 4;
+            // 
             // Root
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -89,6 +96,14 @@
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(888, 768);
             this.Root.TextVisible = false;
+            // 
+            // layoutControlItem4
+            // 
+            this.layoutControlItem4.Control = this.ucXuatThietBiChoThueMuonDetailDto1;
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem4.Name = "layoutControlItem4";
+            this.layoutControlItem4.Size = new System.Drawing.Size(868, 748);
+            this.layoutControlItem4.TextVisible = false;
             // 
             // dockManager1
             // 
@@ -125,12 +140,12 @@
             this.LuuPhieuBarButtonItem,
             this.InPhieuBarButtonItem,
             this.CloseBarButtonItem,
-            this.NhapQuanLyTaiSanBarButtonItem,
             this.ThemHinhAnhBarButtonItem,
             this.HotKeyBarStaticItem,
-            this.ReloadDataSourceBarButtonItem});
+            this.ReloadDataSourceBarButtonItem,
+            this.ReadQrCodeBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 8;
+            this.barManager1.MaxItemId = 9;
             // 
             // bar2
             // 
@@ -142,9 +157,9 @@
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapLaiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ReloadDataSourceBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ReadQrCodeBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LuuPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapQuanLyTaiSanBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.HotKeyBarStaticItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
@@ -159,6 +174,14 @@
             this.NhapLaiBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.reset2_16x16;
             this.NhapLaiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.reset2_32x32;
             this.NhapLaiBarButtonItem.Name = "NhapLaiBarButtonItem";
+            // 
+            // ReloadDataSourceBarButtonItem
+            // 
+            this.ReloadDataSourceBarButtonItem.Caption = "Làm mới dữ liệu";
+            this.ReloadDataSourceBarButtonItem.Id = 7;
+            this.ReloadDataSourceBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.refreshpivottable_16x16;
+            this.ReloadDataSourceBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.refreshpivottable_32x32;
+            this.ReloadDataSourceBarButtonItem.Name = "ReloadDataSourceBarButtonItem";
             // 
             // LuuPhieuBarButtonItem
             // 
@@ -175,14 +198,6 @@
             this.InPhieuBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
             this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
             // 
-            // NhapQuanLyTaiSanBarButtonItem
-            // 
-            this.NhapQuanLyTaiSanBarButtonItem.Caption = "Nhập quản lý tài sản";
-            this.NhapQuanLyTaiSanBarButtonItem.Id = 4;
-            this.NhapQuanLyTaiSanBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
-            this.NhapQuanLyTaiSanBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.barcode_32x32;
-            this.NhapQuanLyTaiSanBarButtonItem.Name = "NhapQuanLyTaiSanBarButtonItem";
-            // 
             // ThemHinhAnhBarButtonItem
             // 
             this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
@@ -198,22 +213,6 @@
             this.CloseBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.cancel_16x16;
             this.CloseBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.cancel_32x32;
             this.CloseBarButtonItem.Name = "CloseBarButtonItem";
-            // 
-            // HotKeyBarStaticItem
-            // 
-            this.HotKeyBarStaticItem.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right;
-            this.HotKeyBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.HotKeyBarStaticItem.Caption = "barStaticItem1";
-            this.HotKeyBarStaticItem.Id = 6;
-            this.HotKeyBarStaticItem.Name = "HotKeyBarStaticItem";
-            // 
-            // ReloadDataSourceBarButtonItem
-            // 
-            this.ReloadDataSourceBarButtonItem.Caption = "Làm mới dữ liệu";
-            this.ReloadDataSourceBarButtonItem.Id = 7;
-            this.ReloadDataSourceBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.refreshpivottable_16x16;
-            this.ReloadDataSourceBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.refreshpivottable_32x32;
-            this.ReloadDataSourceBarButtonItem.Name = "ReloadDataSourceBarButtonItem";
             // 
             // barDockControlTop
             // 
@@ -278,6 +277,13 @@
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
             // 
+            // ucXuatThietBiChoThueMuonMasterDto1
+            // 
+            this.ucXuatThietBiChoThueMuonMasterDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucXuatThietBiChoThueMuonMasterDto1.Name = "ucXuatThietBiChoThueMuonMasterDto1";
+            this.ucXuatThietBiChoThueMuonMasterDto1.Size = new System.Drawing.Size(452, 715);
+            this.ucXuatThietBiChoThueMuonMasterDto1.TabIndex = 4;
+            // 
             // layoutControlGroup1
             // 
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -288,13 +294,6 @@
             this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
             // 
-            // ucXuatThietBiChoThueMuonMasterDto1
-            // 
-            this.ucXuatThietBiChoThueMuonMasterDto1.Location = new System.Drawing.Point(12, 12);
-            this.ucXuatThietBiChoThueMuonMasterDto1.Name = "ucXuatThietBiChoThueMuonMasterDto1";
-            this.ucXuatThietBiChoThueMuonMasterDto1.Size = new System.Drawing.Size(452, 715);
-            this.ucXuatThietBiChoThueMuonMasterDto1.TabIndex = 4;
-            // 
             // layoutControlItem1
             // 
             this.layoutControlItem1.Control = this.ucXuatThietBiChoThueMuonMasterDto1;
@@ -303,20 +302,20 @@
             this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // ucXuatThietBiChoThueMuonDetailDto1
+            // HotKeyBarStaticItem
             // 
-            this.ucXuatThietBiChoThueMuonDetailDto1.Location = new System.Drawing.Point(12, 12);
-            this.ucXuatThietBiChoThueMuonDetailDto1.Name = "ucXuatThietBiChoThueMuonDetailDto1";
-            this.ucXuatThietBiChoThueMuonDetailDto1.Size = new System.Drawing.Size(864, 744);
-            this.ucXuatThietBiChoThueMuonDetailDto1.TabIndex = 4;
+            this.HotKeyBarStaticItem.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right;
+            this.HotKeyBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.HotKeyBarStaticItem.Caption = "barStaticItem1";
+            this.HotKeyBarStaticItem.Id = 6;
+            this.HotKeyBarStaticItem.Name = "HotKeyBarStaticItem";
             // 
-            // layoutControlItem4
+            // ReadQrCodeBarButtonItem
             // 
-            this.layoutControlItem4.Control = this.ucXuatThietBiChoThueMuonDetailDto1;
-            this.layoutControlItem4.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.Size = new System.Drawing.Size(868, 748);
-            this.layoutControlItem4.TextVisible = false;
+            this.ReadQrCodeBarButtonItem.Caption = "Đọc QC Code";
+            this.ReadQrCodeBarButtonItem.Id = 8;
+            this.ReadQrCodeBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
+            this.ReadQrCodeBarButtonItem.Name = "ReadQrCodeBarButtonItem";
             // 
             // FrmXuatThietBiChoThueMuon
             // 
@@ -334,6 +333,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
@@ -342,7 +342,6 @@
             this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -367,13 +366,13 @@
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarButtonItem NhapQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
-        private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
         private UcXuatThietBiChoThueMuonMaster ucXuatThietBiChoThueMuonMasterDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private UcXuatThietBiChoThueMuonDetail ucXuatThietBiChoThueMuonDetailDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
+        private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
+        private DevExpress.XtraBars.BarButtonItem ReadQrCodeBarButtonItem;
     }
 }

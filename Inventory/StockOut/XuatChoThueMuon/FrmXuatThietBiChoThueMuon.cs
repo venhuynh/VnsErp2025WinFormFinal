@@ -1,11 +1,13 @@
-﻿using Bll.Inventory.StockInOut;
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
+using DTO.Inventory.InventoryManagement;
 using Inventory.OverlayForm;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,6 +43,11 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
     /// Dùng để tránh hỏi lại khi Close() được gọi từ BeginInvoke
     /// </summary>
     private bool _isClosingAfterSave;
+
+    /// <summary>
+    /// Danh sách ProductVariantIdentifierDto từ form đọc QR code
+    /// </summary>
+    private List<ProductVariantIdentifierDto> _productVariantIdentifierDtos = new List<ProductVariantIdentifierDto>();
 
     #endregion
 
@@ -126,9 +133,9 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
             // Bar button events
             NhapLaiBarButtonItem.ItemClick += NhapLaiBarButtonItem_ItemClick;
             ReloadDataSourceBarButtonItem.ItemClick += ReloadDataSourceBarButtonItem_ItemClick;
+            ReadQrCodeBarButtonItem.ItemClick += ReadQrCodeBarButtonItem_ItemClick;
             LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
             InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
-            NhapQuanLyTaiSanBarButtonItem.ItemClick += NhapQuanLyTaiSanBarButtonItem_ItemClick;
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
             CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
@@ -211,7 +218,7 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
                              @"<b><color=Blue>F1</color></b> Nhập lại | " +
                              @"<b><color=Blue>F2</color></b> Lưu phiếu | " +
                              @"<b><color=Blue>F3</color></b> In phiếu | " +
-                             @"<b><color=Blue>F4</color></b> Nhập bảo hành | " +
+                             @"<b><color=Blue>F4</color></b> Đọc QR Code | " +
                              @"<b><color=Blue>F5</color></b> Thêm hình ảnh | " +
                              @"<b><color=Blue>ESC</color></b> Đóng | " +
                              @"<b><color=Blue>Insert</color></b> Thêm dòng | " +
@@ -453,7 +460,57 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
     }
 
     /// <summary>
-    /// Event handler cho nút Nhập bảo hành
+    /// Event handler cho nút Đọc QR Code
+    /// </summary>
+    private async void ReadQrCodeBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            // Mở form đọc QR code (không cần lưu phiếu trước)
+            using (OverlayManager.ShowScope(this))
+            {
+                using (var frmGetIdentifier = new FrmGetIdentifierForStockOut())
+                {
+                    frmGetIdentifier.StartPosition = FormStartPosition.CenterParent;
+                    
+                    if (frmGetIdentifier.ShowDialog(this) == DialogResult.OK)
+                    {
+                        // Lấy danh sách chi tiết từ form đọc QR code
+                        var newDetails = frmGetIdentifier.GetStockInOutDetailList();
+
+                        // Lấy danh sách identifier values từ form đọc QR code
+                        if (frmGetIdentifier.ResultIdentifierValues != null)
+                        {
+                            _productVariantIdentifierDtos = frmGetIdentifier.ResultIdentifierValues;
+                        }
+
+                        if (newDetails != null && newDetails.Count > 0)
+                        {
+                            // Thêm hoặc merge vào grid hiện tại
+                            await ucXuatThietBiChoThueMuonDetailDto1.AddOrMergeDetailsAsync(newDetails);
+                            
+                            // Đánh dấu có thay đổi
+                            MarkAsChanged();
+                            
+                            AlertHelper.ShowSuccess($"Đã thêm {newDetails.Count} sản phẩm từ QR code vào phiếu xuất kho.", "Thành công", this);
+                        }
+                        else
+                        {
+                            AlertHelper.ShowInfo("Không có sản phẩm nào được thêm vào.", "Thông tin", this);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("ReadQrCodeBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi đọc QR code: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Event handler cho nút Nhập bảo hành (deprecated - không còn trong bar2)
     /// </summary>
     private async void NhapQuanLyTaiSanBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
@@ -668,9 +725,9 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
                     break;
 
                 case Keys.F4:
-                    // F4: Nhập bảo hành
+                    // F4: Đọc QR Code
                     e.Handled = true;
-                    NhapQuanLyTaiSanBarButtonItem_ItemClick(null, null);
+                    ReadQrCodeBarButtonItem_ItemClick(null, null);
                     break;
 
                 case Keys.F5:
