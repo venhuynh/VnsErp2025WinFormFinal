@@ -69,7 +69,7 @@ namespace Inventory.OverlayForm
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.StockInOutInfoSimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
             this.productVariantIdentifierItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.hyperlinkLabelControl1 = new DevExpress.XtraEditors.HyperlinkLabelControl();
+            this.CaptureHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.hyperlinkLabelControl11 = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.hyperlinkLabelControl12 = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.hyperlinkLabelControl13 = new DevExpress.XtraEditors.HyperlinkLabelControl();
@@ -216,7 +216,7 @@ namespace Inventory.OverlayForm
             // 
             // dataLayoutControl1
             // 
-            this.dataLayoutControl1.Controls.Add(this.hyperlinkLabelControl1);
+            this.dataLayoutControl1.Controls.Add(this.CaptureHyperlinkLabelControl);
             this.dataLayoutControl1.Controls.Add(this.cameraControl1);
             this.dataLayoutControl1.Controls.Add(this.StockInOutImageGridControl);
             this.dataLayoutControl1.Controls.Add(this.hyperlinkLabelControl11);
@@ -314,15 +314,15 @@ namespace Inventory.OverlayForm
             // 
             this.productVariantIdentifierItemBindingSource.DataSource = typeof(Inventory.ProductVariantIdentifier.ProductVariantIdentifierItem);
             // 
-            // hyperlinkLabelControl1
+            // CaptureHyperlinkLabelControl
             // 
-            this.hyperlinkLabelControl1.Location = new System.Drawing.Point(65, 62);
-            this.hyperlinkLabelControl1.Name = "hyperlinkLabelControl1";
-            this.hyperlinkLabelControl1.Padding = new System.Windows.Forms.Padding(10);
-            this.hyperlinkLabelControl1.Size = new System.Drawing.Size(45, 33);
-            this.hyperlinkLabelControl1.StyleController = this.dataLayoutControl1;
-            this.hyperlinkLabelControl1.TabIndex = 42;
-            this.hyperlinkLabelControl1.Text = "Chụp";
+            this.CaptureHyperlinkLabelControl.Location = new System.Drawing.Point(65, 62);
+            this.CaptureHyperlinkLabelControl.Name = "CaptureHyperlinkLabelControl";
+            this.CaptureHyperlinkLabelControl.Padding = new System.Windows.Forms.Padding(10);
+            this.CaptureHyperlinkLabelControl.Size = new System.Drawing.Size(45, 33);
+            this.CaptureHyperlinkLabelControl.StyleController = this.dataLayoutControl1;
+            this.CaptureHyperlinkLabelControl.TabIndex = 42;
+            this.CaptureHyperlinkLabelControl.Text = "Chụp";
             // 
             // hyperlinkLabelControl11
             // 
@@ -407,7 +407,7 @@ namespace Inventory.OverlayForm
             // 
             this.layoutControlItem3.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.layoutControlItem3.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem3.Control = this.hyperlinkLabelControl1;
+            this.layoutControlItem3.Control = this.CaptureHyperlinkLabelControl;
             this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem3.Name = "layoutControlItem3";
             this.layoutControlItem3.Size = new System.Drawing.Size(131, 37);
@@ -513,7 +513,7 @@ namespace Inventory.OverlayForm
         private LayoutControlItem layoutControlItem2;
         private DevExpress.XtraEditors.Camera.CameraControl cameraControl1;
         private SimpleLabelItem StockInOutInfoSimpleLabelItem;
-        private HyperlinkLabelControl hyperlinkLabelControl1;
+        private HyperlinkLabelControl CaptureHyperlinkLabelControl;
         private HyperlinkLabelControl hyperlinkLabelControl11;
         private HyperlinkLabelControl hyperlinkLabelControl12;
         private HyperlinkLabelControl hyperlinkLabelControl13;
