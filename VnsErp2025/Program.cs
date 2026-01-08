@@ -186,7 +186,7 @@ namespace VnsErp2025
 
 
 
-            Application.Run(new FrmStockInOutAddImagesFromWebcam(Guid.Parse("1c469d50-0b9e-4fb2-81b7-1aa64f5ee365")));
+            Application.Run(new FrmGetIdentifierForStockOut());
 
             #endregion
 

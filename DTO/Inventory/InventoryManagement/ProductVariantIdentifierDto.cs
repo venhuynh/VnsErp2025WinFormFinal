@@ -267,7 +267,7 @@ namespace DTO.Inventory.InventoryManagement
         /// </summary>
         [DisplayName("ID")]
         [Display(Order = 21)]
-        [StringLength(500, ErrorMessage = "ID không được vượt quá 500 ký tự")]
+        [StringLength(50, ErrorMessage = "ID không được vượt quá 50 ký tự")]
         public string ID { get; set; }
 
         /// <summary>

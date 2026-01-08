@@ -85,6 +85,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OverlayForm\FrmGetIdentifierForStockOut.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OverlayForm\FrmGetIdentifierForStockOut.Designer.cs">
+      <DependentUpon>FrmGetIdentifierForStockOut.cs</DependentUpon>
+    </Compile>
     <Compile Include="OverlayForm\FrmStockInOutAddImagesFromWebcam.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -436,6 +442,9 @@
     <Compile Include="XtraForm1.Designer.cs">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="OverlayForm\FrmGetIdentifierForStockOut.resx">
+      <DependentUpon>FrmGetIdentifierForStockOut.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImagesFromWebcam.resx">
       <DependentUpon>FrmStockInOutAddImagesFromWebcam.cs</DependentUpon>
     </EmbeddedResource>
