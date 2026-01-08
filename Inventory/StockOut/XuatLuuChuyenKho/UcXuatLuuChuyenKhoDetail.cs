@@ -271,7 +271,8 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
 
                 if (detail.StockOutQty > 0) continue;
 
-                _logger.Warning("ValidateAll: Row {0} has StockOutQty <= 0, value={1}", detail.LineNumber, detail.StockOutQty);
+                _logger.Warning("ValidateAll: Row {0} has StockOutQty <= 0, value={1}", detail.LineNumber,
+                    detail.StockOutQty);
                 MsgBox.ShowError($"Dòng {detail.LineNumber}: Số lượng xuất phải lớn hơn 0");
                 return false;
             }
@@ -310,7 +311,8 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// <summary>
     /// Custom draw row indicator để hiển thị số thứ tự
     /// </summary>
-    private void StockInDetailDtoGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
+    private void StockInDetailDtoGridView_CustomDrawRowIndicator(object sender,
+        DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
     {
         GridViewHelper.CustomDrawRowIndicator(XuatLuuChuyenKhoDetailDtoGridView, e);
     }
@@ -319,7 +321,8 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// Xử lý sự kiện khi giá trị cell thay đổi trong GridView
     /// Xử lý cả việc cập nhật ProductVariant và tính toán tự động
     /// </summary>
-    private void StockInDetailDtoGridView_CellValueChanged(object sender, DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+    private void StockInDetailDtoGridView_CellValueChanged(object sender,
+        DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
     {
         try
         {
@@ -412,7 +415,8 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// <summary>
     /// Xử lý sự kiện khi thêm dòng mới
     /// </summary>
-    private void StockInDetailDtoGridView_InitNewRow(object sender, DevExpress.XtraGrid.Views.Grid.InitNewRowEventArgs e)
+    private void StockInDetailDtoGridView_InitNewRow(object sender,
+        DevExpress.XtraGrid.Views.Grid.InitNewRowEventArgs e)
     {
         try
         {
@@ -465,7 +469,8 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// <summary>
     /// Xử lý sự kiện validate editor (trước khi commit giá trị)
     /// </summary>
-    private void StockInDetailDtoGridView_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+    private void StockInDetailDtoGridView_ValidatingEditor(object sender,
+        DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
     {
         try
         {
@@ -497,7 +502,8 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// <summary>
     /// Validate row data (sau khi commit giá trị)
     /// </summary>
-    private void StockInDetailDtoGridView_ValidateRow(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+    private void StockInDetailDtoGridView_ValidateRow(object sender,
+        DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
     {
         try
         {
@@ -582,6 +588,7 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                             gridView.FocusedColumn = productVariantColumn;
                         }
                     }
+
                     break;
 
                 case Keys.Delete:
@@ -597,6 +604,7 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                             gridView.DeleteRow(focusedRowHandle);
                         }
                     }
+
                     break;
 
                 case Keys.Enter:
@@ -604,7 +612,7 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                     if (!e.Control && !e.Shift && !e.Alt)
                     {
                         var focusedRowHandle = gridView.FocusedRowHandle;
-                            
+
                         // Nếu đang ở new row (rowHandle < 0), commit row
                         if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
                         {
@@ -621,11 +629,11 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                             // Nếu đang ở cột cuối cùng, di chuyển xuống dòng tiếp theo
                             var focusedColumn = gridView.FocusedColumn;
                             var lastColumn = gridView.VisibleColumns[gridView.VisibleColumns.Count - 1];
-                                
+
                             if (focusedColumn == lastColumn)
                             {
                                 e.Handled = true;
-                                    
+
                                 // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
                                 var nextRowHandle = focusedRowHandle + 1;
                                 if (nextRowHandle < gridView.RowCount)
@@ -646,6 +654,7 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                             }
                         }
                     }
+
                     break;
             }
         }
@@ -725,12 +734,12 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
         }
     }
 
-        /// <summary>
-        /// Load chỉ các ProductVariant theo danh sách ID từ details
-        /// Chỉ load các ProductVariant cần thiết để tối ưu performance
-        /// </summary>
-        /// <param name="details">Danh sách StockInOutDetailForUIDto chứa ProductVariantId</param>
-        private async Task LoadProductVariantsByIdsAsync(List<StockInOutDetailForUIDto> details)
+    /// <summary>
+    /// Load chỉ các ProductVariant theo danh sách ID từ details
+    /// Chỉ load các ProductVariant cần thiết để tối ưu performance
+    /// </summary>
+    /// <param name="details">Danh sách StockInOutDetailForUIDto chứa ProductVariantId</param>
+    private async Task LoadProductVariantsByIdsAsync(List<StockInOutDetailForUIDto> details)
     {
         try
         {
@@ -761,7 +770,7 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                     variantDtos.Add(variant);
                 }
             }
-             
+
             // Bind dữ liệu vào BindingSource
             productVariantListDtoBindingSource.DataSource = variantDtos;
             productVariantListDtoBindingSource.ResetBindings(false);
@@ -773,31 +782,104 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
         }
     }
 
+    /// <summary>
+    /// Thêm hoặc merge danh sách chi tiết mới vào grid hiện tại
+    /// Nếu đã có ProductVariantId thì cộng số lượng, nếu chưa có thì thêm mới
+    /// </summary>
+    /// <param name="newDetails">Danh sách chi tiết mới cần thêm/merge</param>
+    public async Task AddOrMergeDetailsAsync(List<StockInOutDetailForUIDto> newDetails)
+    {
+        try
+        {
+            if (newDetails == null || newDetails.Count == 0)
+            {
+                return;
+            }
+
+            // Lấy danh sách hiện tại từ binding source
+            var currentDetails = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
+
+            // Gán StockInOutMasterId cho các dòng mới chưa có
+            foreach (var detail in newDetails)
+            {
+                if (detail.StockInOutMasterId == Guid.Empty && _stockOutMasterId != Guid.Empty)
+                {
+                    detail.StockInOutMasterId = _stockOutMasterId;
+                }
+            }
+
+            // Merge dữ liệu: nếu đã có ProductVariantId thì cộng số lượng, nếu chưa có thì thêm mới
+            foreach (var newDetail in newDetails)
+            {
+                var existingDetail =
+                    currentDetails.FirstOrDefault(d => d.ProductVariantId == newDetail.ProductVariantId);
+
+                if (existingDetail != null)
+                {
+                    // Đã tồn tại: cộng số lượng và merge ghi chú
+                    existingDetail.StockOutQty += newDetail.StockOutQty;
+
+                    // Merge ghi chú nếu có
+                    if (!string.IsNullOrWhiteSpace(newDetail.GhiChu))
+                    {
+                        if (string.IsNullOrWhiteSpace(existingDetail.GhiChu))
+                        {
+                            existingDetail.GhiChu = newDetail.GhiChu;
+                        }
+                        else
+                        {
+                            existingDetail.GhiChu = $"{existingDetail.GhiChu}; {newDetail.GhiChu}";
+                        }
+                    }
+                }
+                else
+                {
+                    // Chưa tồn tại: thêm mới
+                    currentDetails.Add(newDetail);
+                }
+            }
+
+            // Cập nhật lại binding source
+            stockInOutDetailForUIDtoBindingSource.DataSource = currentDetails;
+            stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
+
+            // Load ProductVariant datasource cho các ProductVariantId mới
+            await LoadProductVariantsByIdsAsync(newDetails);
+
+            // Tính toán lại tất cả
+            RecalculateAll();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("AddOrMergeDetailsAsync: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi thêm/merge chi tiết: {ex.Message}");
+        }
+    }
 
     #endregion
 
     #region ========== DATA MANAGEMENT ==========
 
-        /// <summary>
-        /// Load danh sách chi tiết từ danh sách DTO
-        /// </summary>
-        private async void LoadDetails(List<StockInOutDetailForUIDto> details)
+    /// <summary>
+    /// Load danh sách chi tiết từ danh sách DTO
+    /// </summary>
+    private async void LoadDetails(List<StockInOutDetailForUIDto> details)
+    {
+        try
         {
-            try
+            details ??= new List<StockInOutDetailForUIDto>();
+
+            // Gán StockInOutMasterId cho các dòng chưa có
+            foreach (var detail in details)
             {
-                details ??= new List<StockInOutDetailForUIDto>();
-
-                // Gán StockInOutMasterId cho các dòng chưa có
-                foreach (var detail in details)
+                if (detail.StockInOutMasterId == Guid.Empty && _stockOutMasterId != Guid.Empty)
                 {
-                    if (detail.StockInOutMasterId == Guid.Empty && _stockOutMasterId != Guid.Empty)
-                    {
-                        detail.StockInOutMasterId = _stockOutMasterId;
-                    }
+                    detail.StockInOutMasterId = _stockOutMasterId;
                 }
+            }
 
-                stockInOutDetailForUIDtoBindingSource.DataSource = details;
-                stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
+            stockInOutDetailForUIDtoBindingSource.DataSource = details;
+            stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
 
             // Load ProductVariant datasource chỉ cho các ProductVariantId có trong details
             await LoadProductVariantsByIdsAsync(details);
@@ -893,7 +975,8 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             XuatLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             XuatLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            XuatLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullName}");
+            XuatLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName",
+                $"{selectedVariant.VariantFullName}");
             XuatLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
