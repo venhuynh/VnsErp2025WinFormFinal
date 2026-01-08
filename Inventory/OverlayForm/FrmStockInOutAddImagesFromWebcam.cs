@@ -8,6 +8,7 @@ using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -101,12 +102,17 @@ namespace Inventory.OverlayForm
             {
                 CaptureBarButtonItem.ItemClick += CaptureBarButtonItem_Click;
                 
+                // GridView events
+                if (StockInOutImageGridView != null)
+                {
+                    StockInOutImageGridView.SelectionChanged += StockInOutImageGridView_SelectionChanged;
+                    StockInOutImageGridView.DoubleClick += StockInOutImageGridView_DoubleClick;
+                }
                 
                 // Bar button events
                 SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
+                XoaBarButtonItem.ItemClick += XoaBarButtonItem_ItemClick;
 
-                // Form events
-                FormClosing += FrmStockInOutAddImagesFromWebcam_FormClosing;
             }
             catch (Exception ex)
             {
@@ -123,7 +129,10 @@ namespace Inventory.OverlayForm
             try
             {
                 await LoadStockInOutInfoAsync();
-                await LoadExistingImagesAsync();
+                //await LoadExistingImagesAsync();
+                
+                // Khởi tạo trạng thái nút Xóa (disable nếu không có dòng nào được chọn)
+                XoaBarButtonItem.Enabled = false;
                 
                 // Bắt đầu capture từ camera
                 if (cameraControl1 != null)
@@ -368,7 +377,7 @@ namespace Inventory.OverlayForm
                 }
 
                 // Hiển thị thông báo
-                MsgBox.ShowSuccess("Đã chụp ảnh thành công! Bạn có thể xoay ảnh nếu cần, sau đó nhấn 'Thêm vào' để thêm vào danh sách.");
+                AlertHelper.ShowSuccess("Đã chụp ảnh thành công!");
 
                 _logger.Info($"Đã chụp ảnh từ webcam để preview, Size={imageBytes.Length} bytes");
             }
@@ -440,69 +449,323 @@ namespace Inventory.OverlayForm
         #region ========== EVENT HANDLERS ==========
 
         /// <summary>
-        /// Event handler cho nút Lưu
+        /// Event handler cho nút Lưu - Lưu tất cả ảnh vào database và đóng form
         /// </summary>
         private async void SaveBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            
-        }
-
-        /// <summary>
-        /// Event handler khi form đang đóng
-        /// </summary>
-        private void FrmStockInOutAddImagesFromWebcam_FormClosing(object sender, FormClosingEventArgs e)
-        {
             try
             {
-                // Kiểm tra nếu có ảnh chưa lưu trong BindingSource
-                var currentList = stockInOutImageDtoBindingSource?.DataSource as List<StockInOutImageDto>;
-                var unsavedCount = currentList?.Count ?? 0;
-                
-                if (unsavedCount > 0)
+                if (_stockInOutImageBll == null)
                 {
-                    var result = MsgBox.ShowYesNo(
-                        $"Bạn có {unsavedCount} ảnh chưa lưu. Bạn có muốn đóng form không?",
-                        "Xác nhận đóng",
-                        this);
-
-                    if (!result)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
+                    MsgBox.ShowError("Không thể lưu. StockInOutImageBll chưa được khởi tạo.");
+                    return;
                 }
 
-                // Dừng camera khi đóng form
-                if (cameraControl1 != null)
+                if (stockInOutImageDtoBindingSource == null)
                 {
-                    try
-                    {
-                        cameraControl1.Stop();
-                    }
-                    catch (Exception stopEx)
-                    {
-                        // Ignore lỗi khi dừng camera
-                        _logger.Warning($"Lỗi khi dừng camera: {stopEx.Message}");
-                    }
+                    MsgBox.ShowError("Không thể lưu. BindingSource chưa được khởi tạo.");
+                    return;
                 }
 
-                // Dispose snapshot nếu có
-                if (_currentSnapshot != null)
+                // Lấy danh sách ảnh từ BindingSource
+                var imageList = stockInOutImageDtoBindingSource.DataSource as List<StockInOutImageDto>;
+                if (imageList == null || imageList.Count == 0)
                 {
-                    _currentSnapshot.Dispose();
-                    _currentSnapshot = null;
+                    MsgBox.ShowWarning("Không có ảnh nào để lưu.");
+                    return;
                 }
 
+                // Xác nhận lưu
+                var result = MsgBox.ShowYesNo(
+                    $"Bạn có chắc chắn muốn lưu {imageList.Count} ảnh vào database?",
+                    "Xác nhận lưu",
+                    this);
+
+                if (!result)
+                {
+                    return;
+                }
+
+                // Disable nút Lưu để tránh click nhiều lần
+                SaveBarButtonItem.Enabled = false;
+
+                try
+                {
+                    // Lưu từng ảnh vào database
+                    int successCount = 0;
+                    int failCount = 0;
+                    var errorMessages = new List<string>();
+
+                    foreach (var imageDto in imageList)
+                    {
+                        try
+                        {
+                            // Kiểm tra ImageData có dữ liệu
+                            if (imageDto.ImageData == null || imageDto.ImageData.Length == 0)
+                            {
+                                failCount++;
+                                errorMessages.Add($"Ảnh '{imageDto.FileName ?? "Không có tên"}' không có dữ liệu.");
+                                continue;
+                            }
+
+                            // Lấy file extension từ FileName hoặc FileExtension
+                            var fileExtension = !string.IsNullOrWhiteSpace(imageDto.FileExtension)
+                                ? imageDto.FileExtension.TrimStart('.')
+                                : (!string.IsNullOrWhiteSpace(imageDto.FileName) && Path.HasExtension(imageDto.FileName))
+                                    ? Path.GetExtension(imageDto.FileName).TrimStart('.')
+                                    : "jpg";
+
+                            // Lưu ảnh vào database
+                            var savedImage = await _stockInOutImageBll.SaveImageFromBytesAsync(
+                                stockInOutMasterId: StockInOutMasterId,
+                                imageData: imageDto.ImageData,
+                                fileExtension: fileExtension
+                            );
+
+                            if (savedImage != null)
+                            {
+                                successCount++;
+                                _logger.Info($"Đã lưu ảnh thành công: {imageDto.FileName}, ImageId={savedImage.Id}");
+                            }
+                            else
+                            {
+                                failCount++;
+                                errorMessages.Add($"Không thể lưu ảnh '{imageDto.FileName ?? "Không có tên"}'.");
+                            }
+                        }
+                        catch (Exception imgEx)
+                        {
+                            failCount++;
+                            var fileName = imageDto.FileName ?? "Không có tên";
+                            errorMessages.Add($"Lỗi khi lưu ảnh '{fileName}': {imgEx.Message}");
+                            _logger.Error($"Lỗi khi lưu ảnh '{fileName}': {imgEx.Message}", imgEx);
+                        }
+                    }
+
+                    // Hiển thị kết quả
+                    if (failCount == 0)
+                    {
+                        // Tất cả đều thành công
+                        MsgBox.ShowSuccess($"Đã lưu thành công {successCount} ảnh vào database.");
+                        _logger.Info($"Đã lưu thành công {successCount} ảnh vào database cho StockInOutMasterId={StockInOutMasterId}");
+
+                        // Đóng form
+                        DialogResult = DialogResult.OK;
+                        Close();
+                    }
+                    else if (successCount > 0)
+                    {
+                        // Một số thành công, một số thất bại
+                        var errorSummary = string.Join("\n", errorMessages.Take(5));
+                        if (errorMessages.Count > 5)
+                        {
+                            errorSummary += $"\n... và {errorMessages.Count - 5} lỗi khác.";
+                        }
+
+                        var result2 = MsgBox.ShowYesNo(
+                            $"Đã lưu thành công {successCount} ảnh, nhưng có {failCount} ảnh lỗi:\n\n{errorSummary}\n\nBạn có muốn đóng form không?",
+                            "Lưu một phần thành công",
+                            this);
+
+                        if (result2)
+                        {
+                            DialogResult = DialogResult.OK;
+                            Close();
+                        }
+                        else
+                        {
+                            // Enable lại nút Lưu để user có thể thử lại
+                            SaveBarButtonItem.Enabled = true;
+                        }
+                    }
+                    else
+                    {
+                        // Tất cả đều thất bại
+                        var errorSummary = string.Join("\n", errorMessages.Take(5));
+                        if (errorMessages.Count > 5)
+                        {
+                            errorSummary += $"\n... và {errorMessages.Count - 5} lỗi khác.";
+                        }
+
+                        MsgBox.ShowError($"Không thể lưu bất kỳ ảnh nào:\n\n{errorSummary}");
+                        
+                        // Enable lại nút Lưu để user có thể thử lại
+                        SaveBarButtonItem.Enabled = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Lỗi khi lưu ảnh vào database: {ex.Message}", ex);
+                    MsgBox.ShowError($"Lỗi khi lưu ảnh: {ex.Message}");
+                    
+                    // Enable lại nút Lưu
+                    SaveBarButtonItem.Enabled = true;
+                }
             }
             catch (Exception ex)
             {
-                _logger.Error("FrmStockInOutAddImagesFromWebcam_FormClosing: Exception occurred", ex);
+                _logger.Error($"Lỗi trong SaveBarButtonItem_ItemClick: {ex.Message}", ex);
+                MsgBox.ShowError($"Lỗi: {ex.Message}");
+                
+                // Enable lại nút Lưu
+                SaveBarButtonItem.Enabled = true;
             }
         }
+
+        /// <summary>
+        /// Event handler cho nút Xóa - Xóa các dòng đã chọn khỏi datasource
+        /// </summary>
+        private void XoaBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                if (StockInOutImageGridView == null || stockInOutImageDtoBindingSource == null)
+                {
+                    MsgBox.ShowWarning("Không thể xóa. GridView hoặc BindingSource chưa được khởi tạo.");
+                    return;
+                }
+
+                // Lấy các dòng đã chọn
+                var selectedRowHandles = StockInOutImageGridView.GetSelectedRows();
+                if (selectedRowHandles == null || selectedRowHandles.Length == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn ít nhất một dòng để xóa.");
+                    return;
+                }
+
+                // Xác nhận xóa
+                var selectedCount = selectedRowHandles.Length;
+                var result = MsgBox.ShowYesNo(
+                    $"Bạn có chắc chắn muốn xóa {selectedCount} ảnh đã chọn?",
+                    "Xác nhận xóa",
+                    this);
+
+                if (!result)
+                {
+                    return;
+                }
+
+                // Lấy danh sách hiện tại từ BindingSource
+                if (stockInOutImageDtoBindingSource.DataSource is not List<StockInOutImageDto> currentList || currentList.Count == 0)
+                {
+                    MsgBox.ShowWarning("Không có dữ liệu để xóa.");
+                    return;
+                }
+
+                // Lấy các DTO tương ứng với các dòng đã chọn
+                var dtosToRemove = new List<StockInOutImageDto>();
+                foreach (var rowHandle in selectedRowHandles)
+                {
+                    if (rowHandle >= 0)
+                    {
+                        var row = StockInOutImageGridView.GetRow(rowHandle);
+                        if (row is StockInOutImageDto dto)
+                        {
+                            dtosToRemove.Add(dto);
+                        }
+                    }
+                }
+
+                if (dtosToRemove.Count == 0)
+                {
+                    MsgBox.ShowWarning("Không tìm thấy dữ liệu để xóa.");
+                    return;
+                }
+
+                // Xóa các DTO khỏi danh sách
+                foreach (var dto in dtosToRemove)
+                {
+                    currentList.Remove(dto);
+                }
+
+                // Cập nhật BindingSource và GridView
+                stockInOutImageDtoBindingSource.ResetBindings(false);
+                StockInOutImageGridView.RefreshData();
+
+                // Cập nhật thống kê
+                var totalCount = currentList.Count;
+
+                // Disable nút Xóa nếu không còn dòng nào được chọn
+                XoaBarButtonItem.Enabled = false;
+
+                // Hiển thị thông báo
+                MsgBox.ShowSuccess($"Đã xóa {dtosToRemove.Count} ảnh khỏi danh sách.");
+
+                _logger.Info($"Đã xóa {dtosToRemove.Count} ảnh khỏi datasource, TotalCount={totalCount}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi xóa ảnh: {ex.Message}", ex);
+                MsgBox.ShowError($"Lỗi xóa ảnh: {ex.Message}");
+            }
+        }
+
 
         #endregion
 
         #region ========== GRID EVENTS ==========
+
+        /// <summary>
+        /// Event handler khi selection thay đổi trong GridView
+        /// </summary>
+        private void StockInOutImageGridView_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (StockInOutImageGridView == null) return;
+
+                // Cập nhật trạng thái nút Xóa dựa trên số dòng đã chọn
+                var selectedCount = StockInOutImageGridView.SelectedRowsCount;
+                XoaBarButtonItem.Enabled = selectedCount > 0;
+
+                _logger.Debug($"Selection changed: {selectedCount} row(s) selected");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi trong SelectionChanged: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi double click vào một dòng trong GridView - Mở ảnh bằng ứng dụng mặc định
+        /// </summary>
+        private void StockInOutImageGridView_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (StockInOutImageGridView == null) return;
+
+                // Lấy dòng được double click
+                var focusedRowHandle = StockInOutImageGridView.FocusedRowHandle;
+                if (focusedRowHandle < 0) return;
+
+                // Lấy DTO từ dòng được click
+                var row = StockInOutImageGridView.GetRow(focusedRowHandle);
+                if (row is not StockInOutImageDto imageDto)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin ảnh từ dòng được chọn.");
+                    return;
+                }
+
+                // Kiểm tra ImageData
+                if (imageDto.ImageData == null || imageDto.ImageData.Length == 0)
+                {
+                    MsgBox.ShowWarning("Ảnh không có dữ liệu.");
+                    return;
+                }
+
+                // Mở ảnh bằng ứng dụng mặc định
+                OpenImageWithDefaultApplication(imageDto);
+
+                _logger.Info($"Đã mở ảnh bằng ứng dụng mặc định: {imageDto.FileName}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi mở ảnh: {ex.Message}", ex);
+                MsgBox.ShowError($"Lỗi mở ảnh: {ex.Message}");
+            }
+        }
+
 
         #endregion
 
@@ -577,6 +840,64 @@ namespace Inventory.OverlayForm
             catch (Exception ex)
             {
                 _logger.Error($"Lỗi refresh grid: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Mở ảnh bằng ứng dụng mặc định của Windows
+        /// </summary>
+        /// <param name="imageDto">DTO chứa dữ liệu ảnh</param>
+        private void OpenImageWithDefaultApplication(StockInOutImageDto imageDto)
+        {
+            string tempFilePath = null;
+            try
+            {
+                // Tạo file tạm trong thư mục temp
+                var tempDir = Path.GetTempPath();
+                var fileName = !string.IsNullOrWhiteSpace(imageDto.FileName) 
+                    ? imageDto.FileName 
+                    : $"Image_{imageDto.Id:N}.jpg";
+                
+                // Đảm bảo file có extension
+                if (!Path.HasExtension(fileName))
+                {
+                    fileName = Path.ChangeExtension(fileName, ".jpg");
+                }
+
+                tempFilePath = Path.Combine(tempDir, fileName);
+
+                // Ghi dữ liệu ảnh vào file tạm
+                File.WriteAllBytes(tempFilePath, imageDto.ImageData);
+
+                // Mở file bằng ứng dụng mặc định
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = tempFilePath,
+                    UseShellExecute = true,
+                    Verb = "open"
+                };
+
+                Process.Start(processStartInfo);
+
+                _logger.Info($"Đã mở ảnh bằng ứng dụng mặc định: {tempFilePath}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi mở ảnh bằng ứng dụng mặc định: {ex.Message}", ex);
+                MsgBox.ShowError($"Không thể mở ảnh: {ex.Message}");
+                
+                // Xóa file tạm nếu có lỗi
+                if (!string.IsNullOrEmpty(tempFilePath) && File.Exists(tempFilePath))
+                {
+                    try
+                    {
+                        File.Delete(tempFilePath);
+                    }
+                    catch (Exception deleteEx)
+                    {
+                        _logger.Warning($"Không thể xóa file tạm: {deleteEx.Message}");
+                    }
+                }
             }
         }
 

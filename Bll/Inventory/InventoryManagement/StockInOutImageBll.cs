@@ -1,11 +1,15 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
+using Dal.DtoConverter;
+using DTO.Inventory.Query;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Bll.Common.ImageStorage;
 
@@ -115,8 +119,8 @@ namespace Bll.Inventory.InventoryManagement
     /// </summary>
     /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
     /// <param name="imageFilePath">Đường dẫn file ảnh</param>
-    /// <returns>StockInOutImage đã lưu</returns>
-    public async Task<Dal.DataContext.StockInOutImage> SaveImageFromFileAsync(Guid stockInOutMasterId, string imageFilePath)
+    /// <returns>StockInOutImageDto đã lưu</returns>
+    public async Task<StockInOutImageDto> SaveImageFromFileAsync(Guid stockInOutMasterId, string imageFilePath)
     {
         try
         {
@@ -178,7 +182,8 @@ namespace Bll.Inventory.InventoryManagement
 
             _logger.Info($"Đã lưu hình ảnh phiếu nhập/xuất, StockInOutMasterId={stockInOutMasterId}, ImageId={stockInOutImage.Id}, RelativePath={storageResult.RelativePath}");
 
-            return stockInOutImage;
+            // 7. Chuyển đổi Entity sang DTO
+            return stockInOutImage.ToDto();
         }
         catch (Exception ex)
         {
@@ -190,7 +195,7 @@ namespace Bll.Inventory.InventoryManagement
     /// <summary>
     /// Lưu hình ảnh từ file (synchronous version - backward compatibility)
     /// </summary>
-    public Dal.DataContext.StockInOutImage SaveImageFromFile(Guid stockInOutMasterId, string imageFilePath)
+    public StockInOutImageDto SaveImageFromFile(Guid stockInOutMasterId, string imageFilePath)
     {
         return SaveImageFromFileAsync(stockInOutMasterId, imageFilePath).GetAwaiter().GetResult();
     }
@@ -201,8 +206,8 @@ namespace Bll.Inventory.InventoryManagement
     /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
     /// <param name="imageData">Dữ liệu hình ảnh (byte array)</param>
     /// <param name="fileExtension">Phần mở rộng file (ví dụ: "jpg", "png")</param>
-    /// <returns>StockInOutImage đã lưu</returns>
-    public async Task<Dal.DataContext.StockInOutImage> SaveImageFromBytesAsync(Guid stockInOutMasterId, byte[] imageData, string fileExtension = "jpg")
+    /// <returns>StockInOutImageDto đã lưu</returns>
+    public async Task<StockInOutImageDto> SaveImageFromBytesAsync(Guid stockInOutMasterId, byte[] imageData, string fileExtension = "jpg")
     {
         try
         {
@@ -260,7 +265,8 @@ namespace Bll.Inventory.InventoryManagement
 
             _logger.Info($"Đã lưu hình ảnh phiếu nhập/xuất từ byte array, StockInOutMasterId={stockInOutMasterId}, ImageId={stockInOutImage.Id}, RelativePath={storageResult.RelativePath}");
 
-            return stockInOutImage;
+            // 6. Chuyển đổi Entity sang DTO
+            return stockInOutImage.ToDto();
         }
         catch (Exception ex)
         {
@@ -412,12 +418,13 @@ namespace Bll.Inventory.InventoryManagement
     /// Lấy hình ảnh theo ID
     /// </summary>
     /// <param name="imageId">ID hình ảnh</param>
-    /// <returns>StockInOutImage hoặc null</returns>
-    public Dal.DataContext.StockInOutImage GetById(Guid imageId)
+    /// <returns>StockInOutImageDto hoặc null</returns>
+    public StockInOutImageDto GetById(Guid imageId)
     {
         try
         {
-            return GetDataAccess().GetById(imageId);
+            var entity = GetDataAccess().GetById(imageId);
+            return entity?.ToDto();
         }
         catch (Exception ex)
         {
@@ -430,12 +437,13 @@ namespace Bll.Inventory.InventoryManagement
     /// Lấy danh sách hình ảnh theo StockInOutMasterId
     /// </summary>
     /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
-    /// <returns>Danh sách hình ảnh</returns>
-    public System.Collections.Generic.List<Dal.DataContext.StockInOutImage> GetByStockInOutMasterId(Guid stockInOutMasterId)
+    /// <returns>Danh sách hình ảnh DTO</returns>
+    public List<StockInOutImageDto> GetByStockInOutMasterId(Guid stockInOutMasterId)
     {
         try
         {
-            return GetDataAccess().GetByStockInOutMasterId(stockInOutMasterId);
+            var entities = GetDataAccess().GetByStockInOutMasterId(stockInOutMasterId);
+            return entities?.ToDtos() ?? new List<StockInOutImageDto>();
         }
         catch (Exception ex)
         {
@@ -450,15 +458,16 @@ namespace Bll.Inventory.InventoryManagement
     /// <param name="fromDate">Từ ngày</param>
     /// <param name="toDate">Đến ngày</param>
     /// <param name="keyword">Từ khóa tìm kiếm (tên file, đường dẫn)</param>
-    /// <returns>Danh sách hình ảnh</returns>
-    public System.Collections.Generic.List<Dal.DataContext.StockInOutImage> QueryImages(DateTime fromDate, DateTime toDate, string keyword = null)
+    /// <returns>Danh sách hình ảnh DTO</returns>
+    public List<StockInOutImageDto> QueryImages(DateTime fromDate, DateTime toDate, string keyword = null)
     {
         try
         {
             _logger.Debug("QueryImages: Bắt đầu query hình ảnh, FromDate={0}, ToDate={1}, Keyword={2}", 
                 fromDate, toDate, keyword ?? "null");
 
-            var result = GetDataAccess().QueryImages(fromDate, toDate, keyword);
+            var entities = GetDataAccess().QueryImages(fromDate, toDate, keyword);
+            var result = entities?.ToDtos() ?? new List<StockInOutImageDto>();
 
             _logger.Info("QueryImages: Query thành công, ResultCount={0}", result.Count);
             return result;

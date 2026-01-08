@@ -37,10 +37,10 @@ namespace Inventory.OverlayForm
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition1 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition2 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition1 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition2 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition3 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition4 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition3 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition4 = new DevExpress.XtraLayout.RowDefinition();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.CaptureBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -103,7 +103,7 @@ namespace Inventory.OverlayForm
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CaptureBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(this.XoaBarButtonItem),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SaveBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
@@ -120,6 +120,7 @@ namespace Inventory.OverlayForm
             // 
             this.XoaBarButtonItem.Caption = "Xóa";
             this.XoaBarButtonItem.Id = 9;
+            this.XoaBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
             this.XoaBarButtonItem.Name = "XoaBarButtonItem";
             // 
             // SaveBarButtonItem
@@ -309,20 +310,20 @@ namespace Inventory.OverlayForm
             this.layoutControlItem1});
             this.Root.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             this.Root.Name = "Root";
-            columnDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition1.Width = 100D;
-            columnDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition2.Width = 100D;
+            columnDefinition3.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition3.Width = 100D;
+            columnDefinition4.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition4.Width = 100D;
             this.Root.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] {
-            columnDefinition1,
-            columnDefinition2});
-            rowDefinition1.Height = 17D;
-            rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition2.Height = 607D;
-            rowDefinition2.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            columnDefinition3,
+            columnDefinition4});
+            rowDefinition3.Height = 17D;
+            rowDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            rowDefinition4.Height = 607D;
+            rowDefinition4.SizeType = System.Windows.Forms.SizeType.AutoSize;
             this.Root.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
-            rowDefinition1,
-            rowDefinition2});
+            rowDefinition3,
+            rowDefinition4});
             this.Root.Size = new System.Drawing.Size(1116, 644);
             this.Root.TextVisible = false;
             // 
