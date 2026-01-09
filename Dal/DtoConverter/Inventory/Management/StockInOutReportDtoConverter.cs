@@ -1,13 +1,13 @@
-using Dal.DataContext;
-using DTO.Inventory.InventoryManagement;
-using DTO.Inventory.Report;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.Report;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.Inventory.Management
 {
     /// <summary>
     /// Converter giữa StockInOutMaster, StockInOutDetail entities và StockInOutReportDto

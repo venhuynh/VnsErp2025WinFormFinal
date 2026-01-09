@@ -1,11 +1,11 @@
-using Common.Utils;
-using Dal.DataContext;
-using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Utils;
+using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.Inventory.Management
 {
     /// <summary>
     /// Converter giữa StockInOutDetail entity và StockInOutProductHistoryDto

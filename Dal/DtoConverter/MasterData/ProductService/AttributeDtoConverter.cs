@@ -1,11 +1,10 @@
-using Dal.DataContext;
-using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DTO.MasterData.ProductService;
 using Attribute = Dal.DataContext.Attribute;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.ProductService
 {
     /// <summary>
     /// Converter giữa Attribute entity và AttributeDto

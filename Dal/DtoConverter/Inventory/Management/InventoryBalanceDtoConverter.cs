@@ -1,9 +1,9 @@
-﻿using Dal.DataContext;
-using DTO.Inventory.InventoryManagement;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.Inventory.Management
 {
 
     /// <summary>

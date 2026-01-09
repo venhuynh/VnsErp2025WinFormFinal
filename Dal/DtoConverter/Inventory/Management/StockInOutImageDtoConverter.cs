@@ -1,10 +1,10 @@
-using DTO.Inventory.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DTO.Inventory.Query;
 using StockInOutImage = Dal.DataContext.StockInOutImage;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.Inventory.Management
 {
     /// <summary>
     /// Converter giữa StockInOutImage Entity và StockInOutImageDto

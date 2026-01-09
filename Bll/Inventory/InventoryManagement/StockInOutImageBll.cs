@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bll.Common.ImageStorage;
+using Dal.DtoConverter.Inventory.Management;
 
 namespace Bll.Inventory.InventoryManagement
 {
