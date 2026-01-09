@@ -53,6 +53,14 @@ public interface IStocktakingMasterRepository
     /// <returns>StocktakingMasterDto nếu tìm thấy, null nếu không tìm thấy</returns>
     StocktakingMasterDto FindByVoucherNumber(string voucherNumber);
 
+    /// <summary>
+    /// Lấy số thứ tự tiếp theo cho số phiếu kiểm kho
+    /// Dựa trên năm để tìm số thứ tự cao nhất và trả về số tiếp theo
+    /// </summary>
+    /// <param name="stocktakingDate">Ngày của phiếu kiểm kho</param>
+    /// <returns>Số thứ tự tiếp theo (bắt đầu từ 1 nếu chưa có phiếu nào trong năm đó)</returns>
+    int GetNextSequenceNumber(DateTime stocktakingDate);
+
     #endregion
 
     #region ========== CREATE/UPDATE OPERATIONS ==========

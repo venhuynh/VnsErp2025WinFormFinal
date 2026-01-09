@@ -4,7 +4,7 @@
 -- Lưu ý: Chỉ có một phiên bản Active tại một thời điểm
 -- 
 -- ⚠️ QUAN TRỌNG: Script này được cập nhật tự động từ AssemblyInfo.cs
--- Phiên bản hiện tại: 2.1.0.0 (từ AssemblyVersion trong AssemblyInfo.cs)
+-- Phiên bản hiện tại: 2.1.1.0 (từ AssemblyVersion trong AssemblyInfo.cs)
 -- Vui lòng cập nhật @Description và @ReleaseNote với thông tin chi tiết về các thay đổi
 -- =============================================
 
@@ -36,13 +36,13 @@ GO
 
 -- =============================================
 -- CẤU HÌNH PHIÊN BẢN MỚI - ĐƯỢC CẬP NHẬT TỪ AssemblyInfo.cs
--- Phiên bản trong AssemblyInfo.cs: 2.1.0.0
+-- Phiên bản trong AssemblyInfo.cs: 2.1.1.0
 -- =============================================
 
-DECLARE @NewVersion NVARCHAR(50) = N'2.1.0.0';  -- ✅ Phiên bản từ AssemblyInfo.cs (AssemblyVersion: 2.1.0.0)
+DECLARE @NewVersion NVARCHAR(50) = N'2.1.1.0';  -- ✅ Phiên bản từ AssemblyInfo.cs (AssemblyVersion: 2.1.1.0)
 DECLARE @ReleaseDate DATETIME = GETDATE();      -- ⚠️ THAY ĐỔI: Ngày phát hành (hoặc dùng GETDATE() cho ngày hiện tại)
-DECLARE @Description NVARCHAR(500) = N'Phiên bản 2.1.0.0 - Cập nhật theo AssemblyVersion';  -- ⚠️ THAY ĐỔI: Mô tả ngắn
-DECLARE @ReleaseNote NVARCHAR(1000) = N'Chi tiết các thay đổi trong phiên bản 2.1.0.0:
+DECLARE @Description NVARCHAR(500) = N'Phiên bản 2.1.1.0 - Cập nhật theo AssemblyVersion';  -- ⚠️ THAY ĐỔI: Mô tả ngắn
+DECLARE @ReleaseNote NVARCHAR(1000) = N'Chi tiết các thay đổi trong phiên bản 2.1.1.0:
 - (Cập nhật nội dung phát hành tại đây)
 - (Thêm các đầu mục thay đổi cụ thể)';  -- ⚠️ THAY ĐỔI: Ghi chú phát hành chi tiết
 DECLARE @CreateBy UNIQUEIDENTIFIER = NULL;       -- ⚠️ THAY ĐỔI: ID người tạo (hoặc NULL)

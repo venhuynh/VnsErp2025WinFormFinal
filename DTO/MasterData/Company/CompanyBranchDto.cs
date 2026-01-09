@@ -182,27 +182,6 @@ public class CompanyBranchDto
 
     #endregion
 
-    #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
-
-    /// <summary>
-    /// Khởi tạo DTO cho chi nhánh công ty.
-    /// </summary>
-    public CompanyBranchDto()
-    {
-        Id = Guid.Empty;
-        CompanyId = Guid.Empty;
-        BranchCode = string.Empty;
-        BranchName = string.Empty;
-        Address = string.Empty;
-        Phone = string.Empty;
-        Email = string.Empty;
-        ManagerName = string.Empty;
-        IsActive = true;
-        CreatedDate = DateTime.Now;
-        ModifiedDate = DateTime.Now;
-    }
-
-    #endregion
 }
 
 

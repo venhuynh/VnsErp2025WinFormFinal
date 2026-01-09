@@ -43,7 +43,7 @@ namespace DTO.Inventory.StockTakking
         [DisplayName("Loại kiểm kho")]
         [Display(Order = 3)]
         [Required(ErrorMessage = "Loại kiểm kho không được để trống")]
-        public int StocktakingType { get; set; }
+        public StocktakingTypeEnum StocktakingType { get; set; }
 
         /// <summary>
         /// Trạng thái kiểm kho
@@ -51,7 +51,7 @@ namespace DTO.Inventory.StockTakking
         [DisplayName("Trạng thái")]
         [Display(Order = 4)]
         [Required(ErrorMessage = "Trạng thái kiểm kho không được để trống")]
-        public int StocktakingStatus { get; set; }
+        public StocktakingStatusEnum StocktakingStatus { get; set; }
 
         /// <summary>
         /// ID kho kiểm
@@ -305,20 +305,22 @@ namespace DTO.Inventory.StockTakking
                 }
 
                 // Loại kiểm kho và trạng thái
-                if (StocktakingType != 0 || StocktakingStatus != 0)
+                if (StocktakingType != StocktakingTypeEnum.Periodic || StocktakingStatus != StocktakingStatusEnum.Draft)
                 {
                     htmlParts.Add("<br>");
-                    if (StocktakingType != 0)
+                    if (StocktakingType != StocktakingTypeEnum.Periodic)
                     {
-                        htmlParts.Add($"<color='#757575'>Loại:</color> <color='#212121'><b>{StocktakingType}</b></color>");
+                        var stocktakingTypeDescription = Common.Utils.ApplicationEnumUtils.GetDescription(StocktakingType);
+                        htmlParts.Add($"<color='#757575'>Loại:</color> <color='#212121'><b>{EscapeHtml(stocktakingTypeDescription)}</b></color>");
                     }
-                    if (StocktakingStatus != 0)
+                    if (StocktakingStatus != StocktakingStatusEnum.Draft)
                     {
-                        if (StocktakingType != 0)
+                        if (StocktakingType != StocktakingTypeEnum.Periodic)
                         {
                             htmlParts.Add(" | ");
                         }
-                        htmlParts.Add($"<color='#757575'>Trạng thái:</color> <color='#212121'><b>{StocktakingStatus}</b></color>");
+                        var stocktakingStatusDescription = Common.Utils.ApplicationEnumUtils.GetDescription(StocktakingStatus);
+                        htmlParts.Add($"<color='#757575'>Trạng thái:</color> <color='#212121'><b>{EscapeHtml(stocktakingStatusDescription)}</b></color>");
                     }
                 }
 

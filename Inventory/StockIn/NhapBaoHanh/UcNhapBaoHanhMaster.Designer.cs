@@ -29,10 +29,10 @@ namespace Inventory.StockIn.NhapBaoHanh
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel3 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition1 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition2 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition1 = new DevExpress.XtraLayout.RowDefinition();
+            this.repositoryItemHypertextLabel3 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.HtmlContentRepositoryItemHypertextLabel01 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.CompanyBranchRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
@@ -69,6 +69,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.PartnerInfoHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.companyBranchLookupDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.businessPartnerSiteListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel01)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -78,7 +79,6 @@ namespace Inventory.StockIn.NhapBaoHanh
             ((System.ComponentModel.ISupportInitialize)(this.StockInDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameSearchLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchDtoSearchLookUpEdit1View)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(repositoryItemHypertextLabel3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SupplierNameSearchLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerSiteGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel2)).BeginInit();
@@ -107,6 +107,10 @@ namespace Inventory.StockIn.NhapBaoHanh
             ((System.ComponentModel.ISupportInitialize)(this.companyBranchLookupDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).BeginInit();
             this.SuspendLayout();
+            // 
+            // repositoryItemHypertextLabel3
+            // 
+            this.repositoryItemHypertextLabel3.Name = "repositoryItemHypertextLabel3";
             // 
             // HtmlContentRepositoryItemHypertextLabel01
             // 
@@ -188,8 +192,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             // 
             // colThongTinHtml
             // 
-            repositoryItemHypertextLabel3.Name = "repositoryItemHypertextLabel3";
-            this.colThongTinHtml.ColumnEdit = repositoryItemHypertextLabel3;
+            this.colThongTinHtml.ColumnEdit = this.repositoryItemHypertextLabel3;
             this.colThongTinHtml.FieldName = "ThongTinHtml";
             this.colThongTinHtml.Name = "colThongTinHtml";
             this.colThongTinHtml.Visible = true;
@@ -498,6 +501,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.Controls.Add(this.dataLayoutControl1);
             this.Name = "UcNhapBaoHanhMaster";
             this.Size = new System.Drawing.Size(486, 623);
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel01)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
@@ -507,7 +511,6 @@ namespace Inventory.StockIn.NhapBaoHanh
             ((System.ComponentModel.ISupportInitialize)(this.StockInDateDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameSearchLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchDtoSearchLookUpEdit1View)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(repositoryItemHypertextLabel3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SupplierNameSearchLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerSiteGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel2)).EndInit();
@@ -577,5 +580,6 @@ namespace Inventory.StockIn.NhapBaoHanh
         private System.Windows.Forms.BindingSource companyBranchLookupDtoBindingSource;
         private System.Windows.Forms.BindingSource businessPartnerSiteListDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel3;
     }
 }

@@ -1,4 +1,4 @@
-﻿using DevExpress.XtraBars;
+using DevExpress.XtraBars;
 using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
@@ -47,103 +47,108 @@ namespace Inventory.StockTakking
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
+            this.StocktakingDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.VoucherNumberTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.StartDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.EndDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.CountedByTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.CountedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.ReviewedByTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.ReviewedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.ApprovedByTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.ApprovedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.LockedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.LockedByTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.StocktakingTypeComboBoxEdit = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.WarehouseNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.CompanyBranchSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.CompanyBrachHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.IsLockedToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
+            this.NotesTextEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.ReasonTextEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.StocktakingStatusComboBoxEdit = new DevExpress.XtraEditors.ComboBoxEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.StocktakingDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForStocktakingDate = new DevExpress.XtraLayout.LayoutControlItem();
-            this.VoucherNumberTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.ItemForVoucherNumber = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForStocktakingType = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForStocktakingStatus = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForWarehouseName = new DevExpress.XtraLayout.LayoutControlItem();
-            this.StartDateDateEdit = new DevExpress.XtraEditors.DateEdit();
+            this.ItemForIsLocked = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlGroup3 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForStartDate = new DevExpress.XtraLayout.LayoutControlItem();
-            this.EndDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.ItemForEndDate = new DevExpress.XtraLayout.LayoutControlItem();
-            this.CountedByTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.ItemForCountedBy = new DevExpress.XtraLayout.LayoutControlItem();
-            this.CountedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.ItemForCountedDate = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ReviewedByTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.ItemForReviewedBy = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ReviewedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.ItemForReviewedDate = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ApprovedByTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.ItemForApprovedBy = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ApprovedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.ItemForApprovedDate = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlGroup4 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.ItemForCountedBy = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ItemForReviewedBy = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ItemForApprovedBy = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlGroup5 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForNotes = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForReason = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForIsLocked = new DevExpress.XtraLayout.LayoutControlItem();
-            this.LockedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
-            this.ItemForLockedDate = new DevExpress.XtraLayout.LayoutControlItem();
-            this.LockedByTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.ItemForLockedBy = new DevExpress.XtraLayout.LayoutControlItem();
-            this.StocktakingTypeTextEdit = new DevExpress.XtraEditors.ComboBoxEdit();
-            this.StocktakingStatusTextEdit = new DevExpress.XtraEditors.CheckedComboBoxEdit();
-            this.WarehouseNameTextEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
-            this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlGroup3 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlGroup4 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.IsLockedCheckEdit = new DevExpress.XtraEditors.ToggleSwitch();
-            this.NotesTextEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.ReasonTextEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.layoutControlGroup5 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.ItemForLockedDate = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StocktakingDateDateEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StocktakingDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForStocktakingDate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VoucherNumberTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StartDateDateEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StartDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EndDateDateEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EndDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CountedByTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CountedDateDateEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CountedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ReviewedByTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ReviewedDateDateEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ReviewedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ApprovedByTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LockedDateDateEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LockedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LockedByTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StocktakingTypeComboBoxEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameSearchLookupEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchSearchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyBrachHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsLockedToggleSwitch.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ReasonTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StocktakingStatusComboBoxEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForStocktakingDate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForVoucherNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStocktakingType)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStocktakingStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForWarehouseName)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StartDateDateEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StartDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForIsLocked)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStartDate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.EndDateDateEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.EndDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForEndDate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CountedByTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForCountedBy)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CountedDateDateEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CountedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCountedDate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ReviewedByTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForReviewedBy)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ReviewedDateDateEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ReviewedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForReviewedDate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ApprovedByTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedBy)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedDate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForCountedBy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForReviewedBy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedBy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNotes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForReason)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForIsLocked)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LockedDateDateEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LockedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForLockedDate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LockedByTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForLockedBy)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StocktakingTypeTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StocktakingStatusTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsLockedCheckEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NotesTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ReasonTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForLockedDate)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -201,7 +206,7 @@ namespace Inventory.StockTakking
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 742);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 1029);
             this.barDockControlBottom.Manager = this.barManager1;
             this.barDockControlBottom.Size = new System.Drawing.Size(666, 0);
             // 
@@ -211,7 +216,7 @@ namespace Inventory.StockTakking
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 718);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 1005);
             // 
             // barDockControlRight
             // 
@@ -219,7 +224,7 @@ namespace Inventory.StockTakking
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(666, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 718);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 1005);
             // 
             // dxErrorProvider1
             // 
@@ -239,19 +244,282 @@ namespace Inventory.StockTakking
             this.dataLayoutControl1.Controls.Add(this.ApprovedDateDateEdit);
             this.dataLayoutControl1.Controls.Add(this.LockedDateDateEdit);
             this.dataLayoutControl1.Controls.Add(this.LockedByTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.StocktakingTypeTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.StocktakingStatusTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.WarehouseNameTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.IsLockedCheckEdit);
+            this.dataLayoutControl1.Controls.Add(this.StocktakingTypeComboBoxEdit);
+            this.dataLayoutControl1.Controls.Add(this.WarehouseNameSearchLookupEdit);
+            this.dataLayoutControl1.Controls.Add(this.IsLockedToggleSwitch);
             this.dataLayoutControl1.Controls.Add(this.NotesTextEdit);
             this.dataLayoutControl1.Controls.Add(this.ReasonTextEdit);
+            this.dataLayoutControl1.Controls.Add(this.StocktakingStatusComboBoxEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 718);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 1005);
             this.dataLayoutControl1.TabIndex = 4;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
+            // 
+            // StocktakingDateDateEdit
+            // 
+            this.StocktakingDateDateEdit.EditValue = null;
+            this.StocktakingDateDateEdit.Location = new System.Drawing.Point(116, 45);
+            this.StocktakingDateDateEdit.MenuManager = this.barManager1;
+            this.StocktakingDateDateEdit.Name = "StocktakingDateDateEdit";
+            this.StocktakingDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.StocktakingDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StocktakingDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StocktakingDateDateEdit.Size = new System.Drawing.Size(526, 20);
+            this.StocktakingDateDateEdit.StyleController = this.dataLayoutControl1;
+            this.StocktakingDateDateEdit.TabIndex = 5;
+            // 
+            // VoucherNumberTextEdit
+            // 
+            this.VoucherNumberTextEdit.Location = new System.Drawing.Point(116, 69);
+            this.VoucherNumberTextEdit.MenuManager = this.barManager1;
+            this.VoucherNumberTextEdit.Name = "VoucherNumberTextEdit";
+            this.VoucherNumberTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.VoucherNumberTextEdit.Size = new System.Drawing.Size(215, 20);
+            this.VoucherNumberTextEdit.StyleController = this.dataLayoutControl1;
+            this.VoucherNumberTextEdit.TabIndex = 6;
+            // 
+            // StartDateDateEdit
+            // 
+            this.StartDateDateEdit.EditValue = null;
+            this.StartDateDateEdit.Location = new System.Drawing.Point(116, 210);
+            this.StartDateDateEdit.MenuManager = this.barManager1;
+            this.StartDateDateEdit.Name = "StartDateDateEdit";
+            this.StartDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.StartDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StartDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StartDateDateEdit.Size = new System.Drawing.Size(526, 20);
+            this.StartDateDateEdit.StyleController = this.dataLayoutControl1;
+            this.StartDateDateEdit.TabIndex = 13;
+            // 
+            // EndDateDateEdit
+            // 
+            this.EndDateDateEdit.EditValue = null;
+            this.EndDateDateEdit.Location = new System.Drawing.Point(116, 234);
+            this.EndDateDateEdit.MenuManager = this.barManager1;
+            this.EndDateDateEdit.Name = "EndDateDateEdit";
+            this.EndDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.EndDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.EndDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.EndDateDateEdit.Size = new System.Drawing.Size(526, 20);
+            this.EndDateDateEdit.StyleController = this.dataLayoutControl1;
+            this.EndDateDateEdit.TabIndex = 14;
+            // 
+            // CountedByTextEdit
+            // 
+            this.CountedByTextEdit.Location = new System.Drawing.Point(116, 375);
+            this.CountedByTextEdit.MenuManager = this.barManager1;
+            this.CountedByTextEdit.Name = "CountedByTextEdit";
+            this.CountedByTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.CountedByTextEdit.Size = new System.Drawing.Size(526, 20);
+            this.CountedByTextEdit.StyleController = this.dataLayoutControl1;
+            this.CountedByTextEdit.TabIndex = 15;
+            // 
+            // CountedDateDateEdit
+            // 
+            this.CountedDateDateEdit.EditValue = null;
+            this.CountedDateDateEdit.Location = new System.Drawing.Point(116, 258);
+            this.CountedDateDateEdit.MenuManager = this.barManager1;
+            this.CountedDateDateEdit.Name = "CountedDateDateEdit";
+            this.CountedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.CountedDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.CountedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.CountedDateDateEdit.Size = new System.Drawing.Size(526, 20);
+            this.CountedDateDateEdit.StyleController = this.dataLayoutControl1;
+            this.CountedDateDateEdit.TabIndex = 16;
+            // 
+            // ReviewedByTextEdit
+            // 
+            this.ReviewedByTextEdit.Location = new System.Drawing.Point(116, 399);
+            this.ReviewedByTextEdit.MenuManager = this.barManager1;
+            this.ReviewedByTextEdit.Name = "ReviewedByTextEdit";
+            this.ReviewedByTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.ReviewedByTextEdit.Size = new System.Drawing.Size(526, 20);
+            this.ReviewedByTextEdit.StyleController = this.dataLayoutControl1;
+            this.ReviewedByTextEdit.TabIndex = 17;
+            // 
+            // ReviewedDateDateEdit
+            // 
+            this.ReviewedDateDateEdit.EditValue = null;
+            this.ReviewedDateDateEdit.Location = new System.Drawing.Point(116, 282);
+            this.ReviewedDateDateEdit.MenuManager = this.barManager1;
+            this.ReviewedDateDateEdit.Name = "ReviewedDateDateEdit";
+            this.ReviewedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.ReviewedDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ReviewedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ReviewedDateDateEdit.Size = new System.Drawing.Size(526, 20);
+            this.ReviewedDateDateEdit.StyleController = this.dataLayoutControl1;
+            this.ReviewedDateDateEdit.TabIndex = 18;
+            // 
+            // ApprovedByTextEdit
+            // 
+            this.ApprovedByTextEdit.Location = new System.Drawing.Point(116, 423);
+            this.ApprovedByTextEdit.MenuManager = this.barManager1;
+            this.ApprovedByTextEdit.Name = "ApprovedByTextEdit";
+            this.ApprovedByTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.ApprovedByTextEdit.Size = new System.Drawing.Size(526, 20);
+            this.ApprovedByTextEdit.StyleController = this.dataLayoutControl1;
+            this.ApprovedByTextEdit.TabIndex = 19;
+            // 
+            // ApprovedDateDateEdit
+            // 
+            this.ApprovedDateDateEdit.EditValue = null;
+            this.ApprovedDateDateEdit.Location = new System.Drawing.Point(116, 306);
+            this.ApprovedDateDateEdit.MenuManager = this.barManager1;
+            this.ApprovedDateDateEdit.Name = "ApprovedDateDateEdit";
+            this.ApprovedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.ApprovedDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ApprovedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ApprovedDateDateEdit.Size = new System.Drawing.Size(526, 20);
+            this.ApprovedDateDateEdit.StyleController = this.dataLayoutControl1;
+            this.ApprovedDateDateEdit.TabIndex = 20;
+            // 
+            // LockedDateDateEdit
+            // 
+            this.LockedDateDateEdit.EditValue = null;
+            this.LockedDateDateEdit.Location = new System.Drawing.Point(116, 516);
+            this.LockedDateDateEdit.MenuManager = this.barManager1;
+            this.LockedDateDateEdit.Name = "LockedDateDateEdit";
+            this.LockedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.LockedDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.LockedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.LockedDateDateEdit.Size = new System.Drawing.Size(526, 20);
+            this.LockedDateDateEdit.StyleController = this.dataLayoutControl1;
+            this.LockedDateDateEdit.TabIndex = 24;
+            // 
+            // LockedByTextEdit
+            // 
+            this.LockedByTextEdit.Location = new System.Drawing.Point(116, 492);
+            this.LockedByTextEdit.MenuManager = this.barManager1;
+            this.LockedByTextEdit.Name = "LockedByTextEdit";
+            this.LockedByTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.LockedByTextEdit.Size = new System.Drawing.Size(526, 20);
+            this.LockedByTextEdit.StyleController = this.dataLayoutControl1;
+            this.LockedByTextEdit.TabIndex = 25;
+            // 
+            // StocktakingTypeComboBoxEdit
+            // 
+            this.StocktakingTypeComboBoxEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
+            this.StocktakingTypeComboBoxEdit.Location = new System.Drawing.Point(116, 93);
+            this.StocktakingTypeComboBoxEdit.MenuManager = this.barManager1;
+            this.StocktakingTypeComboBoxEdit.Name = "StocktakingTypeComboBoxEdit";
+            this.StocktakingTypeComboBoxEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.StocktakingTypeComboBoxEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.StocktakingTypeComboBoxEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StocktakingTypeComboBoxEdit.Size = new System.Drawing.Size(526, 20);
+            this.StocktakingTypeComboBoxEdit.StyleController = this.dataLayoutControl1;
+            this.StocktakingTypeComboBoxEdit.TabIndex = 7;
+            // 
+            // WarehouseNameSearchLookupEdit
+            // 
+            this.WarehouseNameSearchLookupEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
+            this.WarehouseNameSearchLookupEdit.Location = new System.Drawing.Point(116, 141);
+            this.WarehouseNameSearchLookupEdit.MenuManager = this.barManager1;
+            this.WarehouseNameSearchLookupEdit.Name = "WarehouseNameSearchLookupEdit";
+            this.WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.WarehouseNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.WarehouseNameSearchLookupEdit.Properties.DataSource = this.companyBranchDtoBindingSource;
+            this.WarehouseNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
+            this.WarehouseNameSearchLookupEdit.Properties.NullText = "";
+            this.WarehouseNameSearchLookupEdit.Properties.PopupView = this.CompanyBranchSearchLookUpEdit1View;
+            this.WarehouseNameSearchLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.CompanyBrachHypertextLabel});
+            this.WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
+            this.WarehouseNameSearchLookupEdit.Size = new System.Drawing.Size(526, 20);
+            this.WarehouseNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
+            this.WarehouseNameSearchLookupEdit.TabIndex = 11;
+            // 
+            // companyBranchDtoBindingSource
+            // 
+            this.companyBranchDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
+            // 
+            // CompanyBranchSearchLookUpEdit1View
+            // 
+            this.CompanyBranchSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtml});
+            this.CompanyBranchSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.CompanyBranchSearchLookUpEdit1View.Name = "CompanyBranchSearchLookUpEdit1View";
+            this.CompanyBranchSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.CompanyBranchSearchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.CompanyBranchSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
+            this.CompanyBranchSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.ColumnEdit = this.CompanyBrachHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 0;
+            // 
+            // CompanyBrachHypertextLabel
+            // 
+            this.CompanyBrachHypertextLabel.Name = "CompanyBrachHypertextLabel";
+            // 
+            // IsLockedToggleSwitch
+            // 
+            this.IsLockedToggleSwitch.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
+            this.IsLockedToggleSwitch.EditValue = true;
+            this.IsLockedToggleSwitch.Location = new System.Drawing.Point(427, 69);
+            this.IsLockedToggleSwitch.MenuManager = this.barManager1;
+            this.IsLockedToggleSwitch.Name = "IsLockedToggleSwitch";
+            this.IsLockedToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.IsLockedToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
+            this.IsLockedToggleSwitch.Properties.OffText = "<color=\'red\'>Đã khóa</color>";
+            this.IsLockedToggleSwitch.Properties.OnText = "<color=\'blue\'>Chưa khóa</color>";
+            this.IsLockedToggleSwitch.Size = new System.Drawing.Size(215, 18);
+            this.IsLockedToggleSwitch.StyleController = this.dataLayoutControl1;
+            this.IsLockedToggleSwitch.TabIndex = 23;
+            // 
+            // NotesTextEdit
+            // 
+            this.NotesTextEdit.Location = new System.Drawing.Point(24, 556);
+            this.NotesTextEdit.MenuManager = this.barManager1;
+            this.NotesTextEdit.Name = "NotesTextEdit";
+            this.NotesTextEdit.Size = new System.Drawing.Size(307, 425);
+            this.NotesTextEdit.StyleController = this.dataLayoutControl1;
+            this.NotesTextEdit.TabIndex = 21;
+            // 
+            // ReasonTextEdit
+            // 
+            this.ReasonTextEdit.Location = new System.Drawing.Point(335, 556);
+            this.ReasonTextEdit.MenuManager = this.barManager1;
+            this.ReasonTextEdit.Name = "ReasonTextEdit";
+            this.ReasonTextEdit.Size = new System.Drawing.Size(307, 425);
+            this.ReasonTextEdit.StyleController = this.dataLayoutControl1;
+            this.ReasonTextEdit.TabIndex = 22;
+            // 
+            // StocktakingStatusComboBoxEdit
+            // 
+            this.StocktakingStatusComboBoxEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
+            this.StocktakingStatusComboBoxEdit.Location = new System.Drawing.Point(116, 117);
+            this.StocktakingStatusComboBoxEdit.MenuManager = this.barManager1;
+            this.StocktakingStatusComboBoxEdit.Name = "StocktakingStatusComboBoxEdit";
+            this.StocktakingStatusComboBoxEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.StocktakingStatusComboBoxEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.StocktakingStatusComboBoxEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StocktakingStatusComboBoxEdit.Size = new System.Drawing.Size(526, 20);
+            this.StocktakingStatusComboBoxEdit.StyleController = this.dataLayoutControl1;
+            this.StocktakingStatusComboBoxEdit.TabIndex = 8;
             // 
             // Root
             // 
@@ -260,7 +528,7 @@ namespace Inventory.StockTakking
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlGroup1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(666, 718);
+            this.Root.Size = new System.Drawing.Size(666, 1005);
             this.Root.TextVisible = false;
             // 
             // layoutControlGroup1
@@ -274,367 +542,7 @@ namespace Inventory.StockTakking
             this.layoutControlGroup5});
             this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(646, 698);
-            // 
-            // StocktakingDateDateEdit
-            // 
-            this.StocktakingDateDateEdit.EditValue = null;
-            this.StocktakingDateDateEdit.Location = new System.Drawing.Point(116, 45);
-            this.StocktakingDateDateEdit.MenuManager = this.barManager1;
-            this.StocktakingDateDateEdit.Name = "StocktakingDateDateEdit";
-            this.StocktakingDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.StocktakingDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StocktakingDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StocktakingDateDateEdit.Properties.CalendarTimeProperties.Mask.EditMask = "T";
-            this.StocktakingDateDateEdit.Size = new System.Drawing.Size(526, 20);
-            this.StocktakingDateDateEdit.StyleController = this.dataLayoutControl1;
-            this.StocktakingDateDateEdit.TabIndex = 5;
-            // 
-            // ItemForStocktakingDate
-            // 
-            this.ItemForStocktakingDate.Control = this.StocktakingDateDateEdit;
-            this.ItemForStocktakingDate.Location = new System.Drawing.Point(0, 0);
-            this.ItemForStocktakingDate.Name = "ItemForStocktakingDate";
-            this.ItemForStocktakingDate.Size = new System.Drawing.Size(622, 24);
-            this.ItemForStocktakingDate.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // VoucherNumberTextEdit
-            // 
-            this.VoucherNumberTextEdit.Location = new System.Drawing.Point(116, 69);
-            this.VoucherNumberTextEdit.MenuManager = this.barManager1;
-            this.VoucherNumberTextEdit.Name = "VoucherNumberTextEdit";
-            this.VoucherNumberTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.VoucherNumberTextEdit.Size = new System.Drawing.Size(215, 20);
-            this.VoucherNumberTextEdit.StyleController = this.dataLayoutControl1;
-            this.VoucherNumberTextEdit.TabIndex = 6;
-            // 
-            // ItemForVoucherNumber
-            // 
-            this.ItemForVoucherNumber.Control = this.VoucherNumberTextEdit;
-            this.ItemForVoucherNumber.Location = new System.Drawing.Point(0, 24);
-            this.ItemForVoucherNumber.Name = "ItemForVoucherNumber";
-            this.ItemForVoucherNumber.Size = new System.Drawing.Size(311, 24);
-            this.ItemForVoucherNumber.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ItemForStocktakingType
-            // 
-            this.ItemForStocktakingType.Control = this.StocktakingTypeTextEdit;
-            this.ItemForStocktakingType.Location = new System.Drawing.Point(0, 48);
-            this.ItemForStocktakingType.Name = "ItemForStocktakingType";
-            this.ItemForStocktakingType.Size = new System.Drawing.Size(622, 24);
-            this.ItemForStocktakingType.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ItemForStocktakingStatus
-            // 
-            this.ItemForStocktakingStatus.Control = this.StocktakingStatusTextEdit;
-            this.ItemForStocktakingStatus.Location = new System.Drawing.Point(0, 72);
-            this.ItemForStocktakingStatus.Name = "ItemForStocktakingStatus";
-            this.ItemForStocktakingStatus.Size = new System.Drawing.Size(622, 24);
-            this.ItemForStocktakingStatus.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ItemForWarehouseName
-            // 
-            this.ItemForWarehouseName.Control = this.WarehouseNameTextEdit;
-            this.ItemForWarehouseName.Location = new System.Drawing.Point(0, 96);
-            this.ItemForWarehouseName.Name = "ItemForWarehouseName";
-            this.ItemForWarehouseName.Size = new System.Drawing.Size(622, 24);
-            this.ItemForWarehouseName.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // StartDateDateEdit
-            // 
-            this.StartDateDateEdit.EditValue = null;
-            this.StartDateDateEdit.Location = new System.Drawing.Point(116, 210);
-            this.StartDateDateEdit.MenuManager = this.barManager1;
-            this.StartDateDateEdit.Name = "StartDateDateEdit";
-            this.StartDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.StartDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StartDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StartDateDateEdit.Properties.CalendarTimeProperties.Mask.EditMask = "T";
-            this.StartDateDateEdit.Size = new System.Drawing.Size(526, 20);
-            this.StartDateDateEdit.StyleController = this.dataLayoutControl1;
-            this.StartDateDateEdit.TabIndex = 13;
-            // 
-            // ItemForStartDate
-            // 
-            this.ItemForStartDate.Control = this.StartDateDateEdit;
-            this.ItemForStartDate.Location = new System.Drawing.Point(0, 0);
-            this.ItemForStartDate.Name = "ItemForStartDate";
-            this.ItemForStartDate.Size = new System.Drawing.Size(622, 24);
-            this.ItemForStartDate.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // EndDateDateEdit
-            // 
-            this.EndDateDateEdit.EditValue = null;
-            this.EndDateDateEdit.Location = new System.Drawing.Point(116, 234);
-            this.EndDateDateEdit.MenuManager = this.barManager1;
-            this.EndDateDateEdit.Name = "EndDateDateEdit";
-            this.EndDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.EndDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.EndDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.EndDateDateEdit.Properties.CalendarTimeProperties.Mask.EditMask = "T";
-            this.EndDateDateEdit.Size = new System.Drawing.Size(526, 20);
-            this.EndDateDateEdit.StyleController = this.dataLayoutControl1;
-            this.EndDateDateEdit.TabIndex = 14;
-            // 
-            // ItemForEndDate
-            // 
-            this.ItemForEndDate.Control = this.EndDateDateEdit;
-            this.ItemForEndDate.Location = new System.Drawing.Point(0, 24);
-            this.ItemForEndDate.Name = "ItemForEndDate";
-            this.ItemForEndDate.Size = new System.Drawing.Size(622, 24);
-            this.ItemForEndDate.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // CountedByTextEdit
-            // 
-            this.CountedByTextEdit.Location = new System.Drawing.Point(116, 375);
-            this.CountedByTextEdit.MenuManager = this.barManager1;
-            this.CountedByTextEdit.Name = "CountedByTextEdit";
-            this.CountedByTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.CountedByTextEdit.Size = new System.Drawing.Size(526, 20);
-            this.CountedByTextEdit.StyleController = this.dataLayoutControl1;
-            this.CountedByTextEdit.TabIndex = 15;
-            // 
-            // ItemForCountedBy
-            // 
-            this.ItemForCountedBy.Control = this.CountedByTextEdit;
-            this.ItemForCountedBy.Location = new System.Drawing.Point(0, 0);
-            this.ItemForCountedBy.Name = "ItemForCountedBy";
-            this.ItemForCountedBy.Size = new System.Drawing.Size(622, 24);
-            this.ItemForCountedBy.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // CountedDateDateEdit
-            // 
-            this.CountedDateDateEdit.EditValue = null;
-            this.CountedDateDateEdit.Location = new System.Drawing.Point(116, 258);
-            this.CountedDateDateEdit.MenuManager = this.barManager1;
-            this.CountedDateDateEdit.Name = "CountedDateDateEdit";
-            this.CountedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.CountedDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.CountedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.CountedDateDateEdit.Properties.CalendarTimeProperties.Mask.EditMask = "T";
-            this.CountedDateDateEdit.Size = new System.Drawing.Size(526, 20);
-            this.CountedDateDateEdit.StyleController = this.dataLayoutControl1;
-            this.CountedDateDateEdit.TabIndex = 16;
-            // 
-            // ItemForCountedDate
-            // 
-            this.ItemForCountedDate.Control = this.CountedDateDateEdit;
-            this.ItemForCountedDate.Location = new System.Drawing.Point(0, 48);
-            this.ItemForCountedDate.Name = "ItemForCountedDate";
-            this.ItemForCountedDate.Size = new System.Drawing.Size(622, 24);
-            this.ItemForCountedDate.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ReviewedByTextEdit
-            // 
-            this.ReviewedByTextEdit.Location = new System.Drawing.Point(116, 399);
-            this.ReviewedByTextEdit.MenuManager = this.barManager1;
-            this.ReviewedByTextEdit.Name = "ReviewedByTextEdit";
-            this.ReviewedByTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.ReviewedByTextEdit.Size = new System.Drawing.Size(526, 20);
-            this.ReviewedByTextEdit.StyleController = this.dataLayoutControl1;
-            this.ReviewedByTextEdit.TabIndex = 17;
-            // 
-            // ItemForReviewedBy
-            // 
-            this.ItemForReviewedBy.Control = this.ReviewedByTextEdit;
-            this.ItemForReviewedBy.Location = new System.Drawing.Point(0, 24);
-            this.ItemForReviewedBy.Name = "ItemForReviewedBy";
-            this.ItemForReviewedBy.Size = new System.Drawing.Size(622, 24);
-            this.ItemForReviewedBy.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ReviewedDateDateEdit
-            // 
-            this.ReviewedDateDateEdit.EditValue = null;
-            this.ReviewedDateDateEdit.Location = new System.Drawing.Point(116, 282);
-            this.ReviewedDateDateEdit.MenuManager = this.barManager1;
-            this.ReviewedDateDateEdit.Name = "ReviewedDateDateEdit";
-            this.ReviewedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.ReviewedDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ReviewedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ReviewedDateDateEdit.Properties.CalendarTimeProperties.Mask.EditMask = "T";
-            this.ReviewedDateDateEdit.Size = new System.Drawing.Size(526, 20);
-            this.ReviewedDateDateEdit.StyleController = this.dataLayoutControl1;
-            this.ReviewedDateDateEdit.TabIndex = 18;
-            // 
-            // ItemForReviewedDate
-            // 
-            this.ItemForReviewedDate.Control = this.ReviewedDateDateEdit;
-            this.ItemForReviewedDate.Location = new System.Drawing.Point(0, 72);
-            this.ItemForReviewedDate.Name = "ItemForReviewedDate";
-            this.ItemForReviewedDate.Size = new System.Drawing.Size(622, 24);
-            this.ItemForReviewedDate.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ApprovedByTextEdit
-            // 
-            this.ApprovedByTextEdit.Location = new System.Drawing.Point(116, 423);
-            this.ApprovedByTextEdit.MenuManager = this.barManager1;
-            this.ApprovedByTextEdit.Name = "ApprovedByTextEdit";
-            this.ApprovedByTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.ApprovedByTextEdit.Size = new System.Drawing.Size(526, 20);
-            this.ApprovedByTextEdit.StyleController = this.dataLayoutControl1;
-            this.ApprovedByTextEdit.TabIndex = 19;
-            // 
-            // ItemForApprovedBy
-            // 
-            this.ItemForApprovedBy.Control = this.ApprovedByTextEdit;
-            this.ItemForApprovedBy.Location = new System.Drawing.Point(0, 48);
-            this.ItemForApprovedBy.Name = "ItemForApprovedBy";
-            this.ItemForApprovedBy.Size = new System.Drawing.Size(622, 24);
-            this.ItemForApprovedBy.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ApprovedDateDateEdit
-            // 
-            this.ApprovedDateDateEdit.EditValue = null;
-            this.ApprovedDateDateEdit.Location = new System.Drawing.Point(116, 306);
-            this.ApprovedDateDateEdit.MenuManager = this.barManager1;
-            this.ApprovedDateDateEdit.Name = "ApprovedDateDateEdit";
-            this.ApprovedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.ApprovedDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ApprovedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ApprovedDateDateEdit.Properties.CalendarTimeProperties.Mask.EditMask = "T";
-            this.ApprovedDateDateEdit.Size = new System.Drawing.Size(526, 20);
-            this.ApprovedDateDateEdit.StyleController = this.dataLayoutControl1;
-            this.ApprovedDateDateEdit.TabIndex = 20;
-            // 
-            // ItemForApprovedDate
-            // 
-            this.ItemForApprovedDate.Control = this.ApprovedDateDateEdit;
-            this.ItemForApprovedDate.Location = new System.Drawing.Point(0, 96);
-            this.ItemForApprovedDate.Name = "ItemForApprovedDate";
-            this.ItemForApprovedDate.Size = new System.Drawing.Size(622, 24);
-            this.ItemForApprovedDate.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ItemForNotes
-            // 
-            this.ItemForNotes.Control = this.NotesTextEdit;
-            this.ItemForNotes.Location = new System.Drawing.Point(0, 48);
-            this.ItemForNotes.Name = "ItemForNotes";
-            this.ItemForNotes.Size = new System.Drawing.Size(311, 158);
-            this.ItemForNotes.TextLocation = DevExpress.Utils.Locations.Top;
-            this.ItemForNotes.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ItemForReason
-            // 
-            this.ItemForReason.Control = this.ReasonTextEdit;
-            this.ItemForReason.Location = new System.Drawing.Point(311, 48);
-            this.ItemForReason.Name = "ItemForReason";
-            this.ItemForReason.Size = new System.Drawing.Size(311, 158);
-            this.ItemForReason.TextLocation = DevExpress.Utils.Locations.Top;
-            this.ItemForReason.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // ItemForIsLocked
-            // 
-            this.ItemForIsLocked.Control = this.IsLockedCheckEdit;
-            this.ItemForIsLocked.Location = new System.Drawing.Point(311, 24);
-            this.ItemForIsLocked.Name = "ItemForIsLocked";
-            this.ItemForIsLocked.Size = new System.Drawing.Size(311, 24);
-            this.ItemForIsLocked.Text = "Tình trạng";
-            this.ItemForIsLocked.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // LockedDateDateEdit
-            // 
-            this.LockedDateDateEdit.EditValue = null;
-            this.LockedDateDateEdit.Location = new System.Drawing.Point(116, 516);
-            this.LockedDateDateEdit.MenuManager = this.barManager1;
-            this.LockedDateDateEdit.Name = "LockedDateDateEdit";
-            this.LockedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.LockedDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.LockedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.LockedDateDateEdit.Properties.CalendarTimeProperties.Mask.EditMask = "T";
-            this.LockedDateDateEdit.Size = new System.Drawing.Size(526, 20);
-            this.LockedDateDateEdit.StyleController = this.dataLayoutControl1;
-            this.LockedDateDateEdit.TabIndex = 24;
-            // 
-            // ItemForLockedDate
-            // 
-            this.ItemForLockedDate.Control = this.LockedDateDateEdit;
-            this.ItemForLockedDate.Location = new System.Drawing.Point(0, 24);
-            this.ItemForLockedDate.Name = "ItemForLockedDate";
-            this.ItemForLockedDate.Size = new System.Drawing.Size(622, 24);
-            this.ItemForLockedDate.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // LockedByTextEdit
-            // 
-            this.LockedByTextEdit.Location = new System.Drawing.Point(116, 492);
-            this.LockedByTextEdit.MenuManager = this.barManager1;
-            this.LockedByTextEdit.Name = "LockedByTextEdit";
-            this.LockedByTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.LockedByTextEdit.Size = new System.Drawing.Size(526, 20);
-            this.LockedByTextEdit.StyleController = this.dataLayoutControl1;
-            this.LockedByTextEdit.TabIndex = 25;
-            // 
-            // ItemForLockedBy
-            // 
-            this.ItemForLockedBy.Control = this.LockedByTextEdit;
-            this.ItemForLockedBy.Location = new System.Drawing.Point(0, 0);
-            this.ItemForLockedBy.Name = "ItemForLockedBy";
-            this.ItemForLockedBy.Size = new System.Drawing.Size(622, 24);
-            this.ItemForLockedBy.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // StocktakingTypeTextEdit
-            // 
-            this.StocktakingTypeTextEdit.Location = new System.Drawing.Point(116, 93);
-            this.StocktakingTypeTextEdit.MenuManager = this.barManager1;
-            this.StocktakingTypeTextEdit.Name = "StocktakingTypeTextEdit";
-            this.StocktakingTypeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.StocktakingTypeTextEdit.Properties.Appearance.Options.UseTextOptions = true;
-            this.StocktakingTypeTextEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.StocktakingTypeTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StocktakingTypeTextEdit.Size = new System.Drawing.Size(526, 20);
-            this.StocktakingTypeTextEdit.StyleController = this.dataLayoutControl1;
-            this.StocktakingTypeTextEdit.TabIndex = 7;
-            // 
-            // StocktakingStatusTextEdit
-            // 
-            this.StocktakingStatusTextEdit.Location = new System.Drawing.Point(116, 117);
-            this.StocktakingStatusTextEdit.MenuManager = this.barManager1;
-            this.StocktakingStatusTextEdit.Name = "StocktakingStatusTextEdit";
-            this.StocktakingStatusTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.StocktakingStatusTextEdit.Properties.Appearance.Options.UseTextOptions = true;
-            this.StocktakingStatusTextEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.StocktakingStatusTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StocktakingStatusTextEdit.Properties.Mask.EditMask = "N0";
-            this.StocktakingStatusTextEdit.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
-            this.StocktakingStatusTextEdit.Properties.Mask.UseMaskAsDisplayFormat = true;
-            this.StocktakingStatusTextEdit.Size = new System.Drawing.Size(526, 20);
-            this.StocktakingStatusTextEdit.StyleController = this.dataLayoutControl1;
-            this.StocktakingStatusTextEdit.TabIndex = 8;
-            // 
-            // WarehouseNameTextEdit
-            // 
-            this.WarehouseNameTextEdit.Location = new System.Drawing.Point(116, 141);
-            this.WarehouseNameTextEdit.MenuManager = this.barManager1;
-            this.WarehouseNameTextEdit.Name = "WarehouseNameTextEdit";
-            this.WarehouseNameTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.WarehouseNameTextEdit.Properties.NullText = "";
-            this.WarehouseNameTextEdit.Properties.PopupView = this.searchLookUpEdit1View;
-            this.WarehouseNameTextEdit.Size = new System.Drawing.Size(526, 20);
-            this.WarehouseNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.WarehouseNameTextEdit.TabIndex = 11;
-            // 
-            // searchLookUpEdit1View
-            // 
-            this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
-            this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.layoutControlGroup1.Size = new System.Drawing.Size(646, 985);
             // 
             // layoutControlGroup2
             // 
@@ -651,8 +559,81 @@ namespace Inventory.StockTakking
             this.layoutControlGroup2.Size = new System.Drawing.Size(646, 165);
             this.layoutControlGroup2.Text = "Thông tin phiếu";
             // 
+            // ItemForStocktakingDate
+            // 
+            this.ItemForStocktakingDate.AllowHtmlStringInCaption = true;
+            this.ItemForStocktakingDate.Control = this.StocktakingDateDateEdit;
+            this.ItemForStocktakingDate.Location = new System.Drawing.Point(0, 0);
+            this.ItemForStocktakingDate.Name = "ItemForStocktakingDate";
+            this.ItemForStocktakingDate.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForStocktakingDate.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForStocktakingDate.Size = new System.Drawing.Size(622, 24);
+            this.ItemForStocktakingDate.Text = "Ngày kiểm kho <color=\'red\'>*</color>";
+            this.ItemForStocktakingDate.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForVoucherNumber
+            // 
+            this.ItemForVoucherNumber.AllowHtmlStringInCaption = true;
+            this.ItemForVoucherNumber.Control = this.VoucherNumberTextEdit;
+            this.ItemForVoucherNumber.Location = new System.Drawing.Point(0, 24);
+            this.ItemForVoucherNumber.Name = "ItemForVoucherNumber";
+            this.ItemForVoucherNumber.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForVoucherNumber.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForVoucherNumber.Size = new System.Drawing.Size(311, 24);
+            this.ItemForVoucherNumber.Text = "Số phiếu <color=\'red\'>*</color>";
+            this.ItemForVoucherNumber.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForStocktakingType
+            // 
+            this.ItemForStocktakingType.AllowHtmlStringInCaption = true;
+            this.ItemForStocktakingType.Control = this.StocktakingTypeComboBoxEdit;
+            this.ItemForStocktakingType.Location = new System.Drawing.Point(0, 48);
+            this.ItemForStocktakingType.Name = "ItemForStocktakingType";
+            this.ItemForStocktakingType.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForStocktakingType.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForStocktakingType.Size = new System.Drawing.Size(622, 24);
+            this.ItemForStocktakingType.Text = "Loại kiểm kho <color=\'red\'>*</color>";
+            this.ItemForStocktakingType.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForStocktakingStatus
+            // 
+            this.ItemForStocktakingStatus.AllowHtmlStringInCaption = true;
+            this.ItemForStocktakingStatus.Control = this.StocktakingStatusComboBoxEdit;
+            this.ItemForStocktakingStatus.Location = new System.Drawing.Point(0, 72);
+            this.ItemForStocktakingStatus.Name = "ItemForStocktakingStatus";
+            this.ItemForStocktakingStatus.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForStocktakingStatus.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForStocktakingStatus.Size = new System.Drawing.Size(622, 24);
+            this.ItemForStocktakingStatus.Text = "Trạng thái <color=\'red\'>*</color>";
+            this.ItemForStocktakingStatus.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForWarehouseName
+            // 
+            this.ItemForWarehouseName.AllowHtmlStringInCaption = true;
+            this.ItemForWarehouseName.Control = this.WarehouseNameSearchLookupEdit;
+            this.ItemForWarehouseName.Location = new System.Drawing.Point(0, 96);
+            this.ItemForWarehouseName.Name = "ItemForWarehouseName";
+            this.ItemForWarehouseName.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForWarehouseName.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForWarehouseName.Size = new System.Drawing.Size(622, 24);
+            this.ItemForWarehouseName.Text = "Tên kho <color=\'red\'>*</color>";
+            this.ItemForWarehouseName.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForIsLocked
+            // 
+            this.ItemForIsLocked.AllowHtmlStringInCaption = true;
+            this.ItemForIsLocked.Control = this.IsLockedToggleSwitch;
+            this.ItemForIsLocked.Location = new System.Drawing.Point(311, 24);
+            this.ItemForIsLocked.Name = "ItemForIsLocked";
+            this.ItemForIsLocked.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForIsLocked.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForIsLocked.Size = new System.Drawing.Size(311, 24);
+            this.ItemForIsLocked.Text = "Đã khóa";
+            this.ItemForIsLocked.TextSize = new System.Drawing.Size(80, 13);
+            // 
             // layoutControlGroup3
             // 
+            this.layoutControlGroup3.ExpandButtonVisible = true;
             this.layoutControlGroup3.GroupStyle = DevExpress.Utils.GroupStyle.Light;
             this.layoutControlGroup3.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.ItemForStartDate,
@@ -665,8 +646,69 @@ namespace Inventory.StockTakking
             this.layoutControlGroup3.Size = new System.Drawing.Size(646, 165);
             this.layoutControlGroup3.Text = "Thời gian kiểm kho";
             // 
+            // ItemForStartDate
+            // 
+            this.ItemForStartDate.AllowHtmlStringInCaption = true;
+            this.ItemForStartDate.Control = this.StartDateDateEdit;
+            this.ItemForStartDate.Location = new System.Drawing.Point(0, 0);
+            this.ItemForStartDate.Name = "ItemForStartDate";
+            this.ItemForStartDate.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForStartDate.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForStartDate.Size = new System.Drawing.Size(622, 24);
+            this.ItemForStartDate.Text = "Ngày bắt đầu";
+            this.ItemForStartDate.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForEndDate
+            // 
+            this.ItemForEndDate.AllowHtmlStringInCaption = true;
+            this.ItemForEndDate.Control = this.EndDateDateEdit;
+            this.ItemForEndDate.Location = new System.Drawing.Point(0, 24);
+            this.ItemForEndDate.Name = "ItemForEndDate";
+            this.ItemForEndDate.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForEndDate.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForEndDate.Size = new System.Drawing.Size(622, 24);
+            this.ItemForEndDate.Text = "Ngày kết thúc";
+            this.ItemForEndDate.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForCountedDate
+            // 
+            this.ItemForCountedDate.AllowHtmlStringInCaption = true;
+            this.ItemForCountedDate.Control = this.CountedDateDateEdit;
+            this.ItemForCountedDate.Location = new System.Drawing.Point(0, 48);
+            this.ItemForCountedDate.Name = "ItemForCountedDate";
+            this.ItemForCountedDate.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForCountedDate.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForCountedDate.Size = new System.Drawing.Size(622, 24);
+            this.ItemForCountedDate.Text = "Ngày kiểm đếm";
+            this.ItemForCountedDate.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForReviewedDate
+            // 
+            this.ItemForReviewedDate.AllowHtmlStringInCaption = true;
+            this.ItemForReviewedDate.Control = this.ReviewedDateDateEdit;
+            this.ItemForReviewedDate.Location = new System.Drawing.Point(0, 72);
+            this.ItemForReviewedDate.Name = "ItemForReviewedDate";
+            this.ItemForReviewedDate.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForReviewedDate.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForReviewedDate.Size = new System.Drawing.Size(622, 24);
+            this.ItemForReviewedDate.Text = "Ngày rà soát";
+            this.ItemForReviewedDate.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForApprovedDate
+            // 
+            this.ItemForApprovedDate.AllowHtmlStringInCaption = true;
+            this.ItemForApprovedDate.Control = this.ApprovedDateDateEdit;
+            this.ItemForApprovedDate.Location = new System.Drawing.Point(0, 96);
+            this.ItemForApprovedDate.Name = "ItemForApprovedDate";
+            this.ItemForApprovedDate.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForApprovedDate.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForApprovedDate.Size = new System.Drawing.Size(622, 24);
+            this.ItemForApprovedDate.Text = "Ngày phê duyệt";
+            this.ItemForApprovedDate.TextSize = new System.Drawing.Size(80, 13);
+            // 
             // layoutControlGroup4
             // 
+            this.layoutControlGroup4.ExpandButtonVisible = true;
             this.layoutControlGroup4.GroupStyle = DevExpress.Utils.GroupStyle.Light;
             this.layoutControlGroup4.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.ItemForCountedBy,
@@ -677,38 +719,45 @@ namespace Inventory.StockTakking
             this.layoutControlGroup4.Size = new System.Drawing.Size(646, 117);
             this.layoutControlGroup4.Text = "Nhân sự liên quan";
             // 
-            // IsLockedCheckEdit
+            // ItemForCountedBy
             // 
-            this.IsLockedCheckEdit.Location = new System.Drawing.Point(427, 69);
-            this.IsLockedCheckEdit.MenuManager = this.barManager1;
-            this.IsLockedCheckEdit.Name = "IsLockedCheckEdit";
-            this.IsLockedCheckEdit.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
-            this.IsLockedCheckEdit.Properties.OffText = "Off";
-            this.IsLockedCheckEdit.Properties.OnText = "On";
-            this.IsLockedCheckEdit.Size = new System.Drawing.Size(215, 18);
-            this.IsLockedCheckEdit.StyleController = this.dataLayoutControl1;
-            this.IsLockedCheckEdit.TabIndex = 23;
+            this.ItemForCountedBy.AllowHtmlStringInCaption = true;
+            this.ItemForCountedBy.Control = this.CountedByTextEdit;
+            this.ItemForCountedBy.Location = new System.Drawing.Point(0, 0);
+            this.ItemForCountedBy.Name = "ItemForCountedBy";
+            this.ItemForCountedBy.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForCountedBy.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForCountedBy.Size = new System.Drawing.Size(622, 24);
+            this.ItemForCountedBy.Text = "Người kiểm đếm";
+            this.ItemForCountedBy.TextSize = new System.Drawing.Size(80, 13);
             // 
-            // NotesTextEdit
+            // ItemForReviewedBy
             // 
-            this.NotesTextEdit.Location = new System.Drawing.Point(24, 556);
-            this.NotesTextEdit.MenuManager = this.barManager1;
-            this.NotesTextEdit.Name = "NotesTextEdit";
-            this.NotesTextEdit.Size = new System.Drawing.Size(307, 138);
-            this.NotesTextEdit.StyleController = this.dataLayoutControl1;
-            this.NotesTextEdit.TabIndex = 21;
+            this.ItemForReviewedBy.AllowHtmlStringInCaption = true;
+            this.ItemForReviewedBy.Control = this.ReviewedByTextEdit;
+            this.ItemForReviewedBy.Location = new System.Drawing.Point(0, 24);
+            this.ItemForReviewedBy.Name = "ItemForReviewedBy";
+            this.ItemForReviewedBy.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForReviewedBy.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForReviewedBy.Size = new System.Drawing.Size(622, 24);
+            this.ItemForReviewedBy.Text = "Người rà soát";
+            this.ItemForReviewedBy.TextSize = new System.Drawing.Size(80, 13);
             // 
-            // ReasonTextEdit
+            // ItemForApprovedBy
             // 
-            this.ReasonTextEdit.Location = new System.Drawing.Point(335, 556);
-            this.ReasonTextEdit.MenuManager = this.barManager1;
-            this.ReasonTextEdit.Name = "ReasonTextEdit";
-            this.ReasonTextEdit.Size = new System.Drawing.Size(307, 138);
-            this.ReasonTextEdit.StyleController = this.dataLayoutControl1;
-            this.ReasonTextEdit.TabIndex = 22;
+            this.ItemForApprovedBy.AllowHtmlStringInCaption = true;
+            this.ItemForApprovedBy.Control = this.ApprovedByTextEdit;
+            this.ItemForApprovedBy.Location = new System.Drawing.Point(0, 48);
+            this.ItemForApprovedBy.Name = "ItemForApprovedBy";
+            this.ItemForApprovedBy.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForApprovedBy.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForApprovedBy.Size = new System.Drawing.Size(622, 24);
+            this.ItemForApprovedBy.Text = "Người phê duyệt";
+            this.ItemForApprovedBy.TextSize = new System.Drawing.Size(80, 13);
             // 
             // layoutControlGroup5
             // 
+            this.layoutControlGroup5.ExpandButtonVisible = true;
             this.layoutControlGroup5.GroupStyle = DevExpress.Utils.GroupStyle.Light;
             this.layoutControlGroup5.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.ItemForNotes,
@@ -717,14 +766,64 @@ namespace Inventory.StockTakking
             this.ItemForLockedDate});
             this.layoutControlGroup5.Location = new System.Drawing.Point(0, 447);
             this.layoutControlGroup5.Name = "layoutControlGroup5";
-            this.layoutControlGroup5.Size = new System.Drawing.Size(646, 251);
+            this.layoutControlGroup5.Size = new System.Drawing.Size(646, 538);
             this.layoutControlGroup5.Text = "Khác";
+            // 
+            // ItemForNotes
+            // 
+            this.ItemForNotes.AllowHtmlStringInCaption = true;
+            this.ItemForNotes.Control = this.NotesTextEdit;
+            this.ItemForNotes.Location = new System.Drawing.Point(0, 48);
+            this.ItemForNotes.Name = "ItemForNotes";
+            this.ItemForNotes.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForNotes.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForNotes.Size = new System.Drawing.Size(311, 445);
+            this.ItemForNotes.Text = "Ghi chú";
+            this.ItemForNotes.TextLocation = DevExpress.Utils.Locations.Top;
+            this.ItemForNotes.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForReason
+            // 
+            this.ItemForReason.AllowHtmlStringInCaption = true;
+            this.ItemForReason.Control = this.ReasonTextEdit;
+            this.ItemForReason.Location = new System.Drawing.Point(311, 48);
+            this.ItemForReason.Name = "ItemForReason";
+            this.ItemForReason.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForReason.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForReason.Size = new System.Drawing.Size(311, 445);
+            this.ItemForReason.Text = "Lý do";
+            this.ItemForReason.TextLocation = DevExpress.Utils.Locations.Top;
+            this.ItemForReason.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForLockedBy
+            // 
+            this.ItemForLockedBy.AllowHtmlStringInCaption = true;
+            this.ItemForLockedBy.Control = this.LockedByTextEdit;
+            this.ItemForLockedBy.Location = new System.Drawing.Point(0, 0);
+            this.ItemForLockedBy.Name = "ItemForLockedBy";
+            this.ItemForLockedBy.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForLockedBy.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForLockedBy.Size = new System.Drawing.Size(622, 24);
+            this.ItemForLockedBy.Text = "Người khóa";
+            this.ItemForLockedBy.TextSize = new System.Drawing.Size(80, 13);
+            // 
+            // ItemForLockedDate
+            // 
+            this.ItemForLockedDate.AllowHtmlStringInCaption = true;
+            this.ItemForLockedDate.Control = this.LockedDateDateEdit;
+            this.ItemForLockedDate.Location = new System.Drawing.Point(0, 24);
+            this.ItemForLockedDate.Name = "ItemForLockedDate";
+            this.ItemForLockedDate.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForLockedDate.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.ItemForLockedDate.Size = new System.Drawing.Size(622, 24);
+            this.ItemForLockedDate.Text = "Ngày khóa";
+            this.ItemForLockedDate.TextSize = new System.Drawing.Size(80, 13);
             // 
             // FrmFrmStocktakingMasterAddEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(666, 742);
+            this.ClientSize = new System.Drawing.Size(666, 1029);
             this.Controls.Add(this.dataLayoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -737,56 +836,58 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StocktakingDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StocktakingDateDateEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForStocktakingDate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VoucherNumberTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StartDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StartDateDateEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EndDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EndDateDateEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CountedByTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CountedDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CountedDateDateEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ReviewedByTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ReviewedDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ReviewedDateDateEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ApprovedByTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LockedDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LockedDateDateEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LockedByTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StocktakingTypeComboBoxEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameSearchLookupEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchSearchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyBrachHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsLockedToggleSwitch.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ReasonTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StocktakingStatusComboBoxEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForStocktakingDate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForVoucherNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStocktakingType)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStocktakingStatus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForWarehouseName)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StartDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StartDateDateEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForIsLocked)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStartDate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.EndDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.EndDateDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForEndDate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CountedByTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForCountedBy)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CountedDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CountedDateDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCountedDate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ReviewedByTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForReviewedBy)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ReviewedDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ReviewedDateDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForReviewedDate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ApprovedByTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedBy)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedDate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForCountedBy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForReviewedBy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedBy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNotes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForReason)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForIsLocked)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LockedDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LockedDateDateEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForLockedDate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LockedByTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForLockedBy)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StocktakingTypeTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StocktakingStatusTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsLockedCheckEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NotesTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ReasonTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForLockedDate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -835,16 +936,19 @@ namespace Inventory.StockTakking
         private LayoutControlItem ItemForIsLocked;
         private LayoutControlItem ItemForLockedDate;
         private LayoutControlItem ItemForLockedBy;
-        private ComboBoxEdit StocktakingTypeTextEdit;
-        private CheckedComboBoxEdit StocktakingStatusTextEdit;
-        private SearchLookUpEdit WarehouseNameTextEdit;
-        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
+        private ComboBoxEdit StocktakingTypeComboBoxEdit;
+        private SearchLookUpEdit WarehouseNameSearchLookupEdit;
+        private DevExpress.XtraGrid.Views.Grid.GridView CompanyBranchSearchLookUpEdit1View;
         private LayoutControlGroup layoutControlGroup2;
         private LayoutControlGroup layoutControlGroup3;
-        private ToggleSwitch IsLockedCheckEdit;
+        private ToggleSwitch IsLockedToggleSwitch;
         private MemoEdit NotesTextEdit;
         private MemoEdit ReasonTextEdit;
         private LayoutControlGroup layoutControlGroup4;
         private LayoutControlGroup layoutControlGroup5;
+        private ComboBoxEdit StocktakingStatusComboBoxEdit;
+        private System.Windows.Forms.BindingSource companyBranchDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel CompanyBrachHypertextLabel;
     }
 }

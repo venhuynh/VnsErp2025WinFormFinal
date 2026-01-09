@@ -306,6 +306,88 @@ public class StocktakingMasterRepository : IStocktakingMasterRepository
         }
     }
 
+    /// <summary>
+    /// Lấy số thứ tự tiếp theo cho số phiếu kiểm kho
+    /// Dựa trên năm để tìm số thứ tự cao nhất và trả về số tiếp theo
+    /// Format số phiếu: KK-YYYY-XXX (KK = Kiểm kho, YYYY = Năm 4 ký tự, XXX = số thứ tự 3 ký tự)
+    /// </summary>
+    /// <param name="stocktakingDate">Ngày của phiếu kiểm kho</param>
+    /// <returns>Số thứ tự tiếp theo (bắt đầu từ 1 nếu chưa có phiếu nào trong năm đó)</returns>
+    public int GetNextSequenceNumber(DateTime stocktakingDate)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            // Lấy năm từ ngày
+            var year = stocktakingDate.Year;
+
+            // Tìm tất cả các phiếu trong cùng năm
+            var existingMasters = context.StocktakingMasters
+                .Where(m => m.StocktakingDate.Year == year && !m.IsDeleted)
+                .ToList();
+
+            if (existingMasters.Count == 0)
+            {
+                _logger.Info("GetNextSequenceNumber: Không có phiếu nào trong năm {0}. Trả về số 1", year);
+                return 1;
+            }
+
+            // Parse sequence numbers từ các voucher numbers
+            // Format: KK-YYYY-XXX, trong đó XXX là sequence number (3 chữ số cuối)
+            var sequenceNumbers = new List<int>();
+
+            foreach (var master in existingMasters)
+            {
+                if (string.IsNullOrEmpty(master.VoucherNumber))
+                    continue;
+
+                // Tách voucher number theo dấu '-'
+                var parts = master.VoucherNumber.Split('-');
+                if (parts.Length >= 3)
+                {
+                    // Phần cuối cùng chứa sequence number (3 chữ số)
+                    var lastPart = parts[2];
+                    if (lastPart.Length >= 3)
+                    {
+                        // Lấy 3 chữ số cuối làm sequence number
+                        var sequenceStr = lastPart.Substring(lastPart.Length - 3);
+                        if (int.TryParse(sequenceStr, out int seqNum))
+                        {
+                            sequenceNumbers.Add(seqNum);
+                        }
+                    }
+                }
+            }
+
+            if (sequenceNumbers.Count == 0)
+            {
+                _logger.Info("GetNextSequenceNumber: Không thể parse sequence number từ các voucher numbers. Trả về số 1");
+                return 1;
+            }
+
+            // Tìm số thứ tự cao nhất
+            var maxSequence = sequenceNumbers.Max();
+            var nextSequence = maxSequence + 1;
+
+            // Giới hạn tối đa 999 phiếu mỗi năm
+            if (nextSequence > 999)
+            {
+                _logger.Warning("GetNextSequenceNumber: Số thứ tự vượt quá 999 trong năm {0}. Trả về số 999", year);
+                return 999;
+            }
+
+            _logger.Info("GetNextSequenceNumber: Năm {0}, max sequence={1}, next sequence={2}",
+                year, maxSequence, nextSequence);
+
+            return nextSequence;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetNextSequenceNumber: Lỗi lấy số thứ tự tiếp theo: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 
     #region ========== CREATE/UPDATE OPERATIONS ==========

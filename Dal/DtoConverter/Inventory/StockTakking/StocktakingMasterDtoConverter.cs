@@ -1,3 +1,4 @@
+using Common.Utils;
 using DTO.Inventory.StockTakking;
 using System;
 using System.Collections.Generic;
@@ -36,8 +37,8 @@ namespace Dal.DtoConverter.Inventory.StockTakking
                 Id = entity.Id,
                 StocktakingDate = entity.StocktakingDate,
                 VoucherNumber = entity.VoucherNumber,
-                StocktakingType = entity.StocktakingType,
-                StocktakingStatus = entity.StocktakingStatus,
+                StocktakingType = ApplicationEnumUtils.GetEnumValue<StocktakingTypeEnum>(entity.StocktakingType),
+                StocktakingStatus = ApplicationEnumUtils.GetEnumValue<StocktakingStatusEnum>(entity.StocktakingStatus),
                 WarehouseId = entity.WarehouseId,
                 CompanyBranchId = entity.CompanyBranchId,
                 WarehouseName = warehouseName,
@@ -154,8 +155,8 @@ namespace Dal.DtoConverter.Inventory.StockTakking
             // Map properties - Thông tin cơ bản
             entity.StocktakingDate = dto.StocktakingDate;
             entity.VoucherNumber = dto.VoucherNumber;
-            entity.StocktakingType = dto.StocktakingType;
-            entity.StocktakingStatus = dto.StocktakingStatus;
+            entity.StocktakingType = (int)dto.StocktakingType; // Convert enum to int for database
+            entity.StocktakingStatus = (int)dto.StocktakingStatus; // Convert enum to int for database
             entity.WarehouseId = dto.WarehouseId;
             entity.CompanyBranchId = dto.CompanyBranchId;
 

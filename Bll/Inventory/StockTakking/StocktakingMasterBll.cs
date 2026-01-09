@@ -238,6 +238,51 @@ namespace Bll.Inventory.StockTakking
 
         #endregion
 
+        #region ========== VOUCHER NUMBER GENERATION ==========
+
+        /// <summary>
+        /// Tạo số phiếu kiểm kho tự động theo format: KK-YYYY-XXX
+        /// </summary>
+        /// <param name="stocktakingDate">Ngày kiểm kho</param>
+        /// <returns>Số phiếu kiểm kho theo format: KK-YYYY-XXX</returns>
+        /// <remarks>
+        /// Format:
+        /// - KK: Kiểm kho (prefix cố định)
+        /// - YYYY: Năm (4 ký tự)
+        /// - XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)
+        /// 
+        /// Ví dụ: KK-2025-001, KK-2025-002, ...
+        /// </remarks>
+        public string GenerateVoucherNumber(DateTime stocktakingDate)
+        {
+            try
+            {
+                _logger.Debug("GenerateVoucherNumber: Date={0}", stocktakingDate);
+
+                // Prefix cố định: KK (Kiểm kho)
+                const string prefix = "KK";
+
+                // Lấy năm (4 ký tự)
+                var year = stocktakingDate.Year.ToString("D4");
+
+                // Lấy số thứ tự tiếp theo từ Repository
+                var nextSequence = GetStocktakingMasterRepository().GetNextSequenceNumber(stocktakingDate);
+
+                // Tạo số phiếu: KK-YYYY-XXX
+                var voucherNumber = $"{prefix}-{year}-{nextSequence:D3}";
+
+                _logger.Info("GenerateVoucherNumber: Generated={0}", voucherNumber);
+                return voucherNumber;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"GenerateVoucherNumber: Lỗi tạo số phiếu: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        #endregion
+
         #region ========== CREATE/UPDATE OPERATIONS ==========
 
         /// <summary>
