@@ -65,6 +65,10 @@
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutDocumentRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutImageRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutMasterRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StocktakingAdjustmentRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StocktakingDetailRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StocktakingImageRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StocktakingMasterRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\WarrantyRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\StockIn\StockInHistoryQueryCriteria.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
@@ -76,6 +80,10 @@
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IDeviceImageRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IProductVariantIdentifierHistoryRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IProductVariantIdentifierRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStocktakingAdjustmentRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStocktakingDetailRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStocktakingImageRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStocktakingMasterRepository.cs" />
     <Compile Include="DataAccess\Interfaces\ISettingRepository.cs" />
     <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IAllowedMacAddressRepository.cs" />
     <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IApplicationVersionRepository.cs" />

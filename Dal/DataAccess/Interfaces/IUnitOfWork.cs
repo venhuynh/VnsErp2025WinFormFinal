@@ -204,6 +204,14 @@ public interface IUnitOfWork : IDisposable
 
     IProductVariantIdentifierHistoryRepository GetProductVariantIdentifierHistoryRepository();
 
+    IStocktakingMasterRepository GetStocktakingMasterRepository();
+
+    IStocktakingDetailRepository GetStocktakingDetailRepository();
+
+    IStocktakingAdjustmentRepository GetStocktakingAdjustmentRepository();
+
+    IStocktakingImageRepository GetStocktakingImageRepository();
+
     #endregion
 
     #endregion

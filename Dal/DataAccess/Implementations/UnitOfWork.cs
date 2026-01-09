@@ -538,6 +538,42 @@ namespace Dal.DataAccess.Implementations
                 : new ProductVariantIdentifierHistoryRepository(globalConnectionString);
         }
 
+        public IStocktakingMasterRepository GetStocktakingMasterRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new StocktakingMasterRepository(globalConnectionString);
+        }
+
+        public IStocktakingDetailRepository GetStocktakingDetailRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new StocktakingDetailRepository(globalConnectionString);
+        }
+
+        public IStocktakingAdjustmentRepository GetStocktakingAdjustmentRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new StocktakingAdjustmentRepository(globalConnectionString);
+        }
+
+        public IStocktakingImageRepository GetStocktakingImageRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new StocktakingImageRepository(globalConnectionString);
+        }
+
         #endregion
 
         
