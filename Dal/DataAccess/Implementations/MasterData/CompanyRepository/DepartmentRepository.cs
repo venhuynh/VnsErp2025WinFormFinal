@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataContext;
 using Dal.DtoConverter;
+using Dal.DtoConverter.MasterData.Company;
 using Dal.Exceptions;
 using DTO.MasterData.Company;
 using Logger;

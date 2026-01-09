@@ -1,12 +1,10 @@
-﻿using Dal.DataContext;
-using DTO.VersionAndUserManagementDto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Dal.DataContext;
+using DTO.VersionAndUserManagementDto;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.VersionAndUserManagement
 {
 
     /// <summary>

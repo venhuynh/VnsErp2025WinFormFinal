@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
 using Dal.DtoConverter;
+using Dal.DtoConverter.VersionAndUserManagement;
 using Dal.Exceptions;
 using DTO.VersionAndUserManagementDto;
 using Logger;

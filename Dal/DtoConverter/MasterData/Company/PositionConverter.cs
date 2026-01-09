@@ -1,6 +1,6 @@
 ﻿using DTO.MasterData.Company;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.Company
 {
     /// <summary>
     /// Converter để chuyển đổi giữa Position Entity và PositionDto

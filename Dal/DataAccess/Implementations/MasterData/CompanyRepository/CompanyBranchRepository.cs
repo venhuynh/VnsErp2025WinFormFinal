@@ -10,6 +10,7 @@ using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
 using Dal.DtoConverter;
+using Dal.DtoConverter.MasterData.Company;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.MasterData.CompanyRepository;

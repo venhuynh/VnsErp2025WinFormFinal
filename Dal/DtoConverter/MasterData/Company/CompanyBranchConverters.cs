@@ -1,8 +1,8 @@
+using System;
 using Dal.DataContext;
 using DTO.MasterData.Company;
-using System;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.Company
 {
 
     /// <summary>

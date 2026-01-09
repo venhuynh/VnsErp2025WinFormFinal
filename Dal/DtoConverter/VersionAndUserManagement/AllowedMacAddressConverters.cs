@@ -1,10 +1,10 @@
-using Dal.DataContext;
-using DTO.VersionAndUserManagementDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dal.DataContext;
+using DTO.VersionAndUserManagementDto;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.VersionAndUserManagement
 {
     /// <summary>
     /// Converter giữa AllowedMacAddress entity và AllowedMacAddressDto
