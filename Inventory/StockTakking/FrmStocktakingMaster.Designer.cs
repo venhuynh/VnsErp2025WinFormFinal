@@ -1,5 +1,3 @@
-﻿using Inventory.ProductVariantIdentifier;
-
 namespace Inventory.StockTakking
 {
     partial class FrmStocktakingMaster
@@ -23,7 +21,6 @@ namespace Inventory.StockTakking
         }
 
 
-
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -35,33 +32,22 @@ namespace Inventory.StockTakking
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.ProductVariantIdentifierDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.productVariantIdentifierDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.stocktakingMasterDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantIdentifierDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colQRCodeImage = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.QRCodeImagePictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
-            this.colProductVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
-            this.colIdentifiersHtml = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colStatus = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.ProductVariantIdentifierStatusEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
-            this.colUpdatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colIsLocked = new DevExpress.XtraGrid.Columns.GridColumn();
             this.IsActiveCheckEdit = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
-            this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colQuyTrinhHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.QRCodeImagePictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
+            this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.ProductVariantIdentifierStatusEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
-            this.FilterDataBarSubItem = new DevExpress.XtraBars.BarSubItem();
-            this.FilterShowAllBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.FilterByStatusBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.FilterByUpdateDateBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.FilterByProductVariantKeyWordBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.FilterByIdentifierValueBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.LoadDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.AddNewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
-            this.PrintQrCodeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.LichSuThayDoiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
@@ -71,9 +57,6 @@ namespace Inventory.StockTakking
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
-            this.dockPanel1 = new DevExpress.XtraBars.Docking.DockPanel();
-            this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.NamRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
             this.ThangRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -81,17 +64,14 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stocktakingMasterDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
-            this.dockPanel1.SuspendLayout();
-            this.dockPanel1_Container.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -105,13 +85,13 @@ namespace Inventory.StockTakking
             this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1123, 486);
+            this.layoutControl1.Size = new System.Drawing.Size(1357, 486);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // ProductVariantIdentifierDtoGridControl
             // 
-            this.ProductVariantIdentifierDtoGridControl.DataSource = this.productVariantIdentifierDtoBindingSource;
+            this.ProductVariantIdentifierDtoGridControl.DataSource = this.stocktakingMasterDtoBindingSource;
             this.ProductVariantIdentifierDtoGridControl.Location = new System.Drawing.Point(12, 12);
             this.ProductVariantIdentifierDtoGridControl.MainView = this.ProductVariantIdentifierDtoGridView;
             this.ProductVariantIdentifierDtoGridControl.MenuManager = this.barManager1;
@@ -122,14 +102,14 @@ namespace Inventory.StockTakking
             this.ProductVariantIdentifierStatusEnumComboBox,
             this.NotesMemoEdit,
             this.IsActiveCheckEdit});
-            this.ProductVariantIdentifierDtoGridControl.Size = new System.Drawing.Size(1099, 462);
+            this.ProductVariantIdentifierDtoGridControl.Size = new System.Drawing.Size(1333, 462);
             this.ProductVariantIdentifierDtoGridControl.TabIndex = 4;
             this.ProductVariantIdentifierDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.ProductVariantIdentifierDtoGridView});
             // 
-            // productVariantIdentifierDtoBindingSource
+            // stocktakingMasterDtoBindingSource
             // 
-            this.productVariantIdentifierDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.ProductVariantIdentifierDto);
+            this.stocktakingMasterDtoBindingSource.DataSource = typeof(DTO.Inventory.StockTakking.StocktakingMasterDto);
             // 
             // ProductVariantIdentifierDtoGridView
             // 
@@ -138,13 +118,9 @@ namespace Inventory.StockTakking
             this.ProductVariantIdentifierDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.ProductVariantIdentifierDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.ProductVariantIdentifierDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colQRCodeImage,
-            this.colProductVariantFullName,
-            this.colIdentifiersHtml,
-            this.colStatus,
-            this.colUpdatedDate,
-            this.colIsActive,
-            this.colNotes});
+            this.colIsLocked,
+            this.colQuyTrinhHtml,
+            this.colThongTinHtml});
             this.ProductVariantIdentifierDtoGridView.GridControl = this.ProductVariantIdentifierDtoGridControl;
             this.ProductVariantIdentifierDtoGridView.IndicatorWidth = 50;
             this.ProductVariantIdentifierDtoGridView.Name = "ProductVariantIdentifierDtoGridView";
@@ -156,32 +132,7 @@ namespace Inventory.StockTakking
             this.ProductVariantIdentifierDtoGridView.OptionsView.ShowFooter = true;
             this.ProductVariantIdentifierDtoGridView.OptionsView.ShowGroupPanel = false;
             this.ProductVariantIdentifierDtoGridView.OptionsView.ShowViewCaption = true;
-            this.ProductVariantIdentifierDtoGridView.ViewCaption = "BẢNG ĐỊNH DANH SẢN PHẨM HÀNG HÓA";
-            // 
-            // colQRCodeImage
-            // 
-            this.colQRCodeImage.AppearanceCell.Options.UseTextOptions = true;
-            this.colQRCodeImage.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colQRCodeImage.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colQRCodeImage.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colQRCodeImage.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colQRCodeImage.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colQRCodeImage.AppearanceHeader.Options.UseBackColor = true;
-            this.colQRCodeImage.AppearanceHeader.Options.UseFont = true;
-            this.colQRCodeImage.AppearanceHeader.Options.UseForeColor = true;
-            this.colQRCodeImage.AppearanceHeader.Options.UseTextOptions = true;
-            this.colQRCodeImage.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colQRCodeImage.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colQRCodeImage.Caption = "Ảnh QR";
-            this.colQRCodeImage.ColumnEdit = this.QRCodeImagePictureEdit;
-            this.colQRCodeImage.FieldName = "QRCodeImage";
-            this.colQRCodeImage.MaxWidth = 120;
-            this.colQRCodeImage.MinWidth = 120;
-            this.colQRCodeImage.Name = "colQRCodeImage";
-            this.colQRCodeImage.OptionsColumn.FixedWidth = true;
-            this.colQRCodeImage.Visible = true;
-            this.colQRCodeImage.VisibleIndex = 1;
-            this.colQRCodeImage.Width = 120;
+            this.ProductVariantIdentifierDtoGridView.ViewCaption = "BẢNG KIỂM KHO";
             // 
             // QRCodeImagePictureEdit
             // 
@@ -194,80 +145,10 @@ namespace Inventory.StockTakking
             this.QRCodeImagePictureEdit.ShowMenu = false;
             this.QRCodeImagePictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
             // 
-            // colProductVariantFullName
-            // 
-            this.colProductVariantFullName.AppearanceCell.Options.UseTextOptions = true;
-            this.colProductVariantFullName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colProductVariantFullName.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colProductVariantFullName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colProductVariantFullName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colProductVariantFullName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colProductVariantFullName.AppearanceHeader.Options.UseBackColor = true;
-            this.colProductVariantFullName.AppearanceHeader.Options.UseFont = true;
-            this.colProductVariantFullName.AppearanceHeader.Options.UseForeColor = true;
-            this.colProductVariantFullName.AppearanceHeader.Options.UseTextOptions = true;
-            this.colProductVariantFullName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colProductVariantFullName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colProductVariantFullName.Caption = "Sản phẩm";
-            this.colProductVariantFullName.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colProductVariantFullName.FieldName = "ProductVariantFullName";
-            this.colProductVariantFullName.Name = "colProductVariantFullName";
-            this.colProductVariantFullName.OptionsColumn.AllowEdit = false;
-            this.colProductVariantFullName.OptionsColumn.ReadOnly = true;
-            this.colProductVariantFullName.Visible = true;
-            this.colProductVariantFullName.VisibleIndex = 2;
-            this.colProductVariantFullName.Width = 300;
-            // 
             // HtmlRepositoryItemHypertextLabel
             // 
             this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
-            // 
-            // colIdentifiersHtml
-            // 
-            this.colIdentifiersHtml.AppearanceCell.Options.UseTextOptions = true;
-            this.colIdentifiersHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colIdentifiersHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colIdentifiersHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colIdentifiersHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colIdentifiersHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colIdentifiersHtml.AppearanceHeader.Options.UseBackColor = true;
-            this.colIdentifiersHtml.AppearanceHeader.Options.UseFont = true;
-            this.colIdentifiersHtml.AppearanceHeader.Options.UseForeColor = true;
-            this.colIdentifiersHtml.AppearanceHeader.Options.UseTextOptions = true;
-            this.colIdentifiersHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colIdentifiersHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colIdentifiersHtml.Caption = "Định danh";
-            this.colIdentifiersHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colIdentifiersHtml.FieldName = "IdentifiersHtml";
-            this.colIdentifiersHtml.Name = "colIdentifiersHtml";
-            this.colIdentifiersHtml.OptionsColumn.AllowEdit = false;
-            this.colIdentifiersHtml.OptionsColumn.ReadOnly = true;
-            this.colIdentifiersHtml.Visible = true;
-            this.colIdentifiersHtml.VisibleIndex = 3;
-            this.colIdentifiersHtml.Width = 400;
-            // 
-            // colStatus
-            // 
-            this.colStatus.AppearanceCell.Options.UseTextOptions = true;
-            this.colStatus.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colStatus.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colStatus.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colStatus.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colStatus.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colStatus.AppearanceHeader.Options.UseBackColor = true;
-            this.colStatus.AppearanceHeader.Options.UseFont = true;
-            this.colStatus.AppearanceHeader.Options.UseForeColor = true;
-            this.colStatus.AppearanceHeader.Options.UseTextOptions = true;
-            this.colStatus.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colStatus.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colStatus.Caption = "Tình trạng";
-            this.colStatus.ColumnEdit = this.ProductVariantIdentifierStatusEnumComboBox;
-            this.colStatus.FieldName = "Status";
-            this.colStatus.Name = "colStatus";
-            this.colStatus.Visible = true;
-            this.colStatus.VisibleIndex = 4;
-            this.colStatus.Width = 150;
             // 
             // ProductVariantIdentifierStatusEnumComboBox
             // 
@@ -279,78 +160,9 @@ namespace Inventory.StockTakking
             this.ProductVariantIdentifierStatusEnumComboBox.Name = "ProductVariantIdentifierStatusEnumComboBox";
             this.ProductVariantIdentifierStatusEnumComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             // 
-            // colUpdatedDate
-            // 
-            this.colUpdatedDate.AppearanceCell.Options.UseTextOptions = true;
-            this.colUpdatedDate.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colUpdatedDate.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colUpdatedDate.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colUpdatedDate.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colUpdatedDate.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colUpdatedDate.AppearanceHeader.Options.UseBackColor = true;
-            this.colUpdatedDate.AppearanceHeader.Options.UseFont = true;
-            this.colUpdatedDate.AppearanceHeader.Options.UseForeColor = true;
-            this.colUpdatedDate.AppearanceHeader.Options.UseTextOptions = true;
-            this.colUpdatedDate.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colUpdatedDate.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colUpdatedDate.Caption = "Ngày cập nhật";
-            this.colUpdatedDate.DisplayFormat.FormatString = "d";
-            this.colUpdatedDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-            this.colUpdatedDate.FieldName = "UpdatedDate";
-            this.colUpdatedDate.Name = "colUpdatedDate";
-            this.colUpdatedDate.OptionsColumn.AllowEdit = false;
-            this.colUpdatedDate.OptionsColumn.ReadOnly = true;
-            this.colUpdatedDate.Visible = true;
-            this.colUpdatedDate.VisibleIndex = 5;
-            this.colUpdatedDate.Width = 150;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.AppearanceCell.Options.UseTextOptions = true;
-            this.colIsActive.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colIsActive.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colIsActive.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colIsActive.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colIsActive.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colIsActive.AppearanceHeader.Options.UseBackColor = true;
-            this.colIsActive.AppearanceHeader.Options.UseFont = true;
-            this.colIsActive.AppearanceHeader.Options.UseForeColor = true;
-            this.colIsActive.AppearanceHeader.Options.UseTextOptions = true;
-            this.colIsActive.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colIsActive.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colIsActive.Caption = "Đang hoạt động";
-            this.colIsActive.ColumnEdit = this.IsActiveCheckEdit;
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 6;
-            this.colIsActive.Width = 120;
-            // 
             // IsActiveCheckEdit
             // 
             this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
-            // 
-            // colNotes
-            // 
-            this.colNotes.AppearanceCell.Options.UseTextOptions = true;
-            this.colNotes.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colNotes.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colNotes.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colNotes.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colNotes.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colNotes.AppearanceHeader.Options.UseBackColor = true;
-            this.colNotes.AppearanceHeader.Options.UseFont = true;
-            this.colNotes.AppearanceHeader.Options.UseForeColor = true;
-            this.colNotes.AppearanceHeader.Options.UseTextOptions = true;
-            this.colNotes.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colNotes.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colNotes.Caption = "Ghi chú";
-            this.colNotes.ColumnEdit = this.NotesMemoEdit;
-            this.colNotes.FieldName = "Notes";
-            this.colNotes.Name = "colNotes";
-            this.colNotes.Visible = true;
-            this.colNotes.VisibleIndex = 7;
-            this.colNotes.Width = 250;
             // 
             // NotesMemoEdit
             // 
@@ -365,26 +177,18 @@ namespace Inventory.StockTakking
             this.barManager1.DockControls.Add(this.barDockControlBottom);
             this.barManager1.DockControls.Add(this.barDockControlLeft);
             this.barManager1.DockControls.Add(this.barDockControlRight);
-            this.barManager1.DockManager = this.dockManager1;
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.FilterShowAllBarButtonItem,
             this.barHeaderItem1,
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
             this.ExportFileBarButtonItem,
-            this.LichSuThayDoiBarButtonItem,
             this.AddNewBarButtonItem,
             this.EditBarButtonItem,
             this.barButtonItem4,
-            this.PrintQrCodeBarButtonItem,
-            this.FilterDataBarSubItem,
-            this.FilterByStatusBarButtonItem,
-            this.FilterByUpdateDateBarButtonItem,
-            this.FilterByProductVariantKeyWordBarButtonItem,
-            this.FilterByIdentifierValueBarButtonItem});
+            this.LoadDataBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 32;
+            this.barManager1.MaxItemId = 33;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.NamRepositoryItemSpinEdit,
             this.ThangRepositoryItemSpinEdit});
@@ -398,60 +202,14 @@ namespace Inventory.StockTakking
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.FilterDataBarSubItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LoadDataBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddNewBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem4, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.PrintQrCodeBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LichSuThayDoiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
-            // 
-            // FilterDataBarSubItem
-            // 
-            this.FilterDataBarSubItem.Caption = "Lọc dữ liệu";
-            this.FilterDataBarSubItem.Id = 27;
-            this.FilterDataBarSubItem.ImageOptions.Image = global::Inventory.Properties.Resources.filterbyseries_pie_16x16;
-            this.FilterDataBarSubItem.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.FilterShowAllBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(this.FilterByStatusBarButtonItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.FilterByUpdateDateBarButtonItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.FilterByProductVariantKeyWordBarButtonItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.FilterByIdentifierValueBarButtonItem)});
-            this.FilterDataBarSubItem.Name = "FilterDataBarSubItem";
-            // 
-            // FilterShowAllBarButtonItem
-            // 
-            this.FilterShowAllBarButtonItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.FilterShowAllBarButtonItem.Caption = "Toàn bộ";
-            this.FilterShowAllBarButtonItem.Id = 9;
-            this.FilterShowAllBarButtonItem.Name = "FilterShowAllBarButtonItem";
-            // 
-            // FilterByStatusBarButtonItem
-            // 
-            this.FilterByStatusBarButtonItem.Caption = "Tình trạng";
-            this.FilterByStatusBarButtonItem.Id = 28;
-            this.FilterByStatusBarButtonItem.Name = "FilterByStatusBarButtonItem";
-            // 
-            // FilterByUpdateDateBarButtonItem
-            // 
-            this.FilterByUpdateDateBarButtonItem.Caption = "Ngày tháng cập nhật";
-            this.FilterByUpdateDateBarButtonItem.Id = 29;
-            this.FilterByUpdateDateBarButtonItem.Name = "FilterByUpdateDateBarButtonItem";
-            // 
-            // FilterByProductVariantKeyWordBarButtonItem
-            // 
-            this.FilterByProductVariantKeyWordBarButtonItem.Caption = "Tên sản phẩm";
-            this.FilterByProductVariantKeyWordBarButtonItem.Id = 30;
-            this.FilterByProductVariantKeyWordBarButtonItem.Name = "FilterByProductVariantKeyWordBarButtonItem";
-            // 
-            // FilterByIdentifierValueBarButtonItem
-            // 
-            this.FilterByIdentifierValueBarButtonItem.Caption = "Định danh";
-            this.FilterByIdentifierValueBarButtonItem.Id = 31;
-            this.FilterByIdentifierValueBarButtonItem.Name = "FilterByIdentifierValueBarButtonItem";
             // 
             // AddNewBarButtonItem
             // 
@@ -473,21 +231,6 @@ namespace Inventory.StockTakking
             this.barButtonItem4.Id = 25;
             this.barButtonItem4.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
             this.barButtonItem4.Name = "barButtonItem4";
-            // 
-            // PrintQrCodeBarButtonItem
-            // 
-            this.PrintQrCodeBarButtonItem.Caption = "In tem";
-            this.PrintQrCodeBarButtonItem.Id = 26;
-            this.PrintQrCodeBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
-            this.PrintQrCodeBarButtonItem.Name = "PrintQrCodeBarButtonItem";
-            // 
-            // LichSuThayDoiBarButtonItem
-            // 
-            this.LichSuThayDoiBarButtonItem.Caption = "LS thay đổi";
-            this.LichSuThayDoiBarButtonItem.Id = 22;
-            this.LichSuThayDoiBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.historyitem_16x16;
-            this.LichSuThayDoiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.historyitem_32x32;
-            this.LichSuThayDoiBarButtonItem.Name = "LichSuThayDoiBarButtonItem";
             // 
             // ExportFileBarButtonItem
             // 
@@ -564,45 +307,6 @@ namespace Inventory.StockTakking
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 486);
             // 
-            // dockManager1
-            // 
-            this.dockManager1.Form = this;
-            this.dockManager1.MenuManager = this.barManager1;
-            this.dockManager1.RootPanels.AddRange(new DevExpress.XtraBars.Docking.DockPanel[] {
-            this.dockPanel1});
-            this.dockManager1.TopZIndexControls.AddRange(new string[] {
-            "DevExpress.XtraBars.BarDockControl",
-            "DevExpress.XtraBars.StandaloneBarDockControl",
-            "System.Windows.Forms.MenuStrip",
-            "System.Windows.Forms.StatusStrip",
-            "System.Windows.Forms.StatusBar",
-            "DevExpress.XtraBars.Ribbon.RibbonStatusBar",
-            "DevExpress.XtraBars.Ribbon.RibbonControl",
-            "DevExpress.XtraBars.Navigation.OfficeNavigationBar",
-            "DevExpress.XtraBars.Navigation.TileNavPane",
-            "DevExpress.XtraBars.TabFormControl",
-            "DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl",
-            "DevExpress.XtraBars.ToolbarForm.ToolbarFormControl"});
-            // 
-            // dockPanel1
-            // 
-            this.dockPanel1.Controls.Add(this.dockPanel1_Container);
-            this.dockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Right;
-            this.dockPanel1.ID = new System.Guid("4c26169e-85a8-49b1-8feb-83228e87a3f5");
-            this.dockPanel1.Location = new System.Drawing.Point(1123, 24);
-            this.dockPanel1.Name = "dockPanel1";
-            this.dockPanel1.OriginalSize = new System.Drawing.Size(234, 200);
-            this.dockPanel1.Size = new System.Drawing.Size(234, 486);
-            this.dockPanel1.Text = "Lịch sử thay đổi";
-            // 
-            // dockPanel1_Container
-            // 
-            this.dockPanel1_Container.Location = new System.Drawing.Point(4, 26);
-            this.dockPanel1_Container.Name = "dockPanel1_Container";
-            this.dockPanel1_Container.Size = new System.Drawing.Size(227, 457);
-            this.dockPanel1_Container.TabIndex = 0;
-            
-            // 
             // NamRepositoryItemSpinEdit
             // 
             this.NamRepositoryItemSpinEdit.AutoHeight = false;
@@ -646,7 +350,7 @@ namespace Inventory.StockTakking
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1123, 486);
+            this.Root.Size = new System.Drawing.Size(1357, 486);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -654,36 +358,109 @@ namespace Inventory.StockTakking
             this.layoutControlItem1.Control = this.ProductVariantIdentifierDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1103, 466);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1337, 466);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // FrmProductVariantIdentifier
+            // LoadDataBarButtonItem
+            // 
+            this.LoadDataBarButtonItem.Caption = "Danh sách";
+            this.LoadDataBarButtonItem.Id = 32;
+            this.LoadDataBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.listnumbers_16x16;
+            this.LoadDataBarButtonItem.Name = "LoadDataBarButtonItem";
+            // 
+            // colIsLocked
+            // 
+            this.colIsLocked.AppearanceCell.Options.UseTextOptions = true;
+            this.colIsLocked.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colIsLocked.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colIsLocked.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colIsLocked.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colIsLocked.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colIsLocked.AppearanceHeader.Options.UseBackColor = true;
+            this.colIsLocked.AppearanceHeader.Options.UseFont = true;
+            this.colIsLocked.AppearanceHeader.Options.UseForeColor = true;
+            this.colIsLocked.AppearanceHeader.Options.UseTextOptions = true;
+            this.colIsLocked.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colIsLocked.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colIsLocked.Caption = "Khóa";
+            this.colIsLocked.ColumnEdit = this.IsActiveCheckEdit;
+            this.colIsLocked.FieldName = "IsLocked";
+            this.colIsLocked.Name = "colIsLocked";
+            this.colIsLocked.Visible = true;
+            this.colIsLocked.VisibleIndex = 3;
+            this.colIsLocked.Width = 100;
+            // 
+            // colQuyTrinhHtml
+            // 
+            this.colQuyTrinhHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colQuyTrinhHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colQuyTrinhHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colQuyTrinhHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colQuyTrinhHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colQuyTrinhHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colQuyTrinhHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colQuyTrinhHtml.AppearanceHeader.Options.UseFont = true;
+            this.colQuyTrinhHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colQuyTrinhHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colQuyTrinhHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colQuyTrinhHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colQuyTrinhHtml.Caption = "Quy trình";
+            this.colQuyTrinhHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colQuyTrinhHtml.FieldName = "QuyTrinhHtml";
+            this.colQuyTrinhHtml.Name = "colQuyTrinhHtml";
+            this.colQuyTrinhHtml.OptionsColumn.AllowEdit = false;
+            this.colQuyTrinhHtml.OptionsColumn.ReadOnly = true;
+            this.colQuyTrinhHtml.Visible = true;
+            this.colQuyTrinhHtml.VisibleIndex = 2;
+            this.colQuyTrinhHtml.Width = 400;
+            // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin";
+            this.colThongTinHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.OptionsColumn.AllowEdit = false;
+            this.colThongTinHtml.OptionsColumn.ReadOnly = true;
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 1;
+            this.colThongTinHtml.Width = 400;
+            // 
+            // FrmStocktakingMaster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1357, 532);
             this.Controls.Add(this.layoutControl1);
-            this.Controls.Add(this.dockPanel1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "FrmProductVariantIdentifier";
-            this.Text = "Bảng định danh SPHH";
+            this.Name = "FrmStocktakingMaster";
+            this.Text = "Bảng kiểm kho";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productVariantIdentifierDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stocktakingMasterDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
-            this.dockPanel1.ResumeLayout(false);
-            this.dockPanel1_Container.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
@@ -707,38 +484,24 @@ namespace Inventory.StockTakking
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit NamRepositoryItemSpinEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit ThangRepositoryItemSpinEdit;
-        private DevExpress.XtraBars.BarButtonItem FilterShowAllBarButtonItem;
         private DevExpress.XtraBars.Bar bar1;
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
         private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ExportFileBarButtonItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlRepositoryItemHypertextLabel;
-        private System.Windows.Forms.BindingSource productVariantIdentifierDtoBindingSource;
         private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantIdentifierDtoGridView;
-        private DevExpress.XtraBars.BarButtonItem LichSuThayDoiBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem AddNewBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem barButtonItem4;
-        private DevExpress.XtraBars.BarButtonItem PrintQrCodeBarButtonItem;
-        private DevExpress.XtraGrid.Columns.GridColumn colProductVariantFullName;
-        private DevExpress.XtraGrid.Columns.GridColumn colIdentifiersHtml;
-        private DevExpress.XtraGrid.Columns.GridColumn colStatus;
-        private DevExpress.XtraGrid.Columns.GridColumn colUpdatedDate;
-        private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
-        private DevExpress.XtraGrid.Columns.GridColumn colNotes;
-        private DevExpress.XtraGrid.Columns.GridColumn colQRCodeImage;
         private DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit QRCodeImagePictureEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox ProductVariantIdentifierStatusEnumComboBox;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit NotesMemoEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit IsActiveCheckEdit;
-        private DevExpress.XtraBars.BarSubItem FilterDataBarSubItem;
-        private DevExpress.XtraBars.BarButtonItem FilterByStatusBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem FilterByUpdateDateBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem FilterByProductVariantKeyWordBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem FilterByIdentifierValueBarButtonItem;
-        private DevExpress.XtraBars.Docking.DockManager dockManager1;
-        private DevExpress.XtraBars.Docking.DockPanel dockPanel1;
-        private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
+        private DevExpress.XtraBars.BarButtonItem LoadDataBarButtonItem;
+        private System.Windows.Forms.BindingSource stocktakingMasterDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colIsLocked;
+        private DevExpress.XtraGrid.Columns.GridColumn colQuyTrinhHtml;
+        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
     }
 }

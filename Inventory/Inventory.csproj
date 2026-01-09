@@ -436,6 +436,12 @@
     <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.Designer.cs">
       <DependentUpon>UcXuatNoiBoMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockTakking\FrmFrmStocktakingMasterAddEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockTakking\FrmFrmStocktakingMasterAddEdit.Designer.cs">
+      <DependentUpon>FrmFrmStocktakingMasterAddEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockTakking\FrmStocktakingMaster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -632,6 +638,12 @@
     <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.resx">
       <DependentUpon>UcXuatNoiBoMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockTakking\FrmFrmStocktakingMasterAddEdit.resx">
+      <DependentUpon>FrmFrmStocktakingMasterAddEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockTakking\FrmStocktakingMaster.resx">
+      <DependentUpon>FrmStocktakingMaster.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Doc\DatabaseSchema_StockInOutDocument_Proposal.md" />
     <None Include="Doc\Inventory.mmap" />
@@ -673,6 +685,10 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLuuChuyenKho.XuatLuuChuyenKhoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatNoiBo.XuatNoiBoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockTakking.StocktakingAdjustmentDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockTakking.StocktakingDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockTakking.StocktakingImageDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockTakking.StocktakingMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyDto.datasource" />
