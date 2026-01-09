@@ -1,10 +1,10 @@
-using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
+using DTO.MasterData.ProductService;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.ProductService
 {
 
     /// <summary>

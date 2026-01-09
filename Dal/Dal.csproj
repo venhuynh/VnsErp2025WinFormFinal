@@ -150,10 +150,10 @@
     <Compile Include="DtoConverter\Inventory\StockTakking\StocktakingImageDtoConverter.cs" />
     <Compile Include="DtoConverter\Inventory\StockTakking\StocktakingMasterDtoConverter.cs" />
     <Compile Include="DtoConverter\VersionAndUserManagement\PermissionDtoConverter.cs" />
-    <Compile Include="DtoConverter\ProductImageDtoConverter.cs" />
-    <Compile Include="DtoConverter\ProductVariantConverters.cs" />
-    <Compile Include="DtoConverter\ProductVariantIdentifierDtoConverter.cs" />
-    <Compile Include="DtoConverter\ProductVariantIdentifierHistoryDtoConverter.cs" />
+    <Compile Include="DtoConverter\MasterData\ProductService\ProductImageDtoConverter.cs" />
+    <Compile Include="DtoConverter\MasterData\ProductService\ProductVariantConverters.cs" />
+    <Compile Include="DtoConverter\MasterData\ProductService\ProductVariantIdentifierDtoConverter.cs" />
+    <Compile Include="DtoConverter\MasterData\ProductService\ProductVariantIdentifierHistoryDtoConverter.cs" />
     <Compile Include="DtoConverter\RoleConverters.cs" />
     <Compile Include="DtoConverter\RoleDtoConverter.cs" />
     <Compile Include="DtoConverter\StockInOutImageDtoConverter.cs" />
@@ -166,8 +166,8 @@
     <Compile Include="DtoConverter\MasterData\Company\DepartmentConverters.cs" />
     <Compile Include="DtoConverter\MasterData\Company\EmployeeConverters.cs" />
     <Compile Include="DtoConverter\MasterData\Company\PositionConverter.cs" />
-    <Compile Include="DtoConverter\ProductServiceCategoryConverters.cs" />
-    <Compile Include="DtoConverter\ProductServiceConverters.cs" />
+    <Compile Include="DtoConverter\MasterData\ProductService\ProductServiceCategoryConverters.cs" />
+    <Compile Include="DtoConverter\MasterData\ProductService\ProductServiceConverters.cs" />
     <Compile Include="DtoConverter\WarrantyCheckListDtoConverter.cs" />
     <Compile Include="DtoConverter\WarrantyDtoConverter.cs" />
     <Compile Include="Exceptions\ConnectionException.cs" />

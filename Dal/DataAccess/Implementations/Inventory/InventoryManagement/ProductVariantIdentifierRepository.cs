@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
+using Dal.DtoConverter.MasterData.ProductService;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement;

@@ -1,11 +1,11 @@
-using Dal.DataContext;
-using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
+using Dal.DataContext;
+using DTO.MasterData.ProductService;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.ProductService
 {
     /// <summary>
     /// Converter giữa ProductVariant entity và ProductVariantDto
@@ -93,7 +93,7 @@ namespace Dal.DtoConverter
         /// <returns>Danh sách ProductVariantDto</returns>
         public static List<ProductVariantDto> ToDtos(
             this IEnumerable<ProductVariant> entities,
-            Dictionary<Guid, ProductService> productDict = null,
+            Dictionary<Guid, DataContext.ProductService> productDict = null,
             Dictionary<Guid, UnitOfMeasure> unitDict = null)
         {
             if (entities == null) return new List<ProductVariantDto>();

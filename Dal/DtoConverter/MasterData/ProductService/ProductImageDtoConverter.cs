@@ -1,10 +1,10 @@
-using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DTO.MasterData.ProductService;
 using ProductImage = Dal.DataContext.ProductImage;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.ProductService
 {
     /// <summary>
     /// Converter giữa ProductImage Entity và ProductImageDto

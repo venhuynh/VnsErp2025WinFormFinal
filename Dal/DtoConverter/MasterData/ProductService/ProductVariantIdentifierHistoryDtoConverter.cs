@@ -1,10 +1,10 @@
-using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DTO.Inventory.InventoryManagement;
 using ProductVariantIdentifierHistory = Dal.DataContext.ProductVariantIdentifierHistory;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.ProductService
 {
     /// <summary>
     /// Converter giữa ProductVariantIdentifierHistory entity và ProductVariantIdentifierHistoryDto
