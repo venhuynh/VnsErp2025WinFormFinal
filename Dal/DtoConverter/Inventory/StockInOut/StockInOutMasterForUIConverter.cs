@@ -1,15 +1,16 @@
-﻿using Dal.DataContext;
-using DTO.Inventory;
-using DTO.Inventory.InventoryManagement;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dal.DataContext;
+using DTO.Inventory;
+using DTO.Inventory.InventoryManagement;
 
-namespace Dal.DtoConverter.Inventory
+namespace Dal.DtoConverter.Inventory.StockInOut
 {
     /// <summary>
     /// Converter giữa StockInOutMaster entity và StockInOutMasterForUIDto
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public static class StockInOutMasterForUIConverter
     {
         #region Entity to DTO

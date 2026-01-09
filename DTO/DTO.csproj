@@ -67,6 +67,10 @@
     <Compile Include="DeviceAssetManagement\DeviceIdentifierEnum.cs" />
     <Compile Include="DeviceAssetManagement\DeviceDto.cs" />
     <Compile Include="Inventory\InventoryManagement\InventoryEnums.cs" />
+    <Compile Include="Inventory\StockTakking\StocktakingAdjustmentDto.cs" />
+    <Compile Include="Inventory\StockTakking\StocktakingDetailDto.cs" />
+    <Compile Include="Inventory\StockTakking\StocktakingImageDto.cs" />
+    <Compile Include="Inventory\StockTakking\StocktakingMasterDto.cs" />
     <Compile Include="MasterData\Company\CompanyBranchDto.cs" />
     <Compile Include="MasterData\Company\CompanyDto.cs" />
     <Compile Include="MasterData\Company\DepartmentDto.cs" />
@@ -111,5 +115,6 @@
   <ItemGroup>
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantSimpleDto.datasource" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

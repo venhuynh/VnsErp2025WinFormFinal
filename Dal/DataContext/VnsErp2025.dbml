@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><Database Name="VnsErp2025Final" Class="VnsErp2025DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="VnsErp2025Final" Class="VnsErp2025DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=115.75.187.3,3306;Initial Catalog=VnsErp2025Final;Persist Security Info=True;User ID=vns;Encrypt=True;Trust Server Certificate=True" SettingsObjectName="Dal.Properties.Settings" SettingsPropertyName="VnsErp2025FinalConnectionString2" Provider="System.Data.SqlClient" />
   <Table Name="dbo.AllowedMacAddress" Member="AllowedMacAddresses">
     <Type Name="AllowedMacAddress">
@@ -61,6 +61,13 @@
       <Association Name="ApplicationUser_ProductServiceCategory1" Member="ProductServiceCategories1" ThisKey="Id" OtherKey="ModifiedBy" Type="ProductServiceCategory" />
       <Association Name="ApplicationUser_Role" Member="Roles" ThisKey="Id" OtherKey="CreatedBy" Type="Role" />
       <Association Name="ApplicationUser_Role1" Member="Roles1" ThisKey="Id" OtherKey="ModifiedBy" Type="Role" />
+      <Association Name="ApplicationUser_StocktakingAdjustment" Member="StocktakingAdjustments" ThisKey="Id" OtherKey="AdjustedBy" Type="StocktakingAdjustment" />
+      <Association Name="ApplicationUser_StocktakingDetail" Member="StocktakingDetails" ThisKey="Id" OtherKey="ApprovedBy" Type="StocktakingDetail" />
+      <Association Name="ApplicationUser_StocktakingDetail1" Member="StocktakingDetails1" ThisKey="Id" OtherKey="CountedBy" Type="StocktakingDetail" />
+      <Association Name="ApplicationUser_StocktakingDetail2" Member="StocktakingDetails2" ThisKey="Id" OtherKey="ReviewedBy" Type="StocktakingDetail" />
+      <Association Name="ApplicationUser_StocktakingMaster" Member="StocktakingMasters" ThisKey="Id" OtherKey="ApprovedBy" Type="StocktakingMaster" />
+      <Association Name="ApplicationUser_StocktakingMaster1" Member="StocktakingMasters1" ThisKey="Id" OtherKey="CountedBy" Type="StocktakingMaster" />
+      <Association Name="ApplicationUser_StocktakingMaster2" Member="StocktakingMasters2" ThisKey="Id" OtherKey="ReviewedBy" Type="StocktakingMaster" />
       <Association Name="ApplicationUser_UserPermission" Member="UserPermissions" ThisKey="Id" OtherKey="UserId" Type="UserPermission" />
       <Association Name="ApplicationUser_UserPermission1" Member="UserPermissions1" ThisKey="Id" OtherKey="CreatedBy" Type="UserPermission" />
       <Association Name="ApplicationUser_UserRole" Member="UserRoles" ThisKey="Id" OtherKey="UserId" Type="UserRole" />
@@ -309,6 +316,8 @@
       <Association Name="CompanyBranch_Employee" Member="Employees" ThisKey="Id" OtherKey="BranchId" Type="Employee" />
       <Association Name="CompanyBranch_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="WarehouseId" Type="InventoryBalance" />
       <Association Name="CompanyBranch_StockInOutMaster" Member="StockInOutMasters" ThisKey="Id" OtherKey="WarehouseId" Type="StockInOutMaster" />
+      <Association Name="CompanyBranch_StocktakingMaster" Member="StocktakingMasters" ThisKey="Id" OtherKey="CompanyBranchId" Type="StocktakingMaster" />
+      <Association Name="CompanyBranch_StocktakingMaster1" Member="StocktakingMasters1" ThisKey="Id" OtherKey="WarehouseId" Type="StocktakingMaster" />
       <Association Name="Company_CompanyBranch" Member="Company" ThisKey="CompanyId" OtherKey="Id" Type="Company" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
@@ -657,6 +666,8 @@
       <Association Name="ProductVariant_ProductVariantIdentifier" Member="ProductVariantIdentifiers" ThisKey="Id" OtherKey="ProductVariantId" Type="ProductVariantIdentifier" />
       <Association Name="ProductVariant_ProductVariantIdentifierHistory" Member="ProductVariantIdentifierHistories" ThisKey="Id" OtherKey="ProductVariantId" Type="ProductVariantIdentifierHistory" />
       <Association Name="ProductVariant_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="ProductVariantId" Type="StockInOutDetail" />
+      <Association Name="ProductVariant_StocktakingAdjustment" Member="StocktakingAdjustments" ThisKey="Id" OtherKey="ProductVariantId" Type="StocktakingAdjustment" />
+      <Association Name="ProductVariant_StocktakingDetail" Member="StocktakingDetails" ThisKey="Id" OtherKey="ProductVariantId" Type="StocktakingDetail" />
       <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
       <Association Name="ProductService_ProductVariant" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />
       <Association Name="UnitOfMeasure_ProductVariant" Member="UnitOfMeasure" ThisKey="UnitId" OtherKey="Id" Type="UnitOfMeasure" IsForeignKey="true" />
@@ -872,7 +883,7 @@
     <Type Name="StockInOutMaster">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="StockInOutDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="VoucherNumber" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="VocherNumber" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="StockInOutType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="VoucherStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="WarehouseId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
@@ -894,8 +905,118 @@
       <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDetail" />
       <Association Name="StockInOutMaster_StockInOutDocument" Member="StockInOutDocuments" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDocument" />
       <Association Name="StockInOutMaster_StockInOutImage" Member="StockInOutImages" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutImage" />
+      <Association Name="StockInOutMaster_StocktakingAdjustment" Member="StocktakingAdjustments" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StocktakingAdjustment" />
       <Association Name="BusinessPartnerSite_StockInOutMaster" Member="BusinessPartnerSite" ThisKey="PartnerSiteId" OtherKey="Id" Type="BusinessPartnerSite" IsForeignKey="true" />
       <Association Name="CompanyBranch_StockInOutMaster" Member="CompanyBranch" ThisKey="WarehouseId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StocktakingAdjustment" Member="StocktakingAdjustments">
+    <Type Name="StocktakingAdjustment">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StocktakingMasterId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="StocktakingDetailId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="StockInOutMasterId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="AdjustmentQuantity" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="AdjustmentValue" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="UnitPrice" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="AdjustmentType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AdjustmentReason" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="AdjustmentDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="AdjustedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="IsApplied" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="AppliedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="ApplicationUser_StocktakingAdjustment" Member="ApplicationUser" ThisKey="AdjustedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ProductVariant_StocktakingAdjustment" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+      <Association Name="StockInOutMaster_StocktakingAdjustment" Member="StockInOutMaster" ThisKey="StockInOutMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />
+      <Association Name="StocktakingDetail_StocktakingAdjustment" Member="StocktakingDetail" ThisKey="StocktakingDetailId" OtherKey="Id" Type="StocktakingDetail" IsForeignKey="true" />
+      <Association Name="StocktakingMaster_StocktakingAdjustment" Member="StocktakingMaster" ThisKey="StocktakingMasterId" OtherKey="Id" Type="StocktakingMaster" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StocktakingDetail" Member="StocktakingDetails">
+    <Type Name="StocktakingDetail">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StocktakingMasterId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="SystemQuantity" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="CountedQuantity" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DifferenceQuantity" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="SystemValue" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="CountedValue" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DifferenceValue" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="UnitPrice" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="AdjustmentType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AdjustmentReason" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="IsCounted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CountedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CountedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsReviewed" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ReviewedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ReviewedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ReviewNotes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="IsApproved" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ApprovedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ApprovedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="StocktakingDetail_StocktakingAdjustment" Member="StocktakingAdjustments" ThisKey="Id" OtherKey="StocktakingDetailId" Type="StocktakingAdjustment" />
+      <Association Name="ApplicationUser_StocktakingDetail" Member="ApplicationUser" ThisKey="ApprovedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_StocktakingDetail1" Member="ApplicationUser1" ThisKey="CountedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ProductVariant_StocktakingDetail" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+      <Association Name="ApplicationUser_StocktakingDetail2" Member="ApplicationUser2" ThisKey="ReviewedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="StocktakingMaster_StocktakingDetail" Member="StocktakingMaster" ThisKey="StocktakingMasterId" OtherKey="Id" Type="StocktakingMaster" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StocktakingMaster" Member="StocktakingMasters">
+    <Type Name="StocktakingMaster">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StocktakingDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="VoucherNumber" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="StocktakingType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="StocktakingStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="WarehouseId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="CompanyBranchId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CountedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CountedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ReviewedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ReviewedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ApprovedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ApprovedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="Reason" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="IsLocked" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="LockedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LockedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DeletedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DeletedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="StocktakingMaster_StocktakingAdjustment" Member="StocktakingAdjustments" ThisKey="Id" OtherKey="StocktakingMasterId" Type="StocktakingAdjustment" />
+      <Association Name="StocktakingMaster_StocktakingDetail" Member="StocktakingDetails" ThisKey="Id" OtherKey="StocktakingMasterId" Type="StocktakingDetail" />
+      <Association Name="StocktakingMaster_StocktakingImage" Member="StocktakingImages" ThisKey="Id" OtherKey="StocktakingMasterId" Type="StocktakingImage" />
+      <Association Name="ApplicationUser_StocktakingMaster" Member="ApplicationUser" ThisKey="ApprovedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="CompanyBranch_StocktakingMaster" Member="CompanyBranch" ThisKey="CompanyBranchId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
+      <Association Name="ApplicationUser_StocktakingMaster1" Member="ApplicationUser1" ThisKey="CountedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_StocktakingMaster2" Member="ApplicationUser2" ThisKey="ReviewedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="CompanyBranch_StocktakingMaster1" Member="CompanyBranch1" ThisKey="WarehouseId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.UnitOfMeasure" Member="UnitOfMeasures">
@@ -957,6 +1078,30 @@
       <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="ReleaseNote" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StocktakingImage" Member="StocktakingImages">
+    <Type Name="StocktakingImage">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StocktakingMasterId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="StocktakingDetailId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ImageData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="FileName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="RelativePath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="FullPath" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="StorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="FileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="FileExtension" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="MimeType" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Checksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="FileExists" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="LastVerified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="MigrationStatus" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Association Name="StocktakingMaster_StocktakingImage" Member="StocktakingMaster" ThisKey="StocktakingMasterId" OtherKey="Id" Type="StocktakingMaster" IsForeignKey="true" DeleteRule="CASCADE" />
     </Type>
   </Table>
   <Function Name="dbo.sp_CheckUserPermission" Method="sp_CheckUserPermission">

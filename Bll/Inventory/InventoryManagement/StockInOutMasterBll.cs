@@ -12,6 +12,7 @@ using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dal.DtoConverter.Inventory.StockInOut;
 
 namespace Bll.Inventory.InventoryManagement
 {

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DtoConverter.Inventory.StockInOut;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.Inventory.StockIn;
