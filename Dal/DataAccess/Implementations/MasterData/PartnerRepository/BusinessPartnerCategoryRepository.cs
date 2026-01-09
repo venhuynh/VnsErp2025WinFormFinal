@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
 using Dal.DtoConverter;
+using Dal.DtoConverter.MasterData.Customer;
 using Dal.Exceptions;
 using DTO.MasterData.CustomerPartner;
 using Logger;

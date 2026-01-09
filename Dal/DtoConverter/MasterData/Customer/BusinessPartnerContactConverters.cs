@@ -1,9 +1,9 @@
-﻿using Dal.DataContext;
-using DTO.MasterData.CustomerPartner;
-using System;
+﻿using System;
 using System.Data.Linq;
+using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.Customer
 {
 
 

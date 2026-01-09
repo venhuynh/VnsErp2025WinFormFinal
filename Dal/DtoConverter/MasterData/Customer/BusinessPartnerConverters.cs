@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.Customer
 {
 
     /// <summary>
@@ -310,44 +310,6 @@ namespace Dal.DtoConverter
 
             return string.Join(" > ", pathParts);
         }
-
-        /// <summary>
-        /// Tính toán đường dẫn đầy đủ từ gốc đến category sử dụng navigation properties
-        /// Chỉ hoạt động nếu navigation properties đã được load đầy đủ
-        /// </summary>
-        /// <param name="category">BusinessPartnerCategory entity</param>
-        /// <returns>Đường dẫn đầy đủ (ví dụ: "Danh mục A > Danh mục A1") hoặc CategoryName nếu không thể tính đầy đủ</returns>
-        private static string CalculateCategoryFullPathFromNavigation(BusinessPartnerCategory category)
-        {
-            if (category == null) return string.Empty;
-
-            var pathParts = new List<string> { category.CategoryName };
-            var current = category;
-            var visited = new HashSet<Guid> { category.Id }; // Tránh circular reference
-
-            // Thử tính từ navigation properties nếu đã được load
-            while (current.ParentId.HasValue)
-            {
-                // Kiểm tra circular reference
-                if (visited.Contains(current.ParentId.Value))
-                    break;
-
-                // Kiểm tra navigation property có được load không
-                if (current.BusinessPartnerCategory1 == null)
-                {
-                    // Navigation property chưa được load, trả về path đã tính được
-                    break;
-                }
-
-                current = current.BusinessPartnerCategory1;
-                visited.Add(current.Id);
-                pathParts.Insert(0, current.CategoryName);
-
-                if (pathParts.Count > 10) break; // Tránh infinite loop
-            }
-
-            return string.Join(" > ", pathParts);
-        }
     }
 }
 
@@ -374,18 +336,5 @@ public static class BusinessPartnerLookupConverters
             PartnerName = entity.PartnerName,
             LogoThumbnailData = entity.LogoThumbnailData?.ToArray()
         };
-    }
-
-    /// <summary>
-    /// Chuyển đổi danh sách BusinessPartner Entity sang danh sách BusinessPartnerLookupDto
-    /// </summary>
-    /// <param name="entities">Danh sách BusinessPartner Entity</param>
-    /// <returns>Danh sách BusinessPartnerLookupDto</returns>
-    public static IEnumerable<BusinessPartnerLookupDto> ToLookupDtos(
-        this IEnumerable<BusinessPartner> entities)
-    {
-        if (entities == null) return [];
-
-        return entities.Select(entity => entity.ToLookupDto());
     }
 }

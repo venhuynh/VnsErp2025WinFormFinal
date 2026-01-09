@@ -1,11 +1,11 @@
-﻿using Dal.DataContext;
-using DTO.MasterData.CustomerPartner;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 
-namespace Dal.DtoConverter
+namespace Dal.DtoConverter.MasterData.Customer
 {
 
     public static class BusinessPartnerCategoryConverters
