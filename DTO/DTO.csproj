@@ -62,8 +62,8 @@
     <Compile Include="DeviceAssetManagement\WarrantyDto.cs" />
     <Compile Include="Inventory\Query\StockInOutImageDto.cs" />
     <Compile Include="Inventory\Report\StockInOutReportDto.cs" />
-    <Compile Include="Inventory\StockInOutDetailForUIDto.cs" />
-    <Compile Include="Inventory\StockInOutMasterForUIDto.cs" />
+    <Compile Include="Inventory\StockInOut\StockInOutDetailForUIDto.cs" />
+    <Compile Include="Inventory\StockInOut\StockInOutMasterForUIDto.cs" />
     <Compile Include="DeviceAssetManagement\DeviceIdentifierEnum.cs" />
     <Compile Include="DeviceAssetManagement\DeviceDto.cs" />
     <Compile Include="Inventory\InventoryManagement\InventoryEnums.cs" />

@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTO.Inventory.Query;
+using DTO.Inventory.StockInOut;
 
 namespace Inventory.OverlayForm
 {

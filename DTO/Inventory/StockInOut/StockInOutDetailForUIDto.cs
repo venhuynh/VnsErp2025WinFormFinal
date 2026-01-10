@@ -1,11 +1,10 @@
-﻿using DTO.DeviceAssetManagement;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace DTO.Inventory
+namespace DTO.Inventory.StockInOut
 {
+    // ReSharper disable once InconsistentNaming
     public class StockInOutDetailForUIDto
     {
         #region Properties - Thông tin cơ bản (map với DB)

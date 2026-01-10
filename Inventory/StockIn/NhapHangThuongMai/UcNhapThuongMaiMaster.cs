@@ -9,6 +9,7 @@ using DTO.Inventory;
 using DTO.Inventory.InventoryManagement;
 using System;
 using System.Threading.Tasks;
+using DTO.Inventory.StockInOut;
 
 namespace Inventory.StockIn.NhapHangThuongMai
 {

@@ -12,6 +12,7 @@ using System.Linq;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DtoConverter.Inventory.StockInOut;
+using DTO.Inventory.StockInOut;
 
 namespace Bll.Inventory.InventoryManagement
 {

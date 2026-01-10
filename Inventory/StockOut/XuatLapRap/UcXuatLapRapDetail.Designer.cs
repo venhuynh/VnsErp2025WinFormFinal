@@ -1,3 +1,5 @@
+using DTO.Inventory.StockInOut;
+
 namespace Inventory.StockOut.XuatLapRap
 {
     partial class UcXuatLapRapDetail
@@ -86,7 +88,7 @@ namespace Inventory.StockOut.XuatLapRap
             // 
             // stockInOutDetailForUIDtoBindingSource
             // 
-            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(StockInOutDetailForUIDto);
             // 
             // XuatLapRapDetailDtoGridView
             // 

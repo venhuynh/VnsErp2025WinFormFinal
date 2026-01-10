@@ -1,10 +1,11 @@
-﻿using DTO.Inventory.InventoryManagement;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DTO.Inventory.InventoryManagement;
 
-namespace DTO.Inventory
+namespace DTO.Inventory.StockInOut
 {
+    // ReSharper disable once InconsistentNaming
     public class StockInOutMasterForUIDto
     {
         #region Properties - Thông tin cơ bản

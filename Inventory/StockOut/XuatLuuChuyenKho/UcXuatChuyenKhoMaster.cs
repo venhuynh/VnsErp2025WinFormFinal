@@ -7,6 +7,7 @@ using DTO.Inventory;
 using System;
 using System.Threading.Tasks;
 using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.StockInOut;
 
 namespace Inventory.StockOut.XuatLuuChuyenKho;
 

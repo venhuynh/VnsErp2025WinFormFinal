@@ -10,6 +10,7 @@ using Logger.Interfaces;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DTO.Inventory.StockInOut;
 
 namespace Inventory.StockIn.NhapHangThuongMai
 {
@@ -584,7 +585,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     return;
                 }
 
-                var selectedDetail = ucStockInDetail1.DetailGridView.GetRow(selectedRowHandle) as DTO.Inventory.StockInOutDetailForUIDto;
+                var selectedDetail = ucStockInDetail1.DetailGridView.GetRow(selectedRowHandle) as StockInOutDetailForUIDto;
                 if (selectedDetail == null)
                 {
                     MsgBox.ShowWarning("Không thể lấy thông tin sản phẩm được chọn.");

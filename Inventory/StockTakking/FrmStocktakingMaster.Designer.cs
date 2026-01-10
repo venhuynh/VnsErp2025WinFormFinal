@@ -37,11 +37,8 @@ namespace Inventory.StockTakking
             this.colIsLocked = new DevExpress.XtraGrid.Columns.GridColumn();
             this.IsActiveCheckEdit = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
             this.colQuyTrinhHtml = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.QRCodeImagePictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
-            this.ProductVariantIdentifierStatusEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
-            this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.LoadDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -59,6 +56,9 @@ namespace Inventory.StockTakking
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.NamRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
             this.ThangRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
+            this.QRCodeImagePictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
+            this.ProductVariantIdentifierStatusEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
+            this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -67,13 +67,13 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.stocktakingMasterDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -134,39 +134,84 @@ namespace Inventory.StockTakking
             this.ProductVariantIdentifierDtoGridView.OptionsView.ShowViewCaption = true;
             this.ProductVariantIdentifierDtoGridView.ViewCaption = "BẢNG KIỂM KHO";
             // 
-            // QRCodeImagePictureEdit
+            // colIsLocked
             // 
-            this.QRCodeImagePictureEdit.AllowFocused = false;
-            this.QRCodeImagePictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
-            this.QRCodeImagePictureEdit.CustomHeight = 60;
-            this.QRCodeImagePictureEdit.Name = "QRCodeImagePictureEdit";
-            this.QRCodeImagePictureEdit.NullText = " ";
-            this.QRCodeImagePictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.QRCodeImagePictureEdit.ShowMenu = false;
-            this.QRCodeImagePictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+            this.colIsLocked.AppearanceCell.Options.UseTextOptions = true;
+            this.colIsLocked.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colIsLocked.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colIsLocked.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colIsLocked.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colIsLocked.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colIsLocked.AppearanceHeader.Options.UseBackColor = true;
+            this.colIsLocked.AppearanceHeader.Options.UseFont = true;
+            this.colIsLocked.AppearanceHeader.Options.UseForeColor = true;
+            this.colIsLocked.AppearanceHeader.Options.UseTextOptions = true;
+            this.colIsLocked.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colIsLocked.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colIsLocked.Caption = "Khóa";
+            this.colIsLocked.ColumnEdit = this.IsActiveCheckEdit;
+            this.colIsLocked.FieldName = "IsLocked";
+            this.colIsLocked.Name = "colIsLocked";
+            this.colIsLocked.Visible = true;
+            this.colIsLocked.VisibleIndex = 3;
+            this.colIsLocked.Width = 100;
+            // 
+            // IsActiveCheckEdit
+            // 
+            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
+            // 
+            // colQuyTrinhHtml
+            // 
+            this.colQuyTrinhHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colQuyTrinhHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colQuyTrinhHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colQuyTrinhHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colQuyTrinhHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colQuyTrinhHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colQuyTrinhHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colQuyTrinhHtml.AppearanceHeader.Options.UseFont = true;
+            this.colQuyTrinhHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colQuyTrinhHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colQuyTrinhHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colQuyTrinhHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colQuyTrinhHtml.Caption = "Quy trình";
+            this.colQuyTrinhHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colQuyTrinhHtml.FieldName = "QuyTrinhHtml";
+            this.colQuyTrinhHtml.Name = "colQuyTrinhHtml";
+            this.colQuyTrinhHtml.OptionsColumn.AllowEdit = false;
+            this.colQuyTrinhHtml.OptionsColumn.ReadOnly = true;
+            this.colQuyTrinhHtml.Visible = true;
+            this.colQuyTrinhHtml.VisibleIndex = 2;
+            this.colQuyTrinhHtml.Width = 400;
             // 
             // HtmlRepositoryItemHypertextLabel
             // 
             this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
             // 
-            // ProductVariantIdentifierStatusEnumComboBox
+            // colThongTinHtml
             // 
-            this.ProductVariantIdentifierStatusEnumComboBox.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.ProductVariantIdentifierStatusEnumComboBox.AutoHeight = false;
-            this.ProductVariantIdentifierStatusEnumComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ProductVariantIdentifierStatusEnumComboBox.ContextButtonOptions.AllowHtmlText = true;
-            this.ProductVariantIdentifierStatusEnumComboBox.Name = "ProductVariantIdentifierStatusEnumComboBox";
-            this.ProductVariantIdentifierStatusEnumComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            // 
-            // IsActiveCheckEdit
-            // 
-            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
-            // 
-            // NotesMemoEdit
-            // 
-            this.NotesMemoEdit.Name = "NotesMemoEdit";
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin";
+            this.colThongTinHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.OptionsColumn.AllowEdit = false;
+            this.colThongTinHtml.OptionsColumn.ReadOnly = true;
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 1;
+            this.colThongTinHtml.Width = 400;
             // 
             // barManager1
             // 
@@ -188,7 +233,7 @@ namespace Inventory.StockTakking
             this.barButtonItem4,
             this.LoadDataBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 33;
+            this.barManager1.MaxItemId = 34;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.NamRepositoryItemSpinEdit,
             this.ThangRepositoryItemSpinEdit});
@@ -210,6 +255,13 @@ namespace Inventory.StockTakking
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
+            // 
+            // LoadDataBarButtonItem
+            // 
+            this.LoadDataBarButtonItem.Caption = "Danh sách";
+            this.LoadDataBarButtonItem.Id = 32;
+            this.LoadDataBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.listnumbers_16x16;
+            this.LoadDataBarButtonItem.Name = "LoadDataBarButtonItem";
             // 
             // AddNewBarButtonItem
             // 
@@ -343,6 +395,31 @@ namespace Inventory.StockTakking
             0});
             this.ThangRepositoryItemSpinEdit.Name = "ThangRepositoryItemSpinEdit";
             // 
+            // QRCodeImagePictureEdit
+            // 
+            this.QRCodeImagePictureEdit.AllowFocused = false;
+            this.QRCodeImagePictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.QRCodeImagePictureEdit.CustomHeight = 60;
+            this.QRCodeImagePictureEdit.Name = "QRCodeImagePictureEdit";
+            this.QRCodeImagePictureEdit.NullText = " ";
+            this.QRCodeImagePictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.QRCodeImagePictureEdit.ShowMenu = false;
+            this.QRCodeImagePictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+            // 
+            // ProductVariantIdentifierStatusEnumComboBox
+            // 
+            this.ProductVariantIdentifierStatusEnumComboBox.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductVariantIdentifierStatusEnumComboBox.AutoHeight = false;
+            this.ProductVariantIdentifierStatusEnumComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ProductVariantIdentifierStatusEnumComboBox.ContextButtonOptions.AllowHtmlText = true;
+            this.ProductVariantIdentifierStatusEnumComboBox.Name = "ProductVariantIdentifierStatusEnumComboBox";
+            this.ProductVariantIdentifierStatusEnumComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            // 
+            // NotesMemoEdit
+            // 
+            this.NotesMemoEdit.Name = "NotesMemoEdit";
+            // 
             // Root
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -360,83 +437,6 @@ namespace Inventory.StockTakking
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1337, 466);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // LoadDataBarButtonItem
-            // 
-            this.LoadDataBarButtonItem.Caption = "Danh sách";
-            this.LoadDataBarButtonItem.Id = 32;
-            this.LoadDataBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.listnumbers_16x16;
-            this.LoadDataBarButtonItem.Name = "LoadDataBarButtonItem";
-            // 
-            // colIsLocked
-            // 
-            this.colIsLocked.AppearanceCell.Options.UseTextOptions = true;
-            this.colIsLocked.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colIsLocked.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colIsLocked.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colIsLocked.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colIsLocked.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colIsLocked.AppearanceHeader.Options.UseBackColor = true;
-            this.colIsLocked.AppearanceHeader.Options.UseFont = true;
-            this.colIsLocked.AppearanceHeader.Options.UseForeColor = true;
-            this.colIsLocked.AppearanceHeader.Options.UseTextOptions = true;
-            this.colIsLocked.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colIsLocked.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colIsLocked.Caption = "Khóa";
-            this.colIsLocked.ColumnEdit = this.IsActiveCheckEdit;
-            this.colIsLocked.FieldName = "IsLocked";
-            this.colIsLocked.Name = "colIsLocked";
-            this.colIsLocked.Visible = true;
-            this.colIsLocked.VisibleIndex = 3;
-            this.colIsLocked.Width = 100;
-            // 
-            // colQuyTrinhHtml
-            // 
-            this.colQuyTrinhHtml.AppearanceCell.Options.UseTextOptions = true;
-            this.colQuyTrinhHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colQuyTrinhHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colQuyTrinhHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colQuyTrinhHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colQuyTrinhHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colQuyTrinhHtml.AppearanceHeader.Options.UseBackColor = true;
-            this.colQuyTrinhHtml.AppearanceHeader.Options.UseFont = true;
-            this.colQuyTrinhHtml.AppearanceHeader.Options.UseForeColor = true;
-            this.colQuyTrinhHtml.AppearanceHeader.Options.UseTextOptions = true;
-            this.colQuyTrinhHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colQuyTrinhHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colQuyTrinhHtml.Caption = "Quy trình";
-            this.colQuyTrinhHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colQuyTrinhHtml.FieldName = "QuyTrinhHtml";
-            this.colQuyTrinhHtml.Name = "colQuyTrinhHtml";
-            this.colQuyTrinhHtml.OptionsColumn.AllowEdit = false;
-            this.colQuyTrinhHtml.OptionsColumn.ReadOnly = true;
-            this.colQuyTrinhHtml.Visible = true;
-            this.colQuyTrinhHtml.VisibleIndex = 2;
-            this.colQuyTrinhHtml.Width = 400;
-            // 
-            // colThongTinHtml
-            // 
-            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
-            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
-            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
-            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
-            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
-            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colThongTinHtml.Caption = "Thông tin";
-            this.colThongTinHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colThongTinHtml.FieldName = "ThongTinHtml";
-            this.colThongTinHtml.Name = "colThongTinHtml";
-            this.colThongTinHtml.OptionsColumn.AllowEdit = false;
-            this.colThongTinHtml.OptionsColumn.ReadOnly = true;
-            this.colThongTinHtml.Visible = true;
-            this.colThongTinHtml.VisibleIndex = 1;
-            this.colThongTinHtml.Width = 400;
             // 
             // FrmStocktakingMaster
             // 
@@ -456,13 +456,13 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.stocktakingMasterDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);

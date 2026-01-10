@@ -4,6 +4,7 @@ using System.Linq;
 using Dal.DataContext;
 using DTO.Inventory;
 using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.StockInOut;
 
 namespace Dal.DtoConverter.Inventory.StockInOut
 {

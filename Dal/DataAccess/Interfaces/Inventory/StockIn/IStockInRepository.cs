@@ -2,6 +2,7 @@ using DTO.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DTO.Inventory.StockInOut;
 
 namespace Dal.DataAccess.Interfaces.Inventory.StockIn;
 

@@ -1,3 +1,5 @@
+using DTO.Inventory.StockInOut;
+
 namespace Inventory.OverlayForm
 {
     partial class FrmGetIdentifierForStockOut
@@ -136,7 +138,7 @@ namespace Inventory.OverlayForm
             // 
             // stockInOutDetailForUIDtoBindingSource
             // 
-            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(StockInOutDetailForUIDto);
             // 
             // StockInOutDetailForUIDtoGridView
             // 

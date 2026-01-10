@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.StockInOut;
+using DTO.Inventory.StockInOut;
 
 namespace Inventory.StockIn.NhapBaoHanh;
 

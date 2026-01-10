@@ -3,6 +3,7 @@ using System.Linq;
 using Dal.DataContext;
 using DTO.DeviceAssetManagement;
 using DTO.Inventory;
+using DTO.Inventory.StockInOut;
 
 namespace Dal.DtoConverter.Inventory.StockInOut
 {

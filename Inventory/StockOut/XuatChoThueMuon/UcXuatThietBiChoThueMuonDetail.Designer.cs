@@ -1,3 +1,5 @@
+using DTO.Inventory.StockInOut;
+
 namespace Inventory.StockOut.XuatChoThueMuon
 {
     partial class UcXuatThietBiChoThueMuonDetail
@@ -324,7 +326,7 @@ namespace Inventory.StockOut.XuatChoThueMuon
             // 
             // stockInOutDetailForUIDtoBindingSource
             // 
-            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(StockInOutDetailForUIDto);
             // 
             // UcXuatThietBiChoThueMuonDetailDto
             // 
