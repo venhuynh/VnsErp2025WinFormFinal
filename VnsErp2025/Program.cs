@@ -192,7 +192,7 @@ namespace VnsErp2025
 
 
 
-            Application.Run(new FrmStocktakingMaster());
+            Application.Run(new FrmStocktakingDetail());
 
             #endregion
 

@@ -442,6 +442,12 @@
     <Compile Include="StockTakking\FrmFrmStocktakingMasterAddEdit.Designer.cs">
       <DependentUpon>FrmFrmStocktakingMasterAddEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockTakking\FrmStocktakingDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockTakking\FrmStocktakingDetail.Designer.cs">
+      <DependentUpon>FrmStocktakingDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockTakking\FrmStocktakingMaster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -640,6 +646,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockTakking\FrmFrmStocktakingMasterAddEdit.resx">
       <DependentUpon>FrmFrmStocktakingMasterAddEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockTakking\FrmStocktakingDetail.resx">
+      <DependentUpon>FrmStocktakingDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockTakking\FrmStocktakingMaster.resx">
       <DependentUpon>FrmStocktakingMaster.cs</DependentUpon>

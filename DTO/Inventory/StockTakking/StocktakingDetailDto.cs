@@ -50,6 +50,13 @@ namespace DTO.Inventory.StockTakking
         [Display(Order = 3)]
         public string ProductVariantCode { get; set; }
 
+        /// <summary>
+        /// Đơn vị tính của biến thể sản phẩm (để hiển thị)
+        /// </summary>
+        [DisplayName("Đơn vị tính")]
+        [Display(Order = 4)]
+        public string ProductVariantUnitName { get; set; }
+
         #endregion
 
         #region Properties - Số lượng
@@ -118,7 +125,19 @@ namespace DTO.Inventory.StockTakking
         /// </summary>
         [DisplayName("Loại điều chỉnh")]
         [Display(Order = 30)]
-        public int? AdjustmentType { get; set; }
+        public AdjustmentTypeEnum? AdjustmentType { get; set; }
+
+        /// <summary>
+        /// Loại điều chỉnh dưới dạng int (để lưu vào database)
+        /// </summary>
+        [DisplayName("Loại điều chỉnh (Int)")]
+        [Display(Order = 30)]
+        [Browsable(false)]
+        public int? AdjustmentTypeInt
+        {
+            get => AdjustmentType.ToInt();
+            set => AdjustmentType = value.ToAdjustmentTypeEnum();
+        }
 
         /// <summary>
         /// Lý do điều chỉnh
@@ -289,6 +308,10 @@ namespace DTO.Inventory.StockTakking
                 {
                     html += $" <color='gray'>({EscapeHtml(ProductVariantCode)})</color>";
                 }
+                if (!string.IsNullOrWhiteSpace(ProductVariantUnitName))
+                {
+                    html += $" <color='#757575'>- {EscapeHtml(ProductVariantUnitName)}</color>";
+                }
                 return html;
             }
         }
@@ -304,15 +327,16 @@ namespace DTO.Inventory.StockTakking
             get
             {
                 var htmlParts = new List<string>();
+                var unitDisplay = !string.IsNullOrWhiteSpace(ProductVariantUnitName) ? $" {EscapeHtml(ProductVariantUnitName)}" : "";
 
                 // Số lượng hệ thống
-                htmlParts.Add($"<color='#757575'>Hệ thống:</color> <color='#212121'><b>{SystemQuantity:N2}</b></color>");
+                htmlParts.Add($"<color='#757575'>Hệ thống:</color> <color='#212121'><b>{SystemQuantity:N2}{unitDisplay}</b></color>");
 
                 // Số lượng đã kiểm
                 if (CountedQuantity.HasValue)
                 {
                     htmlParts.Add("<br>");
-                    htmlParts.Add($"<color='#757575'>Đã kiểm:</color> <color='#212121'><b>{CountedQuantity.Value:N2}</b></color>");
+                    htmlParts.Add($"<color='#757575'>Đã kiểm:</color> <color='#212121'><b>{CountedQuantity.Value:N2}{unitDisplay}</b></color>");
                 }
 
                 // Số lượng chênh lệch
@@ -321,12 +345,12 @@ namespace DTO.Inventory.StockTakking
                     htmlParts.Add("<br>");
                     var diffColor = DifferenceQuantity > 0 ? "#4CAF50" : "#F44336"; // Xanh nếu dương, đỏ nếu âm
                     var diffSign = DifferenceQuantity > 0 ? "+" : "";
-                    htmlParts.Add($"<color='#757575'>Chênh lệch:</color> <color='{diffColor}'><b>{diffSign}{DifferenceQuantity:N2}</b></color>");
+                    htmlParts.Add($"<color='#757575'>Chênh lệch:</color> <color='{diffColor}'><b>{diffSign}{DifferenceQuantity:N2}{unitDisplay}</b></color>");
                 }
                 else
                 {
                     htmlParts.Add("<br>");
-                    htmlParts.Add($"<color='#757575'>Chênh lệch:</color> <color='#212121'><b>{DifferenceQuantity:N2}</b></color>");
+                    htmlParts.Add($"<color='#757575'>Chênh lệch:</color> <color='#212121'><b>{DifferenceQuantity:N2}{unitDisplay}</b></color>");
                 }
 
                 return string.Join(string.Empty, htmlParts);
@@ -427,6 +451,22 @@ namespace DTO.Inventory.StockTakking
                         var diffSign = DifferenceValue.Value > 0 ? "+" : "";
                         htmlParts.Add($" <color='{diffColor}'>(Chênh lệch: {diffSign}{DifferenceValue.Value:N0})</color>");
                     }
+                }
+
+                // Loại điều chỉnh (nếu có)
+                if (AdjustmentType.HasValue)
+                {
+                    htmlParts.Add("<br>");
+                    var adjustmentColor = AdjustmentType.GetColor();
+                    var adjustmentDesc = AdjustmentType.GetDescription();
+                    htmlParts.Add($"<color='#757575'>Loại điều chỉnh:</color> <color='{adjustmentColor}'><b>{EscapeHtml(adjustmentDesc)}</b></color>");
+                }
+
+                // Lý do điều chỉnh (nếu có)
+                if (!string.IsNullOrWhiteSpace(AdjustmentReason))
+                {
+                    htmlParts.Add("<br>");
+                    htmlParts.Add($"<color='#757575'>Lý do:</color> <color='#212121'><i>{EscapeHtml(AdjustmentReason)}</i></color>");
                 }
 
                 // Ghi chú (nếu có)

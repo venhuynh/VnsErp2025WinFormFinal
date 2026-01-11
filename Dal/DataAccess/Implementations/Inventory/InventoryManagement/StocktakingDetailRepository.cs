@@ -42,7 +42,7 @@ public class StocktakingDetailRepository : IStocktakingDetailRepository
         return new VnsErp2025DataContext(_connectionString);
     }
 
-    private Dictionary<Guid, (string ProductVariantName, string ProductVariantCode)> GetProductVariantDict(
+    private Dictionary<Guid, (string ProductVariantName, string ProductVariantCode, string ProductVariantUnitName)> GetProductVariantDict(
         VnsErp2025DataContext context,
         IEnumerable<StocktakingDetail> details)
     {
@@ -53,36 +53,48 @@ public class StocktakingDetailRepository : IStocktakingDetailRepository
             .ToList();
 
         if (!productVariantIds.Any())
-            return new Dictionary<Guid, (string, string)>();
+            return new Dictionary<Guid, (string, string, string)>();
 
-        var productVariants = context.ProductVariants
-            .Where(pv => productVariantIds.Contains(pv.Id))
-            .Select(pv => new
-            {
-                pv.Id,
-                pv.VariantFullName,
-                pv.VariantCode
-            })
-            .ToList();
+        var productVariants = (from pv in context.ProductVariants
+                               join uom in context.UnitOfMeasures on pv.UnitId equals uom.Id into unitGroup
+                               from unit in unitGroup.DefaultIfEmpty()
+                               where productVariantIds.Contains(pv.Id)
+                               select new
+                               {
+                                   pv.Id,
+                                   pv.VariantFullName,
+                                   pv.VariantCode,
+                                   UnitName = unit != null ? unit.Name : null
+                               }).ToList();
 
         return productVariants.ToDictionary(
             pv => pv.Id,
-            pv => (pv.VariantFullName, pv.VariantCode)
+            pv => (pv.VariantFullName, pv.VariantCode, pv.UnitName)
         );
     }
 
-    private (string ProductVariantName, string ProductVariantCode) GetProductVariantInfo(
+    private (string ProductVariantName, string ProductVariantCode, string ProductVariantUnitName) GetProductVariantInfo(
         VnsErp2025DataContext context,
         Guid productVariantId)
     {
         if (productVariantId == Guid.Empty)
-            return (null, null);
+            return (null, null, null);
 
-        var productVariant = context.ProductVariants.FirstOrDefault(pv => pv.Id == productVariantId);
+        var productVariant = (from pv in context.ProductVariants
+                              join uom in context.UnitOfMeasures on pv.UnitId equals uom.Id into unitGroup
+                              from unit in unitGroup.DefaultIfEmpty()
+                              where pv.Id == productVariantId
+                              select new
+                              {
+                                  pv.VariantFullName,
+                                  pv.VariantCode,
+                                  UnitName = unit != null ? unit.Name : null
+                              }).FirstOrDefault();
+
         if (productVariant == null)
-            return (null, null);
+            return (null, null, null);
 
-        return (productVariant.VariantFullName, productVariant.VariantCode);
+        return (productVariant.VariantFullName, productVariant.VariantCode, productVariant.UnitName);
     }
 
     #endregion
@@ -127,10 +139,10 @@ public class StocktakingDetailRepository : IStocktakingDetailRepository
                 return null;
             }
 
-            var (productVariantName, productVariantCode) = GetProductVariantInfo(context, entity.ProductVariantId);
+            var (productVariantName, productVariantCode, productVariantUnitName) = GetProductVariantInfo(context, entity.ProductVariantId);
 
             _logger.Info("GetById: Lấy chi tiết kiểm kho thành công, Id={0}", id);
-            return entity.ToDto(productVariantName, productVariantCode);
+            return entity.ToDto(productVariantName, productVariantCode, productVariantUnitName);
         }
         catch (Exception ex)
         {
@@ -257,9 +269,9 @@ public class StocktakingDetailRepository : IStocktakingDetailRepository
             if (savedEntity == null)
                 return null;
 
-            var (productVariantName, productVariantCode) = GetProductVariantInfo(context, savedEntity.ProductVariantId);
+            var (productVariantName, productVariantCode, productVariantUnitName) = GetProductVariantInfo(context, savedEntity.ProductVariantId);
 
-            return savedEntity.ToDto(productVariantName, productVariantCode);
+            return savedEntity.ToDto(productVariantName, productVariantCode, productVariantUnitName);
         }
         catch (Exception ex)
         {

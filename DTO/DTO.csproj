@@ -73,6 +73,7 @@
     <Compile Include="Inventory\StockTakking\StocktakingMasterDto.cs" />
     <Compile Include="Inventory\StockTakking\StocktakingStatusEnum.cs" />
     <Compile Include="Inventory\StockTakking\StocktakingTypeEnum.cs" />
+    <Compile Include="Inventory\StockTakking\AdjustmentTypeEnum.cs" />
     <Compile Include="MasterData\Company\CompanyBranchDto.cs" />
     <Compile Include="MasterData\Company\CompanyDto.cs" />
     <Compile Include="MasterData\Company\DepartmentDto.cs" />

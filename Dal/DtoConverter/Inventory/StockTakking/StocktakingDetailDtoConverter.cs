@@ -19,10 +19,12 @@ namespace Dal.DtoConverter.Inventory.StockTakking
         /// <param name="entity">StocktakingDetail entity</param>
         /// <param name="productVariantName">Tên biến thể sản phẩm (tùy chọn, để tránh DataContext disposed errors)</param>
         /// <param name="productVariantCode">Mã sản phẩm (tùy chọn)</param>
+        /// <param name="productVariantUnitName">Đơn vị tính của biến thể sản phẩm (tùy chọn)</param>
         /// <returns>StocktakingDetailDto</returns>
         public static StocktakingDetailDto ToDto(this StocktakingDetail entity,
             string productVariantName = null,
-            string productVariantCode = null)
+            string productVariantCode = null,
+            string productVariantUnitName = null)
         {
             if (entity == null) return null;
 
@@ -38,6 +40,7 @@ namespace Dal.DtoConverter.Inventory.StockTakking
                 ProductVariantId = entity.ProductVariantId,
                 ProductVariantName = productVariantName,
                 ProductVariantCode = productVariantCode,
+                ProductVariantUnitName = productVariantUnitName,
 
                 // Số lượng
                 SystemQuantity = entity.SystemQuantity,
@@ -51,7 +54,7 @@ namespace Dal.DtoConverter.Inventory.StockTakking
                 UnitPrice = entity.UnitPrice,
 
                 // Điều chỉnh
-                AdjustmentType = entity.AdjustmentType,
+                AdjustmentType = entity.AdjustmentType.ToAdjustmentTypeEnum(),
                 AdjustmentReason = entity.AdjustmentReason,
 
                 // Quy trình phê duyệt
@@ -87,10 +90,10 @@ namespace Dal.DtoConverter.Inventory.StockTakking
         /// Chuyển đổi danh sách StocktakingDetail entities thành danh sách StocktakingDetailDto
         /// </summary>
         /// <param name="entities">Danh sách StocktakingDetail entities</param>
-        /// <param name="productVariantDict">Dictionary chứa thông tin ProductVariant (key: ProductVariantId, value: (ProductVariantName, ProductVariantCode))</param>
+        /// <param name="productVariantDict">Dictionary chứa thông tin ProductVariant (key: ProductVariantId, value: (ProductVariantName, ProductVariantCode, ProductVariantUnitName))</param>
         /// <returns>Danh sách StocktakingDetailDto</returns>
         public static List<StocktakingDetailDto> ToDtoList(this IEnumerable<StocktakingDetail> entities,
-            Dictionary<Guid, (string ProductVariantName, string ProductVariantCode)> productVariantDict = null)
+            Dictionary<Guid, (string ProductVariantName, string ProductVariantCode, string ProductVariantUnitName)> productVariantDict = null)
         {
             if (entities == null) return new List<StocktakingDetailDto>();
 
@@ -98,14 +101,16 @@ namespace Dal.DtoConverter.Inventory.StockTakking
             {
                 string productVariantName = null;
                 string productVariantCode = null;
+                string productVariantUnitName = null;
 
                 if (productVariantDict != null && productVariantDict.TryGetValue(entity.ProductVariantId, out var productInfo))
                 {
                     productVariantName = productInfo.ProductVariantName;
                     productVariantCode = productInfo.ProductVariantCode;
+                    productVariantUnitName = productInfo.ProductVariantUnitName;
                 }
 
-                return entity.ToDto(productVariantName, productVariantCode);
+                return entity.ToDto(productVariantName, productVariantCode, productVariantUnitName);
             }).ToList();
         }
 
@@ -117,7 +122,7 @@ namespace Dal.DtoConverter.Inventory.StockTakking
         public static List<StocktakingDetailDto> ToDtos(this IEnumerable<StocktakingDetail> entities)
         {
             if (entities == null) return new List<StocktakingDetailDto>();
-            return entities.Select(e => e.ToDto(null, null)).ToList();
+            return entities.Select(e => e.ToDto(null, null, null)).ToList();
         }
 
         #endregion
@@ -170,7 +175,7 @@ namespace Dal.DtoConverter.Inventory.StockTakking
             entity.UnitPrice = dto.UnitPrice;
 
             // Map properties - Điều chỉnh
-            entity.AdjustmentType = dto.AdjustmentType;
+            entity.AdjustmentType = dto.AdjustmentType.ToInt();
             entity.AdjustmentReason = dto.AdjustmentReason;
 
             // Map properties - Quy trình phê duyệt
