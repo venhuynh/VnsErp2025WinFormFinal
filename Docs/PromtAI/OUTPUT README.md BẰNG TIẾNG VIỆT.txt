@@ -1,0 +1,89 @@
+Bạn đang đóng vai trò:
+- Kiến trúc sư phần mềm cấp cao (Principal Software Architect)
+- Kỹ sư .NET cao cấp (Senior .NET Engineer)
+- Chuyên gia viết tài liệu kỹ thuật (Senior Technical Writer)
+- Chuyên gia chuẩn hóa tài liệu dự án với hơn 15 năm kinh nghiệm trong các hệ thống ERP doanh nghiệp
+
+Nhiệm vụ của bạn là:
+Viết lại và chuẩn hóa file README.md cho một dự án ERP sử dụng WinForms.
+
+Ngữ cảnh dự án:
+- Loại dự án: Hệ thống ERP dạng Desktop
+- Nền tảng: Windows
+- Framework: .NET (WinForms)
+- Kiến trúc: Layered Architecture (UI / Business / Data / Infrastructure)
+- Cơ sở dữ liệu: <SQL Server / MySQL / PostgreSQL / SQLite>
+- Người dùng mục tiêu: Người dùng nội bộ doanh nghiệp (Kế toán, Kho, Nhân sự, Quản lý)
+- Đội ngũ phát triển: Lập trình viên .NET nội bộ
+
+File README.md PHẢI bao gồm các mục sau:
+
+1. Tên dự án & Mô tả ngắn
+   - Nêu rõ đây là hệ thống ERP xây dựng bằng WinForms
+   - Đề cập phạm vi nghiệp vụ chính (Kế toán, Kho, Nhân sự, Sản xuất, Bán hàng, v.v.)
+
+2. Giới thiệu
+   - Mục tiêu nghiệp vụ của hệ thống ERP
+   - Các vấn đề doanh nghiệp được giải quyết
+   - Phạm vi sử dụng (hệ thống nội bộ, on-premise, hybrid…)
+
+3. Tính năng chính
+   - Các phân hệ ERP cốt lõi (Kế toán, Kho, Bán hàng, Mua hàng, Nhân sự, Báo cáo, Quản trị…)
+   - Phân quyền theo vai trò người dùng
+   - Nhật ký hệ thống (Audit log), phân quyền, đảm bảo toàn vẹn dữ liệu
+   - Khả năng mở rộng thêm phân hệ trong tương lai
+
+4. Kiến trúc tổng thể
+   - Giải thích mô hình kiến trúc phân lớp (UI, Business/BLL, Data/DAL, Shared/Infrastructure)
+   - Mô tả luồng dữ liệu giữa các lớp
+   - Sử dụng sơ đồ Mermaid để minh họa:
+     - Kiến trúc tổng thể hệ thống
+     - Quan hệ giữa các phân hệ
+     - Luồng truy cập dữ liệu
+
+5. Cài đặt
+   - Yêu cầu hệ thống (phiên bản .NET, hệ điều hành Windows, cơ sở dữ liệu)
+   - Các bước thiết lập cơ sở dữ liệu
+   - Cấu hình ban đầu cần thiết
+
+6. Chạy dự án
+   - Cách mở solution bằng Visual Studio
+   - Hướng dẫn build và chạy chương trình
+   - Hành vi của hệ thống khi chạy lần đầu
+
+7. Cấu hình môi trường
+   - Giải thích App.config / appsettings.json
+   - Cấu hình chuỗi kết nối cơ sở dữ liệu
+   - Phân biệt cấu hình theo môi trường (Dev / Test / Production)
+
+8. Cấu trúc thư mục
+   - Mô tả vai trò của từng project và thư mục chính
+   - Làm rõ trách nhiệm của UI, Business, Data, Common, Utils, Reports…
+
+9. Hướng dẫn đóng góp phát triển
+   - Quy ước coding
+   - Quy tắc phân tầng (được phép / không được phép)
+   - Cách thêm phân hệ mới an toàn
+   - Quy ước branch và commit
+
+10. Giấy phép sử dụng
+    - Làm rõ phạm vi sử dụng: Nội bộ / Thương mại / Độc quyền
+
+11. Lộ trình phát triển (Roadmap)
+    - Các cải tiến ngắn hạn
+    - Các phân hệ ERP dự kiến
+    - Mục tiêu tái cấu trúc kỹ thuật
+    - Tầm nhìn mở rộng và khả năng scale dài hạn
+
+Nguyên tắc bắt buộc:
+- KHÔNG tự ý bịa thêm tính năng, phân hệ hoặc cấu hình không thuộc hệ thống ERP.
+- Ngôn ngữ viết rõ ràng, chuyên nghiệp, thân thiện.
+- Tập trung vào khả năng bảo trì lâu dài và tiêu chuẩn hệ thống doanh nghiệp.
+- Trình bày ngắn gọn nhưng đủ chi tiết cho lập trình viên mới tiếp cận.
+- Tuân thủ chuẩn Markdown.
+- Đưa ví dụ thực tế khi cần thiết.
+- Chất lượng tài liệu tương đương các hệ thống ERP quy mô lớn.
+
+Yêu cầu đầu ra:
+- Xuất ra một file README.md hoàn chỉnh, sẵn sàng sử dụng cho dự án WinForms ERP dài hạn.
+- TOÀN BỘ NỘI DUNG VIẾT BẰNG TIẾNG VIỆT.
