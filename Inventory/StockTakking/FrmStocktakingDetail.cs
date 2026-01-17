@@ -2,6 +2,7 @@ using Bll.Inventory.StockTakking;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
+using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DTO.Inventory.StockTakking;
 using Logger;
@@ -71,6 +72,16 @@ namespace Inventory.StockTakking
                 {
                     StockTakingMasterSearchLookUpEdit.QueryPopUp += StockTakingMasterSearchLookUpEdit_QueryPopUp;
                 }
+
+                if (AddNewBarButtonItem != null)
+                {
+                    AddNewBarButtonItem.ItemClick += AddNewBarButtonItem_ItemClick;
+                }
+
+                if (EditBarButtonItem != null)
+                {
+                    EditBarButtonItem.ItemClick += EditBarButtonItem_ItemClick;
+                }
             }
             catch (Exception ex)
             {
@@ -104,6 +115,45 @@ namespace Inventory.StockTakking
             {
                 _logger.Error("StockTakingMasterSearchLookUpEdit_QueryPopUp: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi tải danh sách phiếu kiểm kho: {ex.Message}");
+            }
+        }
+
+        private void AddNewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                using (var form = new FrmStocktakingDetailAddEdit())
+                {
+                    form.ShowDialog(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("AddNewBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi mở form thêm mới: {ex.Message}");
+            }
+        }
+
+        private void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                var selectedDto = StocktakingDetailDtoGandedGridView.GetFocusedRow() as StocktakingDetailDto;
+                if (selectedDto == null || selectedDto.ProductVariantId == Guid.Empty)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn một dòng hợp lệ để chỉnh sửa.");
+                    return;
+                }
+
+                using (var form = new FrmStocktakingDetailAddEdit(selectedDto.ProductVariantId))
+                {
+                    form.ShowDialog(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("EditBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi mở form chỉnh sửa: {ex.Message}");
             }
         }
 

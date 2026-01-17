@@ -1,6 +1,7 @@
 using Dal.Connection;
-using Dal.DataContext;
-using Dal.DtoConverter;
+using Dal.DataAccess.Implementations.VersionAndUserManagementDal;
+using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
+using DTO.VersionAndUserManagementDto;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -8,9 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
-using Dal.DataAccess.Implementations.VersionAndUserManagementDal;
-using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
-using DTO.VersionAndUserManagementDto;
 
 namespace Bll.Common;
 
@@ -82,24 +80,15 @@ public class AllowedMacAddressBll
     {
         try
         {
-            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                             ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .ToList();
-
-            foreach (var ni in networkInterfaces)
+            var macAddresses = GetAllCurrentMacAddresses();
+            if (macAddresses.Count == 0)
             {
-                var macAddress = ni.GetPhysicalAddress();
-                if (macAddress.ToString() != "000000000000")
-                {
-                    var macString = FormatMacAddress(macAddress.ToString());
-                    _logger?.Debug($"Tìm thấy MAC address: {macString}");
-                    return macString;
-                }
+                _logger?.Warning("Không tìm thấy MAC address hợp lệ");
+                return null;
             }
 
-            _logger?.Warning("Không tìm thấy MAC address hợp lệ");
-            return null;
+            _logger?.Debug($"Danh sách MAC address hiện tại: {string.Join(", ", macAddresses)}");
+            return macAddresses[0];
         }
         catch (Exception ex)
         {
@@ -174,25 +163,24 @@ public class AllowedMacAddressBll
     {
         try
         {
-            var currentMac = GetCurrentMacAddress();
-            if (string.IsNullOrWhiteSpace(currentMac))
+            var currentMacs = GetAllCurrentMacAddresses();
+            if (currentMacs.Count == 0)
             {
                 _logger?.Warning("Không thể lấy MAC address, từ chối truy cập");
                 return false;
             }
 
-            var isAllowed = GetDataAccess().IsMacAddressAllowed(currentMac);
-            
-            if (!isAllowed)
+            foreach (var macAddress in currentMacs)
             {
-                _logger?.Warning($"MAC address {currentMac} không được phép sử dụng ứng dụng");
-            }
-            else
-            {
-                _logger?.Info($"MAC address {currentMac} được phép sử dụng ứng dụng");
+                if (GetDataAccess().IsMacAddressAllowed(macAddress))
+                {
+                    _logger?.Info($"MAC address {macAddress} được phép sử dụng ứng dụng");
+                    return true;
+                }
             }
 
-            return isAllowed;
+            _logger?.Warning($"Không có MAC address nào được phép sử dụng ứng dụng: {string.Join(", ", currentMacs)}");
+            return false;
         }
         catch (Exception ex)
         {
