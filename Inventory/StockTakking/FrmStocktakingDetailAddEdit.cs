@@ -340,10 +340,11 @@ namespace Inventory.StockTakking
             }
         }
 
-        private bool TryGetDecimal(MemoEdit editor, string fieldName, bool required, out decimal? value)
+        private bool TryGetDecimal(BaseEdit editor, string fieldName, bool required, out decimal? value)
         {
             value = null;
-            var text = editor?.Text?.Trim();
+            var rawValue = editor?.EditValue;
+            var text = rawValue?.ToString().Trim();
 
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -352,6 +353,12 @@ namespace Inventory.StockTakking
                     dxErrorProvider1.SetError(editor, $"{fieldName} không được để trống");
                     return false;
                 }
+                return true;
+            }
+
+            if (rawValue is decimal decimalValue)
+            {
+                value = decimalValue;
                 return true;
             }
 

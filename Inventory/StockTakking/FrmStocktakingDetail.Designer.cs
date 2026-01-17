@@ -37,6 +37,7 @@ namespace Inventory.StockTakking
             this.StocktakingDetailDtoGandedGridView = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridView();
             this.ProductVariantGridBand = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             this.colProductVariantName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colProductVariantUnitName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.SoLuongKiemKhoGridBand = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             this.colSystemQuantity = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
@@ -55,7 +56,7 @@ namespace Inventory.StockTakking
             this.colNotes = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
-            this.barEditItem1 = new DevExpress.XtraBars.BarEditItem();
+            this.StockTakingMasterBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.StockTakingMasterSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.stocktakingMasterDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.StockTakingSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -76,7 +77,6 @@ namespace Inventory.StockTakking
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.NamRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
             this.ThangRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
-            this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.QRCodeImagePictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.ProductVariantIdentifierStatusEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.IsActiveCheckEdit = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
@@ -87,6 +87,7 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.StocktakingDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stocktakingDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StocktakingDetailDtoGandedGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AdjustmentTypeEnumComboBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
@@ -96,7 +97,6 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.ThongTinStockTakingMasterHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).BeginInit();
@@ -216,6 +216,11 @@ namespace Inventory.StockTakking
             this.colProductVariantName.OptionsColumn.ReadOnly = true;
             this.colProductVariantName.Visible = true;
             this.colProductVariantName.Width = 200;
+            // 
+            // HtmlRepositoryItemHypertextLabel
+            // 
+            this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
             // 
             // colProductVariantUnitName
             // 
@@ -542,7 +547,7 @@ namespace Inventory.StockTakking
             this.EditBarButtonItem,
             this.barButtonItem4,
             this.LoadDataBarButtonItem,
-            this.barEditItem1});
+            this.StockTakingMasterBarEditItem});
             this.barManager1.MainMenu = this.bar2;
             this.barManager1.MaxItemId = 35;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
@@ -559,7 +564,7 @@ namespace Inventory.StockTakking
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.barEditItem1, "", false, true, true, 224, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.StockTakingMasterBarEditItem, "", false, true, true, 224, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LoadDataBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddNewBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
@@ -569,12 +574,13 @@ namespace Inventory.StockTakking
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
             // 
-            // barEditItem1
+            // StockTakingMasterBarEditItem
             // 
-            this.barEditItem1.Caption = "Phiếu kiểm kho";
-            this.barEditItem1.Edit = this.StockTakingMasterSearchLookUpEdit;
-            this.barEditItem1.Id = 34;
-            this.barEditItem1.Name = "barEditItem1";
+            this.StockTakingMasterBarEditItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.StockTakingMasterBarEditItem.Caption = "Phiếu kiểm kho";
+            this.StockTakingMasterBarEditItem.Edit = this.StockTakingMasterSearchLookUpEdit;
+            this.StockTakingMasterBarEditItem.Id = 34;
+            this.StockTakingMasterBarEditItem.Name = "StockTakingMasterBarEditItem";
             // 
             // StockTakingMasterSearchLookUpEdit
             // 
@@ -582,10 +588,13 @@ namespace Inventory.StockTakking
             this.StockTakingMasterSearchLookUpEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.StockTakingMasterSearchLookUpEdit.DataSource = this.stocktakingMasterDtoBindingSource;
+            this.StockTakingMasterSearchLookUpEdit.DisplayMember = "ThongTinHtml";
             this.StockTakingMasterSearchLookUpEdit.Name = "StockTakingMasterSearchLookUpEdit";
+            this.StockTakingMasterSearchLookUpEdit.NullText = "";
             this.StockTakingMasterSearchLookUpEdit.PopupView = this.StockTakingSearchLookUpEdit1View;
             this.StockTakingMasterSearchLookUpEdit.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.ThongTinStockTakingMasterHypertextLabel});
+            this.StockTakingMasterSearchLookUpEdit.ValueMember = "Id";
             // 
             // stocktakingMasterDtoBindingSource
             // 
@@ -770,11 +779,6 @@ namespace Inventory.StockTakking
             0});
             this.ThangRepositoryItemSpinEdit.Name = "ThangRepositoryItemSpinEdit";
             // 
-            // HtmlRepositoryItemHypertextLabel
-            // 
-            this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
-            // 
             // QRCodeImagePictureEdit
             // 
             this.QRCodeImagePictureEdit.AllowFocused = false;
@@ -835,6 +839,7 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.StocktakingDetailDtoGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.stocktakingDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StocktakingDetailDtoGandedGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AdjustmentTypeEnumComboBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
@@ -844,7 +849,6 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.ThongTinStockTakingMasterHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).EndInit();
@@ -884,7 +888,7 @@ namespace Inventory.StockTakking
         private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit IsActiveCheckEdit;
         private DevExpress.XtraBars.BarButtonItem LoadDataBarButtonItem;
         private System.Windows.Forms.BindingSource stocktakingMasterDtoBindingSource;
-        private DevExpress.XtraBars.BarEditItem barEditItem1;
+        private DevExpress.XtraBars.BarEditItem StockTakingMasterBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit StockTakingMasterSearchLookUpEdit;
         private DevExpress.XtraGrid.Views.Grid.GridView StockTakingSearchLookUpEdit1View;
         private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml1;

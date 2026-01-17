@@ -50,24 +50,26 @@ namespace Inventory.StockTakking
             this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.productVariantSimpleDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
-            this.SystemQuantityMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.CountedQuantityMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.DifferenceQuantityMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.SystemValueMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.CountedValueMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.DifferenceValueMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.UnitPriceMemoEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.SystemQuantityMemoEdit = new DevExpress.XtraEditors.SpinEdit();
+            this.CountedQuantityMemoEdit = new DevExpress.XtraEditors.SpinEdit();
+            this.DifferenceQuantityMemoEdit = new DevExpress.XtraEditors.SpinEdit();
+            this.SystemValueMemoEdit = new DevExpress.XtraEditors.SpinEdit();
+            this.CountedValueMemoEdit = new DevExpress.XtraEditors.SpinEdit();
+            this.DifferenceValueMemoEdit = new DevExpress.XtraEditors.SpinEdit();
+            this.UnitPriceMemoEdit = new DevExpress.XtraEditors.SpinEdit();
             this.AdjustmentTypeImageComboBoxEdit = new DevExpress.XtraEditors.ImageComboBoxEdit();
-            this.CountedByMemoEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.CountedByMemoEdit = new DevExpress.XtraEditors.TextEdit();
             this.CountedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.IsReviewedCheckEdit = new DevExpress.XtraEditors.CheckEdit();
-            this.ReviewedByMemoEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.ReviewedByMemoEdit = new DevExpress.XtraEditors.TextEdit();
             this.ReviewedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.IsApprovedCheckEdit = new DevExpress.XtraEditors.CheckEdit();
-            this.ApprovedByMemoEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.ApprovedByMemoEdit = new DevExpress.XtraEditors.TextEdit();
             this.ApprovedDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.ProductVariantNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.VariantFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.IsCountedToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
             this.NotesMemoEdit = new DevExpress.XtraEditors.MemoEdit();
             this.ReviewNotesMemoEdit = new DevExpress.XtraEditors.MemoEdit();
@@ -102,8 +104,6 @@ namespace Inventory.StockTakking
             this.ItemForApprovedBy = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForApprovedDate = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForNotes = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.VariantFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantSimpleDtoBindingSource)).BeginInit();
@@ -130,6 +130,7 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantNameSearchLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsCountedToggleSwitch.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ReviewNotesMemoEdit.Properties)).BeginInit();
@@ -164,7 +165,6 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedBy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedDate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNotes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -314,91 +314,91 @@ namespace Inventory.StockTakking
             // 
             // SystemQuantityMemoEdit
             // 
-            this.SystemQuantityMemoEdit.Location = new System.Drawing.Point(116, 136);
+            this.SystemQuantityMemoEdit.Location = new System.Drawing.Point(120, 136);
             this.SystemQuantityMemoEdit.MenuManager = this.barManager1;
             this.SystemQuantityMemoEdit.Name = "SystemQuantityMemoEdit";
             this.SystemQuantityMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
             this.SystemQuantityMemoEdit.Properties.Appearance.Options.UseTextOptions = true;
             this.SystemQuantityMemoEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.SystemQuantityMemoEdit.Size = new System.Drawing.Size(121, 23);
+            this.SystemQuantityMemoEdit.Size = new System.Drawing.Size(117, 23);
             this.SystemQuantityMemoEdit.StyleController = this.dataLayoutControl1;
             this.SystemQuantityMemoEdit.TabIndex = 10;
             // 
             // CountedQuantityMemoEdit
             // 
-            this.CountedQuantityMemoEdit.Location = new System.Drawing.Point(333, 136);
+            this.CountedQuantityMemoEdit.Location = new System.Drawing.Point(337, 136);
             this.CountedQuantityMemoEdit.MenuManager = this.barManager1;
             this.CountedQuantityMemoEdit.Name = "CountedQuantityMemoEdit";
             this.CountedQuantityMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
             this.CountedQuantityMemoEdit.Properties.Appearance.Options.UseTextOptions = true;
             this.CountedQuantityMemoEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.CountedQuantityMemoEdit.Size = new System.Drawing.Size(84, 23);
+            this.CountedQuantityMemoEdit.Size = new System.Drawing.Size(80, 23);
             this.CountedQuantityMemoEdit.StyleController = this.dataLayoutControl1;
             this.CountedQuantityMemoEdit.TabIndex = 11;
             // 
             // DifferenceQuantityMemoEdit
             // 
-            this.DifferenceQuantityMemoEdit.Location = new System.Drawing.Point(513, 136);
+            this.DifferenceQuantityMemoEdit.Location = new System.Drawing.Point(517, 136);
             this.DifferenceQuantityMemoEdit.MenuManager = this.barManager1;
             this.DifferenceQuantityMemoEdit.Name = "DifferenceQuantityMemoEdit";
             this.DifferenceQuantityMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
             this.DifferenceQuantityMemoEdit.Properties.Appearance.Options.UseTextOptions = true;
             this.DifferenceQuantityMemoEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.DifferenceQuantityMemoEdit.Size = new System.Drawing.Size(225, 23);
+            this.DifferenceQuantityMemoEdit.Size = new System.Drawing.Size(221, 23);
             this.DifferenceQuantityMemoEdit.StyleController = this.dataLayoutControl1;
             this.DifferenceQuantityMemoEdit.TabIndex = 12;
             // 
             // SystemValueMemoEdit
             // 
-            this.SystemValueMemoEdit.Location = new System.Drawing.Point(295, 208);
+            this.SystemValueMemoEdit.Location = new System.Drawing.Point(299, 208);
             this.SystemValueMemoEdit.MenuManager = this.barManager1;
             this.SystemValueMemoEdit.Name = "SystemValueMemoEdit";
             this.SystemValueMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
             this.SystemValueMemoEdit.Properties.Appearance.Options.UseTextOptions = true;
             this.SystemValueMemoEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.SystemValueMemoEdit.Size = new System.Drawing.Size(84, 23);
+            this.SystemValueMemoEdit.Size = new System.Drawing.Size(80, 23);
             this.SystemValueMemoEdit.StyleController = this.dataLayoutControl1;
             this.SystemValueMemoEdit.TabIndex = 13;
             // 
             // CountedValueMemoEdit
             // 
-            this.CountedValueMemoEdit.Location = new System.Drawing.Point(475, 208);
+            this.CountedValueMemoEdit.Location = new System.Drawing.Point(479, 208);
             this.CountedValueMemoEdit.MenuManager = this.barManager1;
             this.CountedValueMemoEdit.Name = "CountedValueMemoEdit";
             this.CountedValueMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
             this.CountedValueMemoEdit.Properties.Appearance.Options.UseTextOptions = true;
             this.CountedValueMemoEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.CountedValueMemoEdit.Size = new System.Drawing.Size(83, 23);
+            this.CountedValueMemoEdit.Size = new System.Drawing.Size(79, 23);
             this.CountedValueMemoEdit.StyleController = this.dataLayoutControl1;
             this.CountedValueMemoEdit.TabIndex = 14;
             // 
             // DifferenceValueMemoEdit
             // 
-            this.DifferenceValueMemoEdit.Location = new System.Drawing.Point(654, 208);
+            this.DifferenceValueMemoEdit.Location = new System.Drawing.Point(658, 208);
             this.DifferenceValueMemoEdit.MenuManager = this.barManager1;
             this.DifferenceValueMemoEdit.Name = "DifferenceValueMemoEdit";
             this.DifferenceValueMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
             this.DifferenceValueMemoEdit.Properties.Appearance.Options.UseTextOptions = true;
             this.DifferenceValueMemoEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.DifferenceValueMemoEdit.Size = new System.Drawing.Size(84, 23);
+            this.DifferenceValueMemoEdit.Size = new System.Drawing.Size(80, 23);
             this.DifferenceValueMemoEdit.StyleController = this.dataLayoutControl1;
             this.DifferenceValueMemoEdit.TabIndex = 15;
             // 
             // UnitPriceMemoEdit
             // 
-            this.UnitPriceMemoEdit.Location = new System.Drawing.Point(116, 208);
+            this.UnitPriceMemoEdit.Location = new System.Drawing.Point(120, 208);
             this.UnitPriceMemoEdit.MenuManager = this.barManager1;
             this.UnitPriceMemoEdit.Name = "UnitPriceMemoEdit";
             this.UnitPriceMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
             this.UnitPriceMemoEdit.Properties.Appearance.Options.UseTextOptions = true;
             this.UnitPriceMemoEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.UnitPriceMemoEdit.Size = new System.Drawing.Size(83, 23);
+            this.UnitPriceMemoEdit.Size = new System.Drawing.Size(79, 23);
             this.UnitPriceMemoEdit.StyleController = this.dataLayoutControl1;
             this.UnitPriceMemoEdit.TabIndex = 16;
             // 
             // AdjustmentTypeImageComboBoxEdit
             // 
-            this.AdjustmentTypeImageComboBoxEdit.Location = new System.Drawing.Point(116, 280);
+            this.AdjustmentTypeImageComboBoxEdit.Location = new System.Drawing.Point(120, 280);
             this.AdjustmentTypeImageComboBoxEdit.MenuManager = this.barManager1;
             this.AdjustmentTypeImageComboBoxEdit.Name = "AdjustmentTypeImageComboBoxEdit";
             this.AdjustmentTypeImageComboBoxEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
@@ -411,24 +411,24 @@ namespace Inventory.StockTakking
             new DevExpress.XtraEditors.Controls.ImageComboBoxItem("Giảm", DTO.Inventory.StockTakking.AdjustmentTypeEnum.Decrease, 1),
             new DevExpress.XtraEditors.Controls.ImageComboBoxItem("Không điều chỉnh", DTO.Inventory.StockTakking.AdjustmentTypeEnum.NoAdjustment, 2)});
             this.AdjustmentTypeImageComboBoxEdit.Properties.UseCtrlScroll = true;
-            this.AdjustmentTypeImageComboBoxEdit.Size = new System.Drawing.Size(622, 20);
+            this.AdjustmentTypeImageComboBoxEdit.Size = new System.Drawing.Size(618, 20);
             this.AdjustmentTypeImageComboBoxEdit.StyleController = this.dataLayoutControl1;
             this.AdjustmentTypeImageComboBoxEdit.TabIndex = 17;
             // 
             // CountedByMemoEdit
             // 
-            this.CountedByMemoEdit.Location = new System.Drawing.Point(475, 430);
+            this.CountedByMemoEdit.Location = new System.Drawing.Point(479, 430);
             this.CountedByMemoEdit.MenuManager = this.barManager1;
             this.CountedByMemoEdit.Name = "CountedByMemoEdit";
             this.CountedByMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.CountedByMemoEdit.Size = new System.Drawing.Size(263, 20);
+            this.CountedByMemoEdit.Size = new System.Drawing.Size(259, 20);
             this.CountedByMemoEdit.StyleController = this.dataLayoutControl1;
             this.CountedByMemoEdit.TabIndex = 20;
             // 
             // CountedDateDateEdit
             // 
             this.CountedDateDateEdit.EditValue = null;
-            this.CountedDateDateEdit.Location = new System.Drawing.Point(116, 430);
+            this.CountedDateDateEdit.Location = new System.Drawing.Point(120, 430);
             this.CountedDateDateEdit.MenuManager = this.barManager1;
             this.CountedDateDateEdit.Name = "CountedDateDateEdit";
             this.CountedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
@@ -436,7 +436,7 @@ namespace Inventory.StockTakking
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.CountedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.CountedDateDateEdit.Size = new System.Drawing.Size(263, 20);
+            this.CountedDateDateEdit.Size = new System.Drawing.Size(259, 20);
             this.CountedDateDateEdit.StyleController = this.dataLayoutControl1;
             this.CountedDateDateEdit.TabIndex = 21;
             // 
@@ -453,18 +453,18 @@ namespace Inventory.StockTakking
             // 
             // ReviewedByMemoEdit
             // 
-            this.ReviewedByMemoEdit.Location = new System.Drawing.Point(116, 523);
+            this.ReviewedByMemoEdit.Location = new System.Drawing.Point(120, 523);
             this.ReviewedByMemoEdit.MenuManager = this.barManager1;
             this.ReviewedByMemoEdit.Name = "ReviewedByMemoEdit";
             this.ReviewedByMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.ReviewedByMemoEdit.Size = new System.Drawing.Size(622, 22);
+            this.ReviewedByMemoEdit.Size = new System.Drawing.Size(618, 22);
             this.ReviewedByMemoEdit.StyleController = this.dataLayoutControl1;
             this.ReviewedByMemoEdit.TabIndex = 23;
             // 
             // ReviewedDateDateEdit
             // 
             this.ReviewedDateDateEdit.EditValue = null;
-            this.ReviewedDateDateEdit.Location = new System.Drawing.Point(116, 549);
+            this.ReviewedDateDateEdit.Location = new System.Drawing.Point(120, 549);
             this.ReviewedDateDateEdit.MenuManager = this.barManager1;
             this.ReviewedDateDateEdit.Name = "ReviewedDateDateEdit";
             this.ReviewedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
@@ -472,7 +472,7 @@ namespace Inventory.StockTakking
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ReviewedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ReviewedDateDateEdit.Size = new System.Drawing.Size(622, 20);
+            this.ReviewedDateDateEdit.Size = new System.Drawing.Size(618, 20);
             this.ReviewedDateDateEdit.StyleController = this.dataLayoutControl1;
             this.ReviewedDateDateEdit.TabIndex = 24;
             // 
@@ -489,18 +489,18 @@ namespace Inventory.StockTakking
             // 
             // ApprovedByMemoEdit
             // 
-            this.ApprovedByMemoEdit.Location = new System.Drawing.Point(116, 724);
+            this.ApprovedByMemoEdit.Location = new System.Drawing.Point(120, 724);
             this.ApprovedByMemoEdit.MenuManager = this.barManager1;
             this.ApprovedByMemoEdit.Name = "ApprovedByMemoEdit";
             this.ApprovedByMemoEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.ApprovedByMemoEdit.Size = new System.Drawing.Size(622, 22);
+            this.ApprovedByMemoEdit.Size = new System.Drawing.Size(618, 22);
             this.ApprovedByMemoEdit.StyleController = this.dataLayoutControl1;
             this.ApprovedByMemoEdit.TabIndex = 27;
             // 
             // ApprovedDateDateEdit
             // 
             this.ApprovedDateDateEdit.EditValue = null;
-            this.ApprovedDateDateEdit.Location = new System.Drawing.Point(116, 750);
+            this.ApprovedDateDateEdit.Location = new System.Drawing.Point(120, 750);
             this.ApprovedDateDateEdit.MenuManager = this.barManager1;
             this.ApprovedDateDateEdit.Name = "ApprovedDateDateEdit";
             this.ApprovedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
@@ -508,83 +508,98 @@ namespace Inventory.StockTakking
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ApprovedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ApprovedDateDateEdit.Size = new System.Drawing.Size(622, 20);
+            this.ApprovedDateDateEdit.Size = new System.Drawing.Size(618, 20);
             this.ApprovedDateDateEdit.StyleController = this.dataLayoutControl1;
             this.ApprovedDateDateEdit.TabIndex = 28;
             // 
             // ProductVariantNameSearchLookupEdit
             // 
-            this.ProductVariantNameSearchLookupEdit.Location = new System.Drawing.Point(116, 45);
+            this.ProductVariantNameSearchLookupEdit.Location = new System.Drawing.Point(120, 45);
             this.ProductVariantNameSearchLookupEdit.MenuManager = this.barManager1;
             this.ProductVariantNameSearchLookupEdit.Name = "ProductVariantNameSearchLookupEdit";
+            this.ProductVariantNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.ProductVariantNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ProductVariantNameSearchLookupEdit.Properties.DataSource = this.productVariantSimpleDtoBindingSource;
-            this.ProductVariantNameSearchLookupEdit.Properties.DisplayMember = "ProductName";
+            this.ProductVariantNameSearchLookupEdit.Properties.DisplayMember = "VariantFullName";
             this.ProductVariantNameSearchLookupEdit.Properties.NullText = "";
             this.ProductVariantNameSearchLookupEdit.Properties.PopupView = this.searchLookUpEdit1View;
             this.ProductVariantNameSearchLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.VariantFullNameHypertextLabel});
             this.ProductVariantNameSearchLookupEdit.Properties.ValueMember = "Id";
-            this.ProductVariantNameSearchLookupEdit.Size = new System.Drawing.Size(622, 20);
+            this.ProductVariantNameSearchLookupEdit.Size = new System.Drawing.Size(618, 20);
             this.ProductVariantNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
             this.ProductVariantNameSearchLookupEdit.TabIndex = 7;
             // 
             // searchLookUpEdit1View
             // 
-            this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colVariantFullName});
             this.searchLookUpEdit1View.Appearance.HeaderPanel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.searchLookUpEdit1View.Appearance.HeaderPanel.Options.UseFont = true;
             this.searchLookUpEdit1View.Appearance.HeaderPanel.Options.UseTextOptions = true;
             this.searchLookUpEdit1View.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.searchLookUpEdit1View.Appearance.HeaderPanel.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colVariantFullName});
             this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
             this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
             this.searchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
-            this.searchLookUpEdit1View.OptionsView.ShowIndicator = false;
+            this.searchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.searchLookUpEdit1View.OptionsView.ShowIndicator = false;
+            // 
+            // colVariantFullName
+            // 
+            this.colVariantFullName.Caption = "Sản phẩm";
+            this.colVariantFullName.ColumnEdit = this.VariantFullNameHypertextLabel;
+            this.colVariantFullName.FieldName = "VariantFullName";
+            this.colVariantFullName.Name = "colVariantFullName";
+            this.colVariantFullName.Visible = true;
+            this.colVariantFullName.VisibleIndex = 0;
+            // 
+            // VariantFullNameHypertextLabel
+            // 
+            this.VariantFullNameHypertextLabel.Name = "VariantFullNameHypertextLabel";
             // 
             // IsCountedToggleSwitch
             // 
             this.IsCountedToggleSwitch.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
             this.IsCountedToggleSwitch.EditValue = true;
-            this.IsCountedToggleSwitch.Location = new System.Drawing.Point(116, 69);
+            this.IsCountedToggleSwitch.Location = new System.Drawing.Point(120, 69);
             this.IsCountedToggleSwitch.MenuManager = this.barManager1;
             this.IsCountedToggleSwitch.Name = "IsCountedToggleSwitch";
             this.IsCountedToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.IsCountedToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
             this.IsCountedToggleSwitch.Properties.OffText = "<color=\'red\'>Chưa kiểm đếm</color>";
             this.IsCountedToggleSwitch.Properties.OnText = "<color=\'blue\'>Đã kiểm đếm</color>";
-            this.IsCountedToggleSwitch.Size = new System.Drawing.Size(622, 18);
+            this.IsCountedToggleSwitch.Size = new System.Drawing.Size(618, 18);
             this.IsCountedToggleSwitch.StyleController = this.dataLayoutControl1;
             this.IsCountedToggleSwitch.TabIndex = 19;
             // 
             // NotesMemoEdit
             // 
-            this.NotesMemoEdit.Location = new System.Drawing.Point(116, 774);
+            this.NotesMemoEdit.Location = new System.Drawing.Point(120, 774);
             this.NotesMemoEdit.MenuManager = this.barManager1;
             this.NotesMemoEdit.Name = "NotesMemoEdit";
-            this.NotesMemoEdit.Size = new System.Drawing.Size(622, 79);
+            this.NotesMemoEdit.Size = new System.Drawing.Size(618, 79);
             this.NotesMemoEdit.StyleController = this.dataLayoutControl1;
             this.NotesMemoEdit.TabIndex = 29;
             // 
             // ReviewNotesMemoEdit
             // 
-            this.ReviewNotesMemoEdit.Location = new System.Drawing.Point(116, 573);
+            this.ReviewNotesMemoEdit.Location = new System.Drawing.Point(120, 573);
             this.ReviewNotesMemoEdit.MenuManager = this.barManager1;
             this.ReviewNotesMemoEdit.Name = "ReviewNotesMemoEdit";
-            this.ReviewNotesMemoEdit.Size = new System.Drawing.Size(622, 78);
+            this.ReviewNotesMemoEdit.Size = new System.Drawing.Size(618, 78);
             this.ReviewNotesMemoEdit.StyleController = this.dataLayoutControl1;
             this.ReviewNotesMemoEdit.TabIndex = 25;
             // 
             // AdjustmentReasonMemoEdit
             // 
-            this.AdjustmentReasonMemoEdit.Location = new System.Drawing.Point(116, 304);
+            this.AdjustmentReasonMemoEdit.Location = new System.Drawing.Point(120, 304);
             this.AdjustmentReasonMemoEdit.MenuManager = this.barManager1;
             this.AdjustmentReasonMemoEdit.Name = "AdjustmentReasonMemoEdit";
-            this.AdjustmentReasonMemoEdit.Size = new System.Drawing.Size(622, 77);
+            this.AdjustmentReasonMemoEdit.Size = new System.Drawing.Size(618, 77);
             this.AdjustmentReasonMemoEdit.StyleController = this.dataLayoutControl1;
             this.AdjustmentReasonMemoEdit.TabIndex = 18;
             // 
@@ -635,7 +650,7 @@ namespace Inventory.StockTakking
             this.ItemForProductVariantName.Name = "ItemForProductVariantName";
             this.ItemForProductVariantName.Size = new System.Drawing.Size(718, 24);
             this.ItemForProductVariantName.Text = "Tên sản phẩm <color=\'red\'>*</color>";
-            this.ItemForProductVariantName.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForProductVariantName.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForIsCounted
             // 
@@ -648,7 +663,7 @@ namespace Inventory.StockTakking
             this.ItemForIsCounted.Name = "ItemForIsCounted";
             this.ItemForIsCounted.Size = new System.Drawing.Size(718, 22);
             this.ItemForIsCounted.Text = "Đã kiểm đếm";
-            this.ItemForIsCounted.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForIsCounted.TextSize = new System.Drawing.Size(84, 13);
             // 
             // layoutControlGroup3
             // 
@@ -674,7 +689,7 @@ namespace Inventory.StockTakking
             this.ItemForSystemQuantity.Name = "ItemForSystemQuantity";
             this.ItemForSystemQuantity.Size = new System.Drawing.Size(217, 27);
             this.ItemForSystemQuantity.Text = "SL Hệ thống <color=\'red\'>*</color>";
-            this.ItemForSystemQuantity.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForSystemQuantity.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForCountedQuantity
             // 
@@ -687,7 +702,7 @@ namespace Inventory.StockTakking
             this.ItemForCountedQuantity.Name = "ItemForCountedQuantity";
             this.ItemForCountedQuantity.Size = new System.Drawing.Size(180, 27);
             this.ItemForCountedQuantity.Text = "SL Đã kiểm";
-            this.ItemForCountedQuantity.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForCountedQuantity.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForDifferenceQuantity
             // 
@@ -700,7 +715,7 @@ namespace Inventory.StockTakking
             this.ItemForDifferenceQuantity.Name = "ItemForDifferenceQuantity";
             this.ItemForDifferenceQuantity.Size = new System.Drawing.Size(321, 27);
             this.ItemForDifferenceQuantity.Text = "SL Chênh lệch <color=\'red\'>*</color>";
-            this.ItemForDifferenceQuantity.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForDifferenceQuantity.TextSize = new System.Drawing.Size(84, 13);
             // 
             // layoutControlGroup4
             // 
@@ -727,7 +742,7 @@ namespace Inventory.StockTakking
             this.ItemForSystemValue.Name = "ItemForSystemValue";
             this.ItemForSystemValue.Size = new System.Drawing.Size(180, 27);
             this.ItemForSystemValue.Text = "Giá trị Hệ thống";
-            this.ItemForSystemValue.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForSystemValue.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForCountedValue
             // 
@@ -740,7 +755,7 @@ namespace Inventory.StockTakking
             this.ItemForCountedValue.Name = "ItemForCountedValue";
             this.ItemForCountedValue.Size = new System.Drawing.Size(179, 27);
             this.ItemForCountedValue.Text = "Giá trị Đã kiểm";
-            this.ItemForCountedValue.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForCountedValue.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForDifferenceValue
             // 
@@ -753,7 +768,7 @@ namespace Inventory.StockTakking
             this.ItemForDifferenceValue.Name = "ItemForDifferenceValue";
             this.ItemForDifferenceValue.Size = new System.Drawing.Size(180, 27);
             this.ItemForDifferenceValue.Text = "Giá trị Chênh lệch";
-            this.ItemForDifferenceValue.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForDifferenceValue.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForUnitPrice
             // 
@@ -766,7 +781,7 @@ namespace Inventory.StockTakking
             this.ItemForUnitPrice.Name = "ItemForUnitPrice";
             this.ItemForUnitPrice.Size = new System.Drawing.Size(179, 27);
             this.ItemForUnitPrice.Text = "Đơn giá";
-            this.ItemForUnitPrice.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForUnitPrice.TextSize = new System.Drawing.Size(84, 13);
             // 
             // layoutControlGroup5
             // 
@@ -791,7 +806,7 @@ namespace Inventory.StockTakking
             this.ItemForAdjustmentType.Name = "ItemForAdjustmentType";
             this.ItemForAdjustmentType.Size = new System.Drawing.Size(718, 24);
             this.ItemForAdjustmentType.Text = "Loại điều chỉnh";
-            this.ItemForAdjustmentType.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForAdjustmentType.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForAdjustmentReason
             // 
@@ -804,7 +819,7 @@ namespace Inventory.StockTakking
             this.ItemForAdjustmentReason.Name = "ItemForAdjustmentReason";
             this.ItemForAdjustmentReason.Size = new System.Drawing.Size(718, 81);
             this.ItemForAdjustmentReason.Text = "Lý do điều chỉnh";
-            this.ItemForAdjustmentReason.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForAdjustmentReason.TextSize = new System.Drawing.Size(84, 13);
             // 
             // layoutControlGroup6
             // 
@@ -829,7 +844,7 @@ namespace Inventory.StockTakking
             this.ItemForCountedBy.Name = "ItemForCountedBy";
             this.ItemForCountedBy.Size = new System.Drawing.Size(359, 24);
             this.ItemForCountedBy.Text = "Người kiểm đếm";
-            this.ItemForCountedBy.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForCountedBy.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForCountedDate
             // 
@@ -842,7 +857,7 @@ namespace Inventory.StockTakking
             this.ItemForCountedDate.Name = "ItemForCountedDate";
             this.ItemForCountedDate.Size = new System.Drawing.Size(359, 24);
             this.ItemForCountedDate.Text = "Ngày kiểm đếm";
-            this.ItemForCountedDate.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForCountedDate.TextSize = new System.Drawing.Size(84, 13);
             // 
             // layoutControlGroup7
             // 
@@ -869,7 +884,7 @@ namespace Inventory.StockTakking
             this.ItemForReviewedBy.Name = "ItemForReviewedBy";
             this.ItemForReviewedBy.Size = new System.Drawing.Size(718, 26);
             this.ItemForReviewedBy.Text = "Người rà soát";
-            this.ItemForReviewedBy.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForReviewedBy.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForIsReviewed
             // 
@@ -895,7 +910,7 @@ namespace Inventory.StockTakking
             this.ItemForReviewedDate.Name = "ItemForReviewedDate";
             this.ItemForReviewedDate.Size = new System.Drawing.Size(718, 24);
             this.ItemForReviewedDate.Text = "Ngày rà soát";
-            this.ItemForReviewedDate.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForReviewedDate.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForReviewNotes
             // 
@@ -908,7 +923,7 @@ namespace Inventory.StockTakking
             this.ItemForReviewNotes.Name = "ItemForReviewNotes";
             this.ItemForReviewNotes.Size = new System.Drawing.Size(718, 82);
             this.ItemForReviewNotes.Text = "Ghi chú rà soát";
-            this.ItemForReviewNotes.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForReviewNotes.TextSize = new System.Drawing.Size(84, 13);
             // 
             // layoutControlGroup8
             // 
@@ -948,7 +963,7 @@ namespace Inventory.StockTakking
             this.ItemForApprovedBy.Name = "ItemForApprovedBy";
             this.ItemForApprovedBy.Size = new System.Drawing.Size(718, 26);
             this.ItemForApprovedBy.Text = "Người phê duyệt";
-            this.ItemForApprovedBy.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForApprovedBy.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForApprovedDate
             // 
@@ -961,7 +976,7 @@ namespace Inventory.StockTakking
             this.ItemForApprovedDate.Name = "ItemForApprovedDate";
             this.ItemForApprovedDate.Size = new System.Drawing.Size(718, 24);
             this.ItemForApprovedDate.Text = "Ngày phê duyệt";
-            this.ItemForApprovedDate.TextSize = new System.Drawing.Size(80, 13);
+            this.ItemForApprovedDate.TextSize = new System.Drawing.Size(84, 13);
             // 
             // ItemForNotes
             // 
@@ -974,20 +989,7 @@ namespace Inventory.StockTakking
             this.ItemForNotes.Name = "ItemForNotes";
             this.ItemForNotes.Size = new System.Drawing.Size(718, 83);
             this.ItemForNotes.Text = "Ghi chú";
-            this.ItemForNotes.TextSize = new System.Drawing.Size(80, 13);
-            // 
-            // colVariantFullName
-            // 
-            this.colVariantFullName.ColumnEdit = this.VariantFullNameHypertextLabel;
-            this.colVariantFullName.Caption = "Sản phẩm";
-            this.colVariantFullName.FieldName = "VariantFullName";
-            this.colVariantFullName.Name = "colVariantFullName";
-            this.colVariantFullName.Visible = true;
-            this.colVariantFullName.VisibleIndex = 0;
-            // 
-            // VariantFullNameHypertextLabel
-            // 
-            this.VariantFullNameHypertextLabel.Name = "VariantFullNameHypertextLabel";
+            this.ItemForNotes.TextSize = new System.Drawing.Size(84, 13);
             // 
             // FrmStocktakingDetailAddEdit
             // 
@@ -1029,6 +1031,7 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.ApprovedDateDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantNameSearchLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsCountedToggleSwitch.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ReviewNotesMemoEdit.Properties)).EndInit();
@@ -1063,7 +1066,6 @@ namespace Inventory.StockTakking
             ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedBy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForApprovedDate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNotes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHypertextLabel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1087,21 +1089,21 @@ namespace Inventory.StockTakking
         private System.Windows.Forms.BindingSource productVariantSimpleDtoBindingSource;
         private DataLayoutControl dataLayoutControl1;
         private LayoutControlGroup Root;
-        private DevExpress.XtraEditors.MemoEdit SystemQuantityMemoEdit;
-        private DevExpress.XtraEditors.MemoEdit CountedQuantityMemoEdit;
-        private DevExpress.XtraEditors.MemoEdit DifferenceQuantityMemoEdit;
-        private DevExpress.XtraEditors.MemoEdit SystemValueMemoEdit;
-        private DevExpress.XtraEditors.MemoEdit CountedValueMemoEdit;
-        private DevExpress.XtraEditors.MemoEdit DifferenceValueMemoEdit;
-        private DevExpress.XtraEditors.MemoEdit UnitPriceMemoEdit;
+        private DevExpress.XtraEditors.SpinEdit SystemQuantityMemoEdit;
+        private DevExpress.XtraEditors.SpinEdit CountedQuantityMemoEdit;
+        private DevExpress.XtraEditors.SpinEdit DifferenceQuantityMemoEdit;
+        private DevExpress.XtraEditors.SpinEdit SystemValueMemoEdit;
+        private DevExpress.XtraEditors.SpinEdit CountedValueMemoEdit;
+        private DevExpress.XtraEditors.SpinEdit DifferenceValueMemoEdit;
+        private DevExpress.XtraEditors.SpinEdit UnitPriceMemoEdit;
         private DevExpress.XtraEditors.ImageComboBoxEdit AdjustmentTypeImageComboBoxEdit;
-        private DevExpress.XtraEditors.MemoEdit CountedByMemoEdit;
+        private DevExpress.XtraEditors.TextEdit CountedByMemoEdit;
         private DevExpress.XtraEditors.DateEdit CountedDateDateEdit;
         private DevExpress.XtraEditors.CheckEdit IsReviewedCheckEdit;
-        private DevExpress.XtraEditors.MemoEdit ReviewedByMemoEdit;
+        private DevExpress.XtraEditors.TextEdit ReviewedByMemoEdit;
         private DevExpress.XtraEditors.DateEdit ReviewedDateDateEdit;
         private DevExpress.XtraEditors.CheckEdit IsApprovedCheckEdit;
-        private DevExpress.XtraEditors.MemoEdit ApprovedByMemoEdit;
+        private DevExpress.XtraEditors.TextEdit ApprovedByMemoEdit;
         private DevExpress.XtraEditors.DateEdit ApprovedDateDateEdit;
         private LayoutControlGroup layoutControlGroup1;
         private LayoutControlItem ItemForProductVariantName;
